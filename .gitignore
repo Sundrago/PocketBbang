@@ -9,6 +9,9 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/[Aa]ssets/[Pp]lugins/
+/[Aa]ssets/[Ii]ronSource/
+/[Aa]ssets/[Gg]oogleMobile/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -51,6 +54,10 @@ ExportedObj/
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
+*.meta
+*.anim
+*.blob
+*.json
 
 # Unity3D generated file on crash reports
 sysinfo.txt
@@ -60,6 +67,22 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
+*.dll
+*.pdf
+*.unity
+*.md
+*.asset
+*.prefab
+
+#media files
+*.mp3
+*.wav
+*.png
+*.jpg
+*.jpeg
+*.psd
+*.keystore
+*.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
