@@ -24,9 +24,9 @@ public class RankCtrl : MonoBehaviour
     bool started = false;
 
 #if UNITY_IPHONE
-                const int totalCount = 36000;
+                const int totalCount = 40000;
 #elif UNITY_ANDROID
-                const int totalCount = 3000;
+                const int totalCount = 3500;
 #endif
 
     int debug = 0;

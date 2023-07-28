@@ -55,6 +55,8 @@ public class Collection_Panel_Control : MonoBehaviour
     public List<CardData> Androidcards = new List<CardData>();
     public List<GameObject> AndroidRows = new List<GameObject>();
 
+    [SerializeField] List<Button> deckBtns = new List<Button>();
+
 
     public bool bookMode = true;
     public bool debugMode;
@@ -138,7 +140,7 @@ public class Collection_Panel_Control : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    void UpdateData()
+    public async void UpdateData()
     {
         //SetCount(myCardList.Count);
 
@@ -167,7 +169,7 @@ public class Collection_Panel_Control : MonoBehaviour
         //Update S data
         for (int i = 0; i < Scards.Count; i++)
         {
-            Srows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Scards[i].IDX_code].image, cc.myCard[Scards[i].IDX_code].name, cc.myCard[Scards[i].IDX_code].count, debugMode);
+            await Srows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Scards[i].IDX_code].image, cc.myCard[Scards[i].IDX_code].name, cc.myCard[Scards[i].IDX_code].count, debugMode);
             int idx = new int();
             idx = Scards[i].IDX_code;
 
@@ -193,7 +195,7 @@ public class Collection_Panel_Control : MonoBehaviour
         //Update M data
         for (int i = 0; i < Mcards.Count; i++)
         {
-            Mrows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Mcards[i].IDX_code].image, cc.myCard[Mcards[i].IDX_code].name, cc.myCard[Mcards[i].IDX_code].count, debugMode);
+            await Mrows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Mcards[i].IDX_code].image, cc.myCard[Mcards[i].IDX_code].name, cc.myCard[Mcards[i].IDX_code].count, debugMode);
             int idx = new int();
             idx = Mcards[i].IDX_code;
 
@@ -219,7 +221,7 @@ public class Collection_Panel_Control : MonoBehaviour
         //Update A data
         for (int i = 0; i < Acards.Count; i++)
         {
-            Arows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Acards[i].IDX_code].image, cc.myCard[Acards[i].IDX_code].name, cc.myCard[Acards[i].IDX_code].count, debugMode);
+            await Arows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Acards[i].IDX_code].image, cc.myCard[Acards[i].IDX_code].name, cc.myCard[Acards[i].IDX_code].count, debugMode);
             int idx = new int();
             idx = Acards[i].IDX_code;
 
@@ -244,7 +246,7 @@ public class Collection_Panel_Control : MonoBehaviour
         //Update B data
         for (int i = 0; i < Bcards.Count; i++)
         {
-            Brows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Bcards[i].IDX_code].image, cc.myCard[Bcards[i].IDX_code].name, cc.myCard[Bcards[i].IDX_code].count, debugMode);
+            await Brows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Bcards[i].IDX_code].image, cc.myCard[Bcards[i].IDX_code].name, cc.myCard[Bcards[i].IDX_code].count, debugMode);
             int idx = new int();
             idx = Bcards[i].IDX_code;
 
@@ -557,12 +559,16 @@ public class Collection_Panel_Control : MonoBehaviour
         //if (currentTab == idx) return;
 
         PlayerPrefs.SetInt("CollectionTab", idx);
+        
         UpdateAndroidPanel();
     }
 
-    public void UpdateAndroidPanel()
+    public async void UpdateAndroidPanel()
     {
         btmTabPanel.SetActive(true);
+        foreach(Button btn in deckBtns) {
+            btn.interactable = false;
+        }
 
         //BottomBtnSetup Color
         int currentTab = PlayerPrefs.GetInt("CollectionTab");
@@ -687,7 +693,7 @@ public class Collection_Panel_Control : MonoBehaviour
         for (int i = 0; i < Androidcards.Count; i++)
         {
             if (AndroidRowCount == 0) continue;
-            AndroidRows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Androidcards[i].IDX_code].image, cc.myCard[Androidcards[i].IDX_code].name, cc.myCard[Androidcards[i].IDX_code].count, debugMode);
+            await AndroidRows[Mathf.FloorToInt(i / 4)].GetComponent<Collection_Row_control>().UpdateCard(i % 4, cc.myCard[Androidcards[i].IDX_code].image, cc.myCard[Androidcards[i].IDX_code].name, cc.myCard[Androidcards[i].IDX_code].count, debugMode);
 
             idx = new int();
             idx = Androidcards[i].IDX_code;
@@ -721,6 +727,10 @@ public class Collection_Panel_Control : MonoBehaviour
         if(Androidcards.Count > 0)
         canvasHolder.GetComponent<RectTransform>().sizeDelta = new Vector2(canvasHolder.GetComponent<RectTransform>().sizeDelta.x, (AndroidRows[AndroidRowCount-1].GetComponent<RectTransform>().anchoredPosition.y - 300) * -1);
         else canvasHolder.GetComponent<RectTransform>().sizeDelta = new Vector2(canvasHolder.GetComponent<RectTransform>().sizeDelta.x, (Srank_ui.GetComponent<RectTransform>().anchoredPosition.y - 300) * -1);
+
+        foreach(Button btn in deckBtns) {
+            btn.interactable = true;
+        }
     }
 
     public void CheckBoxClicked()

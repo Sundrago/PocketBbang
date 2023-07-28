@@ -1405,6 +1405,66 @@ public class CollectionControl : MonoBehaviour
         newCard.rank = 'A';
         myCard.Add(newCard);
 
+        newCard = new Cards();
+        newCard.image = imgs[158];
+        newCard.name = "팬티M";
+        newCard.description = "M사이즈 팬티를 입은 세균!\n인텔 팬티M을 생각했다면 아재겠죠?";
+        newCard.rank = 'B';
+        myCard.Add(newCard);
+
+        newCard = new Cards();
+        newCard.image = imgs[159];
+        newCard.name = "가디건";
+        newCard.description = "초록색 가디건 어디 브랜드에요?\n머리랑 스타일이인 너무 잘 어울려요!";
+        newCard.rank = 'B';
+        myCard.Add(newCard);
+
+        newCard = new Cards();
+        newCard.image = imgs[160];
+        newCard.name = "따라큐라";
+        newCard.description = "어때요 내 드라큘라 코스튬?\n제가 직접 만들었어요!";
+        newCard.rank = 'B';
+        myCard.Add(newCard);
+
+        newCard = new Cards();
+        newCard.image = imgs[161];
+        newCard.name = "피츄파츕스";
+        newCard.description = "너무너무 귀여운 막대사탕!\n무슨 맛일지 궁금하다!";
+        newCard.rank = 'B';
+        myCard.Add(newCard);
+
+
+        newCard = new Cards();
+        newCard.image = imgs[162];
+        newCard.name = "샤오미드";
+        newCard.description = "마치 핸드폰 광고 같지만\n협찬은 아니예요.";
+        newCard.rank = 'A';
+        myCard.Add(newCard);
+
+        newCard = new Cards();
+        newCard.image = imgs[163];
+        newCard.name = "앱솔루트";
+        newCard.description = "보도카 한 잔 어때요?\n윽 맛은 없을 것 같아요!";
+        newCard.rank = 'A';
+        myCard.Add(newCard);
+
+        newCard = new Cards();
+        newCard.image = imgs[164];
+        newCard.name = "앱솔루트";
+        newCard.description = "보도카 한 잔 어때요?\n윽 맛은 없을 것 같아요!";
+        newCard.rank = 'B';
+        myCard.Add(newCard);
+
+        newCard = new Cards();
+        newCard.image = imgs[165];
+        newCard.name = "샤오미드";
+        newCard.description = "마치 핸드폰 광고 같지만\n협찬은 아니예요.";
+        newCard.rank = 'B';
+        myCard.Add(newCard);
+
+
+
+
         LoadData();
         PlayerPrefs.SetInt("TotalCards", myCard.Count);
         PlayerPrefs.Save();

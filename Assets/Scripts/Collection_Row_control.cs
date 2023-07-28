@@ -52,6 +52,7 @@ public class Collection_Row_control : MonoBehaviour
             imgs[idx].GetComponent<Image>().color = Color.white;
         }
 
+        await Task.Delay(5);
         await Task.Yield();
     }
 }
