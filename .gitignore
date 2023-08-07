@@ -2,16 +2,36 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
+/[Bb]UILDS/
 /[Ll]ogs/
+/[Ll]ibrary/
+/[Gg]PM/
+/[Pp]ackages/
+/[Pp]rojectSettings/
+/[Cc]apture/
+/[Oo]bj/
+/key/
+/obj/
+/PLAYCONNECT/
+/Screenshots
+/Temp
+
 /[Uu]ser[Ss]ettings/
-/[Aa]ssets/[Pp]lugins/
-/[Aa]ssets/[Ii]ronSource/
-/[Aa]ssets/[Gg]oogleMobile/
+/[Aa]ssets/Animation
+/[Aa]ssets/Audio
+/[Aa]ssets/EckTechGames
+/[Aa]ssets/Editor
+/[Aa]ssets/ExternalDependencyManager
+/[Aa]ssets/GoogleMobileAds
+/[Aa]ssets/IronSource
+/[Aa]ssets/Plugins
+/[Aa]ssets/Resources
+/[Aa]ssets/Samples
+/[Aa]ssets/Scenes
+/[Aa]ssets/screenshots
+/[Aa]ssets/StreamingAssets
+/[Aa]ssets/UI
+
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -86,6 +106,9 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+*.csproj
+.sln
+.vsconfig
 
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*

@@ -5,35 +5,32 @@ using UnityEngine.UI;
 
 public class AlbaControl : MonoBehaviour
 {
-    public Slider slider_ui;
-    float downSize = 0.08f;
+    [SerializeField] Sprite[] customers = new Sprite[11];
+    [SerializeField] PrompterControl pmtControl;
+    [SerializeField] AudioControl myAudio;
+    [SerializeField] Heart_Control heart;
+    [SerializeField] Bbang_showroom showroom;
 
-    string answer = "";
-    public Text q_ui, combo_ui, count_ui, timer_ui, ready_ui;
-    public GameObject imgGroup;
+    [SerializeField] GameObject main, balloon, circles;
+    [SerializeField] GameObject[] circle = new GameObject[7];
+    [SerializeField] Image customer_ui;
+    [SerializeField] GameObject imgGroup;
+    [SerializeField] Text q_ui, combo_ui, count_ui, timer_ui, ready_ui;
+    [SerializeField] Slider slider_ui;
 
-    int comboCount = 0;
-
-    public Sprite[] customers = new Sprite[11];
-    public Image customer_ui;
-    int customerCount;
-    float startTime;
-    public PrompterControl pmtControl;
-    int readyCount;
-
-    public GameObject main, balloon, circles;
-    public GameObject[] circle = new GameObject[7];
-    bool circleShow;
-
-    public AudioControl myAudio;
-    int BeforeAudioIdx;
-
-    public Heart_Control heart;
-    public Bbang_showroom showroom;
     public bool fMode = false;
 
+    string answer = "";
+    int comboCount = 0;
+    int customerCount;
+    int readyCount;
+    int BeforeAudioIdx;
+    float downSize = 0.08f;
     float reductionPoint = 0.2f;
+    float startTime;
+    bool circleShow;
     bool lowData = false;
+
     private void Start()
     {
 #if UNITY_ANDROID

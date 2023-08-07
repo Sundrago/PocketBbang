@@ -7,33 +7,28 @@ public class Collection_Panel_Control : MonoBehaviour
 {
     const int maxRowCount = 36;
 
-    public GameObject row, sampleImg, canvasHolder;
-    public List<GameObject> rows = new List<GameObject>();
+    [SerializeField] CollectionControl cc;
+    [SerializeField] AudioControl myAudio;
+    [SerializeField] BalloonControl balloon;
 
-    public GameObject card_panel;
-    public GameObject Arank_ui, Brank_ui, Srank_ui, Null_ui, Mrank_ui;
+    [SerializeField] GameObject row, sampleImg, canvasHolder;
+    [SerializeField] GameObject finishBtn_ui, exitBtn_ui, btmTabPanel;
+    [SerializeField] GameObject card_panel;
+    [SerializeField] GameObject Arank_ui, Brank_ui, Srank_ui, Null_ui, Mrank_ui;
 
-    public CollectionControl cc;
-    // Start is called before the first frame update
-
-    bool started = false;
-    int originalMusic;
-    public AudioControl myAudio;
+    [SerializeField] public List<GameObject> rows = new List<GameObject>();
+    [SerializeField] public List<GameObject> btmTab = new List<GameObject>();
+    [SerializeField] public List<Text> btmTabName = new List<Text>();
+    [SerializeField] public List<int> mySelectedIdx = new List<int>();
 
     public bool selectionMode = false;
-    public List<int> mySelectedIdx = new List<int>();
-    int selectionCardCount = 2;
-    char selectionCardChar = 'A';
+
+    bool started = false;
     bool hasValue = false;
 
-    public BalloonControl balloon;
-
-    public GameObject finishBtn_ui, exitBtn_ui, btmTabPanel;
-    public List<GameObject> btmTab = new List<GameObject>();
-    public List<Text> btmTabName = new List<Text>();
-
-
-    //Main_control main;
+    int originalMusic;
+    int selectionCardCount = 2;
+    char selectionCardChar = 'A';
 
     public class CardData
     {

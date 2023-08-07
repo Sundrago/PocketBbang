@@ -5,20 +5,24 @@ using UnityEngine.UI;
 
 public class DangunControl : MonoBehaviour
 {
-    public BalloonControl balloon;
-    public GameObject MsgBox;
-    public Text msgboxText_ui;
+    [SerializeField] Main_control main;
+    [SerializeField] PhoneMsgCtrl Msg;
+    [SerializeField] DangunChaCtrl DangunCha;
+    [SerializeField] Collection_Panel_Control collectionPanel;
+    [SerializeField] GameObject resetbtn_ui;
+    [SerializeField] Ad_Control ad;
 
-    public BbangBoyContol bbangBoy;
+    [SerializeField] BalloonControl balloon;
+    [SerializeField] BbangBoyContol bbangBoy;
+    [SerializeField] GameObject MsgBox;
+    [SerializeField] Text msgboxText_ui;
 
-    public Main_control main;
-    public PhoneMsgCtrl Msg;
-    public DangunChaCtrl DangunCha;
-    public Collection_Panel_Control collectionPanel;
-    public GameObject resetbtn_ui;
-    public Ad_Control ad;
-
-    public CollectionControl collection;
+    [SerializeField] CollectionControl collection;
+    [SerializeField] GameObject[] soldOuts = new GameObject[7];
+    [SerializeField] Text[] soldOutstext_ui = new Text[7];
+    [SerializeField] Text[] sellbuyTitle = new Text[2];
+    [SerializeField] Text[] sellbuyPrice = new Text[2];
+    [SerializeField] Image[] sellbuyImage = new Image[2];
 
     bool[] available = new bool[7];
 
@@ -30,15 +34,7 @@ public class DangunControl : MonoBehaviour
     System.TimeSpan timeGap;
     System.DateTime oldTime, newTime;
 
-    public GameObject[] soldOuts = new GameObject[7];
-    public Text[] soldOutstext_ui = new Text[7];
-
-    public Text[] sellbuyTitle = new Text[2];
-    public Text[] sellbuyPrice = new Text[2];
-    public Image[] sellbuyImage = new Image[2];
-
     const int interval = 3600;
-
 
     private void Start()
     {

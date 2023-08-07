@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Deleteparent : MonoBehaviour
 {
-    public GameObject parent;
-    public Main_control myMain;
+    [SerializeField] GameObject parent;
+    [SerializeField] Main_control myMain;
 
     public void Remove()
     {

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class BalloonControl : MonoBehaviour
 {
-    public Text msg_text;
+    [SerializeField] Text msg_text;
     bool hiding;
 
     public void ShowMsg(string msg)

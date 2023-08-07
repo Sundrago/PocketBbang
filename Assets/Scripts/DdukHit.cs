@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DdukHit : MonoBehaviour
 {
-    public DdukCtrl ddukCtrl;
+    [SerializeField] DdukCtrl ddukCtrl;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

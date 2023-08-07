@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Bbang_showroom : MonoBehaviour
 {
-    public GameObject[] bbang = new GameObject[4];
-    public GameObject bbang_holder;
-    public GameObject placePosition, bbangboy_ui;
+    [SerializeField] GameObject[] bbang = new GameObject[4];
+    [SerializeField] GameObject bbang_holder;
+    [SerializeField] GameObject placePosition, bbangboy_ui;
+    [SerializeField] GameObject scrum;
+    [SerializeField] Heart_Control heart;
+    [SerializeField] BbangBoyContol bbangBoy;
 
-    public GameObject scrum;
     int totalBbangCount;
     List<GameObject> bbangs = new List<GameObject>();
     List<GameObject> chocos = new List<GameObject>();
@@ -25,14 +27,10 @@ public class Bbang_showroom : MonoBehaviour
     int removedBbangCount = 0;
     int currentBbangCount = 0;
 
-    public Heart_Control heart;
-    public BbangBoyContol bbangBoy;
-
     int bbang_mat, bbang_choco, bbang_hot, bbang_strawberry, bbang_vacance, bbang_yogurt, bbang_bingle, bbang_maple, bbang_purin;
 
     GameObject selectedObj;
 
-    // Start is called before the first frame update
     void Start()
     {
         if (!PlayerPrefs.HasKey("totalBbangCount"))
@@ -118,7 +116,6 @@ public class Bbang_showroom : MonoBehaviour
         UpdateBbangShow();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (removeBbangMode & Time.frameCount % 10 == 0)

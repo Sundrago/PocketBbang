@@ -24,34 +24,30 @@ public class Options
 
 public class PrompterControl : MonoBehaviour
 {
+    [SerializeField] GameObject[] nextBtns = new GameObject[3];
+    [SerializeField] GameObject[] nextBtnTexts = new GameObject[3];
+    [SerializeField] GameObject MainPanel, board;
+    [SerializeField] CollectionControl cc;
+    [SerializeField] GameObject[] chaImgs;
+    [SerializeField] DangunChaCtrl dangunCha;
+    [SerializeField] Text prompter, name_ui;
+    [SerializeField] GameObject nextBtn;
+
     public List<Strings> myStrings = new List<Strings>();
     public List<Options> myOptions = new List<Options>();
     public NextActions myNextActions;
-    public GameObject[] nextBtns = new GameObject[3];
-    public GameObject[] nextBtnTexts = new GameObject[3];
-    public GameObject MainPanel, board;
-    public CollectionControl cc;
-
-
-    public GameObject[] chaImgs;
-
-    public DangunChaCtrl dangunCha;
-
     public bool imageMode;
 
+
     int currentIdx;
+    int ChaIdx;
     float textUpdateSpeed = 0.03f;
     float updateFrame;
     bool textUpdateDone;
-    public Text prompter, name_ui;
-    public GameObject nextBtn;
     bool hasOption, hasNextOption;
     bool started = false;
-
-    int ChaIdx;
     string ChaName;
 
-    // Start is called before the first frame update
     public void Start()
     {
         if (!started)
@@ -76,7 +72,6 @@ public class PrompterControl : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         //print(myStrings.Count);

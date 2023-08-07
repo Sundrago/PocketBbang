@@ -5,24 +5,23 @@ using UnityEngine.UI;
 
 public class BbangBtnControl : MonoBehaviour
 {
-    public BalloonControl ballon;
-    bool hiding = true;
-    string eatTime, currentTime;
-    int bbangEatCount;
+    [SerializeField] BalloonControl ballon;
+    [SerializeField] Bbang_showroom showroom;
+    [SerializeField] GameObject Hoonie;
+    [SerializeField] Heart_Control heart;
+    [SerializeField] Text title;
+    [SerializeField] PhoneMsgCtrl Msg;
+
     const string format = "yyyy/MM/dd";
     System.IFormatProvider provider;
 
-    Vector2 myTargetPosition;
-
-    public Bbang_showroom showroom;
-    public GameObject Hoonie;
-    public Heart_Control heart;
+    string eatTime, currentTime;
     string myType = "";
-    public Text title;
-    public PhoneMsgCtrl Msg;
-
+    int bbangEatCount;
     int addHeartCount = 1;
+    bool hiding = true;
 
+    Vector2 myTargetPosition;
     GameObject targetObj;
 
     public void ReadData()

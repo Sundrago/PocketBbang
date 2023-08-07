@@ -5,21 +5,18 @@ using UnityEngine.UI;
 
 public class BbangBoyContol : MonoBehaviour
 {
-    public GameObject boy_ui;
-    public Bbang_showroom bbang_Showroom;
+    [SerializeField] GameObject boy_ui;
+    [SerializeField] Bbang_showroom bbang_Showroom;
+    [SerializeField] PrompterControl pmtComtrol;
+    [SerializeField] Main_control main;
+    [SerializeField] GameObject prompter;
+    [SerializeField] GameObject bbangboyBalloon_ui, bbangboyBalloon;
 
-    public GameObject bbangboyBalloon_ui, bbangboyBalloon;
     bool showText = false;
     int showTextIdx = 0;
     float oldTime = 0;
     public bool stopEat = false;
 
-    public PrompterControl pmtComtrol;
-    public Main_control main;
-    public GameObject prompter;
-
-
-    // Start is called before the first frame update
     void Update()
     {
         if(Time.frameCount % 30 == 0 & showText)

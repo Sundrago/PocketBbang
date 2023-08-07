@@ -6,13 +6,13 @@ using System;
 
 public class IronSourceAd : MonoBehaviour
 {
+    [SerializeField] PhoneMsgCtrl msg;
+    [SerializeField] Ad_Control ads;
+
     public event Action sentTrackingAuthorizationRequest;
-    public PhoneMsgCtrl msg;
-    public Ad_Control ads;
+
     void OnEnable()
     {
-
-        //Add Init Event
         IronSourceEvents.onSdkInitializationCompletedEvent += SdkInitializationCompletedEvent;
 
         //Add Rewarded Video Events

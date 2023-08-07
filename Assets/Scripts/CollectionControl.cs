@@ -5,18 +5,18 @@ using UnityEngine.UI;
 
 public class CollectionControl : MonoBehaviour
 {
-    public Sprite[] imgs = new Sprite[0];
-    public Sprite[] imgsHighres = new Sprite[0];
-    public List<Cards> myCard = new List<Cards>();
-    public AchievementCtrl achievement;
+    [SerializeField] Sprite[] imgs = new Sprite[0];
+    [SerializeField] Sprite[] imgsHighres = new Sprite[0];
+    [SerializeField] AchievementCtrl achievement;
+    [SerializeField] AudioControl myAydio;
 
-    public GameObject CardPanel, card_image, card, fx1, fx2, title_ui, bbang, canvas, card_bg, text_board, pormpter_ui, pormpter_name_ui, trans_btn, new_ui;
+    [SerializeField] GameObject CardPanel, card_image, card, fx1, fx2, title_ui, bbang, canvas, card_bg, text_board, pormpter_ui, pormpter_name_ui, trans_btn, new_ui;
+
     bool started = false;
     bool hidden = false;
     bool isnew = false;
 
-    public AudioControl myAydio;
-
+    public List<Cards> myCard = new List<Cards>();
     public bool delay;
 
     public class Cards

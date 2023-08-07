@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 public class Collection_Row_control : MonoBehaviour
 {
-    public GameObject[] cards = new GameObject[4];
-    public GameObject[] imgs = new GameObject[4];
-    public GameObject[] names = new GameObject[4];
-    public GameObject[] counts = new GameObject[4];
+    [SerializeField] public GameObject[] cards = new GameObject[4];
+    [SerializeField] GameObject[] imgs = new GameObject[4];
+    [SerializeField] GameObject[] names = new GameObject[4];
+    [SerializeField] GameObject[] counts = new GameObject[4];
 
     Color alpha;
     bool started = false;

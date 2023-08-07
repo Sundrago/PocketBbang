@@ -5,10 +5,9 @@ using UnityEngine.UI;
 
 public class ChaSelectControl : MonoBehaviour
 {
-
-    public GameObject name_panel, cha_panel;
-    public Text NameInput_ui, NameInput_default_ui;
-    public Image Cha_0, Cha_1;
+    [SerializeField] GameObject name_panel, cha_panel;
+    [SerializeField] Text NameInput_ui, NameInput_default_ui;
+    [SerializeField] Image Cha_0, Cha_1;
 
     Color alpha;
     int ChaIdx = 0;

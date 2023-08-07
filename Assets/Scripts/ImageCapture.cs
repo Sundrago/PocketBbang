@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 public class ImageCapture : MonoBehaviour
 {
-    public Canvas canvasToSreenShot;
-    public Image img1, img1to;
-    public Text title;
-    public RectTransform scaler;
-    public GameObject balloon;
+    [SerializeField] public Canvas canvasToSreenShot;
+    [SerializeField] Image img1, img1to;
+    [SerializeField] Text title;
+    [SerializeField] RectTransform scaler;
+    [SerializeField] GameObject balloon;
 
     CanvasScreenShot screenShot;
 

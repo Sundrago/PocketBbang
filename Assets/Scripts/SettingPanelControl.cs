@@ -5,12 +5,11 @@ using UnityEngine.UI;
 
 public class SettingPanelControl : MonoBehaviour
 {
-    public AudioControl myAudio;
-    public Text audioBtnText, lowDataBtn, autoSaveBtn;
-    bool muteAudio;
+    [SerializeField] AudioControl myAudio;
+    [SerializeField] Text audioBtnText, lowDataBtn, autoSaveBtn;
+    [SerializeField] PhoneMsgCtrl msg;
 
-    public PhoneMsgCtrl msg;
-    //public DangunChaCtrl dangunCha;
+    bool muteAudio;
 
     public void Start()
     {

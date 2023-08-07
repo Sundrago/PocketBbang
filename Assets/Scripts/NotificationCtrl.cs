@@ -7,19 +7,17 @@ using VoxelBusters.EssentialKit;
 
 public class NotificationCtrl : MonoBehaviour
 {
+    [SerializeField] Heart_Control heart;
+    [SerializeField] PhoneMsgCtrl msg;
+    [SerializeField] Text time_text_ui;
+
     const string format = "yyyy/MM/dd HH:mm";
     System.IFormatProvider provider;
     System.DateTime CULastNotiDate, CUArriveTime;
     System.TimeSpan timeGap;
-    bool notificationSent;
-    public Heart_Control heart;
-    public PhoneMsgCtrl msg;
 
     bool started = false;
-    public Text time_text_ui;
-
-
-    // Start is called before the first frame update
+    bool notificationSent;
 
     public void Start()
     {

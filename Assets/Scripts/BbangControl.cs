@@ -5,11 +5,10 @@ using UnityEngine.UI;
 
 public class BbangControl : MonoBehaviour
 {
-    public Sprite[] lefts = new Sprite[3];
-    public Sprite[] rights = new Sprite[3];
-    public Sprite[] bbang = new Sprite[3];
-
-    public GameObject left_ui, right_ui, bbang_ui;
+    [SerializeField] Sprite[] lefts = new Sprite[3];
+    [SerializeField] Sprite[] rights = new Sprite[3];
+    [SerializeField] Sprite[] bbang = new Sprite[3];
+    [SerializeField] GameObject left_ui, right_ui, bbang_ui;
 
     public void SetBbang(int idx)
     {

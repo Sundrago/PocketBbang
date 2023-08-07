@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class StoreControl : MonoBehaviour
 {
-    public Sprite[] storeImgs;
-    public GameObject storeImg_ui;
-    public GameObject me;
-    public GameObject mainPanel;
-    public GameObject cloud;
-    public GameObject bbobgiMachine;
-    public BbobgiPanelCtrl bbobgiPanel;
+    [SerializeField] Sprite[] storeImgs;
+    [SerializeField] GameObject storeImg_ui;
+    [SerializeField] GameObject me;
+    [SerializeField] GameObject mainPanel;
+    [SerializeField] GameObject cloud;
+    [SerializeField] GameObject bbobgiMachine;
+    [SerializeField] public BbobgiPanelCtrl bbobgiPanel;
 
     public void UpdateStore(int i)
     {

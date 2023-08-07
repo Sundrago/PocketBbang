@@ -8,15 +8,14 @@ using VoxelBusters.EssentialKit;
 
 public class RankCtrl : MonoBehaviour
 {
-    public AchievementCtrl achievement;
+    [SerializeField] AchievementCtrl achievement;
+    [SerializeField] GameObject rankup_ui, text01_ui, text02_ui, closeBtn_ui, rankSlider, sliderText_ui, rankPos, showRankBtn_ui, sharBtn_ui;
+    [SerializeField] GameObject rankingChart, rankingChartText, showChartBtn, closeChartBtn;
+    [SerializeField] GameObject small_rank_ui;
 
     public enum State { iron, bronze, silver, gold, platinum, diamond, master, grandMaster };
     public GameObject[] ranks;
     public Sprite[] ranks_small;
-
-    public GameObject rankup_ui, text01_ui, text02_ui, closeBtn_ui, rankSlider, sliderText_ui, rankPos, showRankBtn_ui, sharBtn_ui;
-    public GameObject rankingChart, rankingChartText, showChartBtn, closeChartBtn;
-    public GameObject small_rank_ui;
 
     int currnetRank = 0;
     int currnetScore;

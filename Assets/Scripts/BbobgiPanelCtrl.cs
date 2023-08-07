@@ -6,23 +6,24 @@ using UnityEngine.UI;
 
 public class BbobgiPanelCtrl : MonoBehaviour
 {
-    public BbobgiCtrl bbobgi;
-    public GameObject frontCha;
-    public Button insertMoneyBtn, watchAdBtn, exitBtn;
+    [SerializeField] public BbobgiCtrl bbobgi;
+    [SerializeField] BalloonControl balloon;
+    [SerializeField] Ad_Control ads;
+    [SerializeField] Main_control main;
+
+    [SerializeField] Heart_Control heart;
+    [SerializeField] AudioControl myAydio;
+
+    [SerializeField] GameObject frontCha;
+    [SerializeField] GameObject continuePanel, playCount;
+
+    [SerializeField] Button insertMoneyBtn, watchAdBtn, exitBtn;
+    [SerializeField] Text contineueText;
+
     public bool reload = false;
-    public Main_control main;
     int totalCount, currentCount;
 
-    public Heart_Control heart;
-    public AudioControl myAydio;
 
-    public GameObject continuePanel, playCount;
-
-    public Text contineueText;
-    public BalloonControl balloon;
-    public Ad_Control ads;
-
-    // Start is called before the first frame update
     public void OpenGame()
     {
         //LoadBbobgi();

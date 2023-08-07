@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CardDelay : MonoBehaviour
 {
-    public CollectionControl collection;
-    public GameObject cardPanel;
-    public Main_control main;
+    [SerializeField] CollectionControl collection;
+    [SerializeField] GameObject cardPanel;
+    [SerializeField] Main_control main;
 
 
     public void SetDelayFalse()

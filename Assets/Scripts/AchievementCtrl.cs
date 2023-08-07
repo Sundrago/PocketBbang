@@ -6,10 +6,10 @@ using VoxelBusters.EssentialKit;
 
 public class AchievementCtrl : MonoBehaviour
 {
-    public BalloonControl balloon;
-    public PhoneMsgCtrl msg;
-    public Collection_Panel_Control collection;
-    public RankCtrl rank;
+    [SerializeField] BalloonControl balloon;
+    [SerializeField] PhoneMsgCtrl msg;
+    [SerializeField] Collection_Panel_Control collection;
+    [SerializeField] RankCtrl rank;
 
     private void OnEnable()
     {

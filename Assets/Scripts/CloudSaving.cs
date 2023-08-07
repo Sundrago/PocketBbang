@@ -6,15 +6,16 @@ using VoxelBusters.EssentialKit;
 
 public class CloudSaving : MonoBehaviour
 {
+    [SerializeField] CollectionControl collection;
+    [SerializeField] BalloonControl balloon;
+    [SerializeField] PhoneMsgCtrl msg;
+    [SerializeField] GameObject chaSelect;
+    [SerializeField] Bbang_showroom bbang_Showrooml;
+    [SerializeField] Main_control main;
+    [SerializeField] SettingPanelControl setting;
+
     public bool save = true;
     const string format = "yyyy/MM/dd HH:mm:ss";
-    public CollectionControl collection;
-    public BalloonControl balloon;
-    public PhoneMsgCtrl msg;
-    public GameObject chaSelect;
-    public Bbang_showroom bbang_Showrooml;
-    public Main_control main;
-    public SettingPanelControl setting;
 
     private void OnEnable()
     {

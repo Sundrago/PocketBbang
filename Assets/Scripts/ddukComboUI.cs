@@ -6,9 +6,9 @@ using DG.Tweening;
 
 public class ddukComboUI : MonoBehaviour
 {
-    public Image image;
-    public Text text;
-    public GameObject endPos;
+    [SerializeField] Image image;
+    [SerializeField] Text text;
+    [SerializeField] GameObject endPos;
 
     public void ShowCombo(int idx)
     {

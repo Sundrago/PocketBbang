@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Card_control : MonoBehaviour
 {
-    public GameObject parent, selected_ui;
+    [SerializeField] GameObject parent, selected_ui;
 
     public void RemoveSelf()
     {
-        //Destroy(gameObject);
         parent.SetActive(false);
     }
 
@@ -24,7 +23,6 @@ public class Card_control : MonoBehaviour
 
     public void SetSelectedUI(bool selected)
     {
-        //print(selected);
         selected_ui.SetActive(selected);
     }
 }

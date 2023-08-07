@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class CreditControl : MonoBehaviour
 {
-    public List<Text> texts = new List<Text>();
-    public GameObject textAnim;
-    public AudioControl myAudio;
+    [SerializeField] List<Text> texts = new List<Text>();
+    [SerializeField] GameObject textAnim;
+    [SerializeField] AudioControl myAudio;
 
     void UpdateData()
     {

@@ -5,11 +5,10 @@ using UnityEngine.UI;
 
 public class MsgCountCtrl : MonoBehaviour
 {
-    public GameObject ok_ui, main, msg_ui, upBtn_ui, downBtn_ui, count_ui;
+    [SerializeField] GameObject ok_ui, main, msg_ui, upBtn_ui, downBtn_ui, count_ui;
+    [SerializeField] DangunChaCtrl dangunCha;
+
     public string actionCode;
-
-    public DangunChaCtrl dangunCha;
-
     int currentCount, maxCount = 3;
     bool started = false;
     

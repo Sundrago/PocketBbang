@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Bottom_control : MonoBehaviour
 {
-    public GameObject fx1, fx2, fx3, sticker, card, mainCanvas;
+    [SerializeField] GameObject fx1, fx2, fx3, sticker, card, mainCanvas;
+
     bool hide = false;
     bool stickerShow = false;
     public bool isMaple = false;

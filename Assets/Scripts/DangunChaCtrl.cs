@@ -5,24 +5,25 @@ using UnityEngine.UI;
 
 public class DangunChaCtrl : MonoBehaviour
 {
-    int bbangBoyIdx;
-    public Sprite[] chaImgs = new Sprite[5];
+    [SerializeField] Sprite[] chaImgs = new Sprite[5];
 
-    public GameObject dangunChaImg_ui, dangunMsg_ui, dangunMsgText_ui;
-    public MsgCountCtrl MsgCtrl;
-    public Main_control main;
-    public PrompterControl pmtCtrl;
-    public PhoneMsgCtrl SimpleMsg;
+    [SerializeField] GameObject dangunChaImg_ui, dangunMsg_ui, dangunMsgText_ui;
+    [SerializeField] MsgCountCtrl MsgCtrl;
+    [SerializeField] Main_control main;
+    [SerializeField] PrompterControl pmtCtrl;
+    [SerializeField] PhoneMsgCtrl SimpleMsg;
+
+    [SerializeField] BalloonControl balloon;
+    [SerializeField] Heart_Control heart;
+    [SerializeField] Bbang_showroom show;
+    [SerializeField] DangunControl dangunControl;
+    [SerializeField] Collection_Panel_Control collection;
+    [SerializeField] CollectionControl myCollection;
 
     int chaIdx, maxCount;
-
-    public BalloonControl balloon;
-    public Heart_Control heart;
-    public Bbang_showroom show;
     int returnCount;
-    public DangunControl dangunControl;
-    public Collection_Panel_Control collection;
-    public CollectionControl myCollection;
+    int bbangBoyIdx;
+
     public List<int> cardSelectIdx = new List<int>();
     public bool endDangun = false;
 

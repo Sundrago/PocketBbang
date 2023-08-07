@@ -6,10 +6,10 @@ using DG.Tweening;
 
 public class RankObj : MonoBehaviour
 {
-    public GameObject parent;
-    public GameObject[] objs;
-    public GameObject title;
-    public GameObject particleFx, particleFx2;
+    [SerializeField] GameObject parent;
+    [SerializeField] GameObject[] objs;
+    [SerializeField] GameObject title;
+    [SerializeField] GameObject particleFx, particleFx2;
 
     public bool shot = false;
 

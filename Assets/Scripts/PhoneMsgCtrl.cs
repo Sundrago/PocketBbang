@@ -5,25 +5,22 @@ using UnityEngine.UI;
 
 public class PhoneMsgCtrl : MonoBehaviour
 {
-    public GameObject yes_ui, no_ui, ok_ui, main, msg_ui, parentPanel;
+    [SerializeField] BbangBtnControl bbangBtn;
+    [SerializeField] DangunControl dangun;
+    [SerializeField] DangunChaCtrl dangunCha;
+    [SerializeField] NotificationCtrl notice;
+    [SerializeField] CloudSaving cloud;
+    [SerializeField] IronSourceAd iron;
+    [SerializeField] GameObject yes_ui, no_ui, ok_ui, main, msg_ui, parentPanel;
+
     public string actionCode;
-    public BbangBtnControl bbangBtn;
-    public DangunControl dangun;
-    public DangunChaCtrl dangunCha;
-    //public LeaderboardManager leaderboard;
-    public NotificationCtrl notice;
-    public CloudSaving cloud;
-    public IronSourceAd iron;
-
     public bool initiateMode = true;
-
     bool started = false;
 
     public void Start()
     {
         if (started) return;
         started = true;
-        //gameObject.SetActive(false);
     }
 
     public void OkbtnClicked()
@@ -207,9 +204,4 @@ public class PhoneMsgCtrl : MonoBehaviour
         gameObject.SetActive(false);
         if (initiateMode) Destroy(gameObject);
     }
-
-    /*
-     * pmtComtrol.AddOption("산다.", "store", "host_buy_check");
-                pmtComtrol.AddOption("안 산다.", "store", "host_notbuy");
-     */
 }

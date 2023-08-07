@@ -6,72 +6,52 @@ using DG.Tweening;
 
 public class DdukCtrl : MonoBehaviour
 {
-    public GameObject topLeft, topRight;
-    public GameObject[] ddukcPrefabs = new GameObject[3];
-    public GameObject[] spiderPrefabs = new GameObject[2];
-    public List<GameObject> dducks = new List<GameObject>();
+    [SerializeField] AudioControl myAudio;
+    [SerializeField] Ad_Control ads;
+    [SerializeField] PrompterControl pmtControl;
+    [SerializeField] Heart_Control heart;
+    [SerializeField] List<GameObject> dducks = new List<GameObject>();
 
-    public GameObject[] hearts = new GameObject[6];
-    public GameObject[] heartsResult = new GameObject[6];
+    [SerializeField] GameObject[] ddukcPrefabs = new GameObject[3];
+    [SerializeField] GameObject[] spiderPrefabs = new GameObject[2];
+    [SerializeField] GameObject[] hearts = new GameObject[6];
+    [SerializeField] GameObject[] heartsResult = new GameObject[6];
+    [SerializeField] GameObject topLeft, topRight;
+    [SerializeField] GameObject ddukHolder;
 
-    public GameObject ddukHolder;
-    public AudioControl myAudio;
+    [SerializeField] GameObject combo_holder, combo;
+    [SerializeField] GameObject yellowBG;
+    [SerializeField] GameObject btmPoint;
+    [SerializeField] GameObject spawner_pos;
+    [SerializeField] GameObject tutorialPanel;
+    [SerializeField] GameObject heartHolder, heartHolderPos, resultHeartHolder;
+    [SerializeField] GameObject restartBtn;
+    [SerializeField] GameObject rullet, disk;
 
-    public GameObject combo_holder, combo;
-    private int comboCount;
-
-    public GameObject yellowBG;
-    public GameObject btmPoint;
-
-    public GameObject spawner_pos;
-    public Text timer_ui, resultText;
-    public GameObject tutorialPanel;
-    public GameObject heartHolder, heartHolderPos, resultHeartHolder;
-    public GameObject restartBtn;
+    [SerializeField] Text timer_ui, resultText;
+    [SerializeField] GameObject cupA, cupB;
+    [SerializeField] GameObject main;
+    [SerializeField] GameObject restartBtn2, restartSlider;
+    [SerializeField] GameObject frontCha;
 
     bool SpawnerMove;
     bool SpawnerLeft;
-    float SpawnerMoveTime;
-    int event2Count;
-    float midPoint; //event2
+    bool bonus;
 
+    int event2Count;
+    int comboCount;
     int dduckCount;
     int spiderCount;
     int BeforeAudioIdx;
-
-    public GameObject rullet, disk;
-    bool bonus;
-
     int myScore, resultScore;
+
+    float SpawnerMoveTime;
+    float midPoint; 
+    float startTime;
 
     enum state { ready, idle, rullet, bonus, result };
     state currentState = state.ready;
 
-    float startTime;
-
-    public GameObject cupA, cupB;
-
-    public GameObject main;
-    public PrompterControl pmtControl;
-    public Heart_Control heart;
-
-    public GameObject restartBtn2, restartSlider;
-
-    public Ad_Control ads;
-
-    public GameObject frontCha;
-
-    // Start is called before the first frame update
-    //void Start()
-    //{
-    //    myScore = 0;
-    //    UpdateHeart(0);
-    //    ChanageState(state.idle);
-    //    YellowBG(0);
-
-    //    //StartCoroutine(Event1(30));
-    //    //StartCoroutine(Event4(10));
-    //}
 
     public void OpenPanel()
     {
@@ -99,7 +79,6 @@ public class DdukCtrl : MonoBehaviour
         //resetCupPos
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (currentState == state.ready) return;
@@ -226,12 +205,6 @@ public class DdukCtrl : MonoBehaviour
             else hearts[i].GetComponent<HeartIconCtrl>().SetHeartStatus(0);
         }
     }
-
-    //public void ShowCombo(int idx)
-    //{
-    //    GameObject newCombo = Instantiate(combo, combo_holder.transform);
-    //    newCombo.GetComponent<ddukComboUI>().ShowCombo(idx);
-    //}
 
     IEnumerator Event1(int count)
     {

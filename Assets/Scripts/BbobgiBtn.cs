@@ -7,8 +7,9 @@ using UnityEngine.Events;
 
 public class BbobgiBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    [SerializeField] BbobgiCtrl bbogi;
     public bool goLeft;
-    public BbobgiCtrl bbogi;
+
     bool OnPressed;
     const float velocityRate = 0.1f;
 

@@ -5,33 +5,29 @@ using UnityEngine.UI;
 
 public class Heart_Control : MonoBehaviour
 {
-    public int heartCount = 0;
-    public GameObject[] heartImg = new GameObject[6];
+    [SerializeField] NotificationCtrl notice;
+    [SerializeField] BalloonControl balloon;
+    [SerializeField] Animator bus;
+
+    [SerializeField] GameObject[] heartImg = new GameObject[6];
+    [SerializeField] GameObject timerHolder;
+    [SerializeField] GameObject btn1, btn2, bbangEatCount_ui, chocoCount_ui, money_ui;
+    [SerializeField] GameObject moneyAmount_ui;
+    [SerializeField] Text timer;
+    [SerializeField] Text busText;
+
+    const string format = "yyyy/MM/dd HH:mm:ss";
+
     System.DateTime oldTime, arriveTime;
     System.TimeSpan timeGap, leftTime, remainTime;
-    const string format = "yyyy/MM/dd HH:mm:ss";
     System.IFormatProvider provider;
 
-    public GameObject timerHolder;
-    public Text timer;
-
-    public bool received, went;
-
-    public Animator bus;
-    public Text busText;
-
-    public GameObject btn1, btn2, bbangEatCount_ui, chocoCount_ui, money_ui;
-
+    public int heartCount = 0;
     public int currentBbangCount;
-    public BalloonControl balloon;
-
-    public GameObject moneyAmount_ui;
+    public bool received, went;
 
     int bbang_choco, bbang_mat, bbang_strawberry, bbang_hot;
 
-    public NotificationCtrl notice;
-
-    // Start is called before the first frame update
     void Start()
     {
         if (!PlayerPrefs.HasKey("heartCount"))
@@ -86,12 +82,6 @@ public class Heart_Control : MonoBehaviour
 
         oldTime = System.DateTime.ParseExact(PlayerPrefs.GetString("oldTime"), format, provider);
         arriveTime = System.DateTime.ParseExact(PlayerPrefs.GetString("arriveTime"), format, provider);
-
-        /*
-        print(PlayerPrefs.GetString("arriveTime"));
-        print(PlayerPrefs.GetInt("received"));
-        print(PlayerPrefs.GetInt("went"));
-        */
 
         if (PlayerPrefs.GetInt("received") == 0)
         {
@@ -246,7 +236,6 @@ public class Heart_Control : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void UpdateHeartUI(int count)
     {
         if(count > 6)

@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class AudioControl : MonoBehaviour
 {
-    public AudioSource[] sound = new AudioSource[3];
-    public AudioSource[] soundFX = new AudioSource[5];
+    [SerializeField] AudioSource[] sound = new AudioSource[3];
+    [SerializeField] AudioSource[] soundFX = new AudioSource[5];
     public int currentPlaying = -1;
+
     int soundCount = 7;
-    // Start is called before the first frame update
+
     void Start()
     {
         soundCount = sound.Length;

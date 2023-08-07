@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class BbangType : MonoBehaviour
 {
-    public string bbangType = "";
+    [SerializeField] public string bbangType = "";
 }
