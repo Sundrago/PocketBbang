@@ -57,9 +57,9 @@ public class RankCtrl : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     public void CheckForUpdate(int score)
     {
+        print(score);
         PlayerPrefs.SetInt("currnetRankScore", score);
         PlayerPrefs.Save();
 

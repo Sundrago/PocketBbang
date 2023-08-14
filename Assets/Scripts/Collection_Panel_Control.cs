@@ -768,6 +768,7 @@ public class Collection_Panel_Control : MonoBehaviour
     public bool UpdateAndReturnSelectionAvailability(int count, char rank)
     {
         Start();
+
         selectionMode = true;
         selectionCardCount = count;
         hasValue = false;
@@ -777,7 +778,14 @@ public class Collection_Panel_Control : MonoBehaviour
         cc.LoadData();
         ReadData();
         UpdateData();
-        return hasValue;
+
+        //Cards card in cc.myCard
+        for (int i = 0; i<cc.myCard.Count; i++)
+        {
+            if (cc.myCard[i].rank != rank) continue;
+            if (PlayerPrefs.GetInt("card_" + i) > count) return true;
+        }
+        return false;
     }
 
     public void ShowSelectionPanel()

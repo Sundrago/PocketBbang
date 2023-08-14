@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public class Cards
+{
+    public Sprite image;
+    public string name;
+    public string description;
+    public string reaction;
+    public int count;
+    public int idx;
+    public char rank;
+}
+
 public class CollectionControl : MonoBehaviour
 {
     [SerializeField] Sprite[] imgs = new Sprite[0];
@@ -19,16 +30,7 @@ public class CollectionControl : MonoBehaviour
     public List<Cards> myCard = new List<Cards>();
     public bool delay;
 
-    public class Cards
-    {
-        public Sprite image;
-        public string name;
-        public string description;
-        public string reaction;
-        public int count;
-        public int idx;
-        public char rank;
-    }
+    
 
     // Start is called before the first frame update
     public void Start()
@@ -1617,7 +1619,8 @@ public class CollectionControl : MonoBehaviour
 
         if(isnew)
         {
-            achievement.ReceiveRank();
+            
         }
+        achievement.ReceiveRank();
     }
 }
