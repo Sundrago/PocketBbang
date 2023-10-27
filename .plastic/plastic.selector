@@ -1,0 +1,4 @@
+repository "pocketBbang@SunDragon@cloud"
+  path "/"
+    br "/main"
+    co "/main"
