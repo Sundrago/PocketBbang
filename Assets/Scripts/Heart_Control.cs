@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Heart_Control : MonoBehaviour
 {
@@ -28,8 +30,18 @@ public class Heart_Control : MonoBehaviour
 
     int bbang_choco, bbang_mat, bbang_strawberry, bbang_hot;
 
+    public static Heart_Control Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
+        Firebase.Analytics.FirebaseAnalytics
+            .LogEvent("Money", "totalBalance", GetBalance());
+        
         if (!PlayerPrefs.HasKey("heartCount"))
         {
             PlayerPrefs.SetInt("heartCount", 5);
@@ -150,6 +162,7 @@ public class Heart_Control : MonoBehaviour
 
     public void UpdateMoney(int money)
     {
+        print("UpdateMoney : " + money);
         PlayerPrefs.SetInt("money", PlayerPrefs.GetInt("money") + money);
 
         if(money > 0)
@@ -170,6 +183,11 @@ public class Heart_Control : MonoBehaviour
         money_ui.GetComponent<Text>().text = PlayerPrefs.GetInt("money") + "";
 
         PlayerPrefs.Save();
+    }
+
+    public int GetBalance()
+    {
+        return PlayerPrefs.GetInt("money");
     }
 
     public void StoreDateCheck()
@@ -236,8 +254,9 @@ public class Heart_Control : MonoBehaviour
         }
     }
 
-    void UpdateHeartUI(int count)
+    public void UpdateHeartUI(int count = -1)
     {
+        if (count == -1) count = heartCount;
         if(count > 6)
         {
             print("heart count error");
@@ -288,7 +307,6 @@ public class Heart_Control : MonoBehaviour
         if (heartCount > 6) heartCount = 6;
         UpdateHeartUI(heartCount);
     }
-
     public void UpdateBbangInfo()
     {
         currentBbangCount = PlayerPrefs.GetInt("currentBbangCount");

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,8 +8,14 @@ public class AudioControl : MonoBehaviour
     [SerializeField] AudioSource[] sound = new AudioSource[3];
     [SerializeField] AudioSource[] soundFX = new AudioSource[5];
     public int currentPlaying = -1;
-
+    public static AudioControl Instance;
+    
     int soundCount = 7;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {

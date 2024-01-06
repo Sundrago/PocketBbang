@@ -1,25 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using VoxelBusters.CoreLibrary;
 using VoxelBusters.EssentialKit;
+using Random = UnityEngine.Random;
 
 public class Main_control : MonoBehaviour
 {
     public GameObject lower_bar, phone_ui, store_panel;
-    public GameObject front_panel, main_panel, frontCha, prompter, storePanelHolder, bbangCount_ui, bbang_panel, bbang_holder, collection, bbangCountPanel;
+
+    public GameObject front_panel,
+        main_panel,
+        frontCha,
+        prompter,
+        storePanelHolder,
+        bbangCount_ui,
+        bbang_panel,
+        bbang_holder,
+        collection,
+        bbangCountPanel;
+
     public BalloonControl balloon;
 
     public GameObject newStore;
-    PrompterControl pmtComtrol;
-
-    private int myStoreType, bbangCount;
 
     public string storeOutAction;
     public AudioControl myAudio;
-
-    private int originalMusic = 1;
 
     public Bbang_showroom showroom;
     public GameObject watchAdPanel, busPanel, creditPanel, settingPanel, dangunPanel;
@@ -34,35 +39,58 @@ public class Main_control : MonoBehaviour
     public SettingPanelControl setAudio;
     public GameObject debugPanlShowBtn;
 
-    int debugCount = 0;
-
     public string currentLocation;
+    public bool dangunIng;
 
-    bool callBbangboy = false;
-    bool hidePhoneTmp = false;
-    bool albaMode = false;
-    public bool dangunIng = false;
-    int callIdx = 0;
+    public bool gointToPark;
 
-    public bool gointToPark = false;
     public DangunChaCtrl dangunCha;
+
     //public LeaderboardManager leaderboard;
     public AchievementCtrl achievement;
     public Collection_Panel_Control collectionPanel;
-
-    bool matdongsanBuy = false;
     public NotificationCtrl notice;
-    public bool bbobgiMode = false;
+    public bool bbobgiMode;
 
     public RankCtrl rank;
     public DdukCtrl dduk;
+    private bool albaMode;
+
+    private bool callBbangboy;
+    private int callIdx;
+
+    private int debugCount;
+    private Heart_Control heartControl;
+    private bool hidePhoneTmp;
+
+    private bool matdongsanBuy;
+
+    private int myStoreType, bbangCount;
+
+    private int originalMusic = 1;
+    private PrompterControl pmtComtrol;
+
+    private int score;
+    private string tanghuruState;
+
+    [SerializeField] private DoMiCoinManager domiCoin;
+    [SerializeField] private DomiTradePanel domiTradePanel;
+    [SerializeField] private TanghuruGameManager tanghuruGameManager;
+    
+    public static Main_control Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         setAudio.Start();
         Msg.Start();
 
+        heartControl = gameObject.GetComponent<Heart_Control>();
         currentLocation = "home";
         //DataUpdate totalAlbaCustomerCount
         if (!PlayerPrefs.HasKey("albaCustomerCount"))
@@ -83,9 +111,10 @@ public class Main_control : MonoBehaviour
         //DataUpdate MatDongSan
         if (!PlayerPrefs.HasKey("Matdongsan"))
         {
-            PlayerPrefs.SetInt("Matdongsan", Mathf.RoundToInt(PlayerPrefs.GetInt("storeCount")/6.5f));
+            PlayerPrefs.SetInt("Matdongsan", Mathf.RoundToInt(PlayerPrefs.GetInt("storeCount") / 6.5f));
             PlayerPrefs.Save();
         }
+
         //DataUpdate ShuttleCount
         if (!PlayerPrefs.HasKey("ShuttleCount"))
         {
@@ -93,39 +122,24 @@ public class Main_control : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        if (!PlayerPrefs.HasKey("new_choco"))
-        {
-            PlayerPrefs.SetInt("new_choco", PlayerPrefs.GetInt("bbang"));
-        }
+        if (!PlayerPrefs.HasKey("new_choco")) PlayerPrefs.SetInt("new_choco", PlayerPrefs.GetInt("bbang"));
 
-        if (!PlayerPrefs.HasKey("new_strawberry"))
-        {
-            PlayerPrefs.SetInt("new_strawberry", 0);
-        }
+        if (!PlayerPrefs.HasKey("new_strawberry")) PlayerPrefs.SetInt("new_strawberry", 0);
         //new_hot
-        if (!PlayerPrefs.HasKey("new_hot"))
-        {
-            PlayerPrefs.SetInt("new_hot", 0);
-        }
+        if (!PlayerPrefs.HasKey("new_hot")) PlayerPrefs.SetInt("new_hot", 0);
         //albaExp
-        if (!PlayerPrefs.HasKey("albaExp"))
-        {
-            PlayerPrefs.SetInt("albaExp", 0);
-        }
-        if(!PlayerPrefs.HasKey("debugMode"))
-        {
-            PlayerPrefs.SetInt("debugMode", 0);
-        }
+        if (!PlayerPrefs.HasKey("albaExp")) PlayerPrefs.SetInt("albaExp", 0);
+        if (!PlayerPrefs.HasKey("debugMode")) PlayerPrefs.SetInt("debugMode", 0);
 
         //RealTotalCardCount
-        if(!PlayerPrefs.HasKey("myRealTotalCard"))
+        if (!PlayerPrefs.HasKey("myRealTotalCard"))
         {
             collectionPanel.GetCount();
             PlayerPrefs.SetInt("myRealTotalCard", PlayerPrefs.GetInt("myTotalCards"));
             PlayerPrefs.Save();
         }
 
-        if(PlayerPrefs.GetInt("myTotalCards") > PlayerPrefs.GetInt("myRealTotalCard"))
+        if (PlayerPrefs.GetInt("myTotalCards") > PlayerPrefs.GetInt("myRealTotalCard"))
         {
             PlayerPrefs.SetInt("myRealTotalCard", PlayerPrefs.GetInt("myTotalCards"));
             PlayerPrefs.Save();
@@ -147,6 +161,7 @@ public class Main_control : MonoBehaviour
             PlayerPrefs.SetInt("muteAudio", 0);
             PlayerPrefs.Save();
         }
+
         if (!PlayerPrefs.HasKey("yull_friend"))
         {
             PlayerPrefs.SetInt("yull_friend", 0);
@@ -182,22 +197,14 @@ public class Main_control : MonoBehaviour
             PlayerPrefs.SetInt("debugMode", 1);
         }
         */
-        if (PlayerPrefs.GetInt("debugMode") == 1)
-        {
-            SetDebugMode();
-        }
+        if (PlayerPrefs.GetInt("debugMode") == 1) SetDebugMode();
 
         rank.Start();
         notice.Start();
     }
 
-    public void QuitApp()
-    {
-        Application.Quit();
-    }
-
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 #if UNITY_ANDROID
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -210,10 +217,9 @@ public class Main_control : MonoBehaviour
         }
 #endif
         if (Time.frameCount % 30 == 0)
-        {
-            if (callBbangboy & currentLocation == "home")
+            if (callBbangboy & (currentLocation == "home"))
             {
-                switch(callIdx)
+                switch (callIdx)
                 {
                     case 0:
                         balloon.ShowMsg("똑똑- 노크소리가 들린다.");
@@ -232,35 +238,37 @@ public class Main_control : MonoBehaviour
                         dangunCha.PlayDangunCha(callIdx);
                         break;
                 }
+
                 callBbangboy = false;
             }
-        }
+    }
+
+    public void QuitApp()
+    {
+        Application.Quit();
     }
 
     public void DebugBtn()
     {
         debugCount += 1;
-        if (debugCount >= 15)
-        {
-            Msg.SetMsg("디버그 모드에 진입하면 영구적으로 기록이 남으며 랭킹 시스템에서 제외됩니다.\n디버그 모드에 진입하시겠습니까?", 2, "debug");
-
-        }
+        if (debugCount >= 15) Msg.SetMsg("디버그 모드에 진입하면 영구적으로 기록이 남으며 랭킹 시스템에서 제외됩니다.\n디버그 모드에 진입하시겠습니까?", 2, "debug");
     }
 
     public void OpenDebug()
     {
-        if(!debugPanel.activeSelf)
+        if (!debugPanel.activeSelf)
         {
             PlayerPrefs.SetInt("debugMode", 1);
             PlayerPrefs.Save();
             debugPanel.SetActive(true);
             debugData.SetActive(true);
-        } else
+        }
+        else
         {
             debugPanel.SetActive(false);
             debugData.SetActive(false);
         }
-        
+
         debugCount = 0;
     }
 
@@ -280,7 +288,7 @@ public class Main_control : MonoBehaviour
 
     public void BtnClicked(string idx)
     {
-        switch(idx)
+        switch (idx)
         {
             case "collection":
                 collection.GetComponent<Collection_Panel_Control>().Start();
@@ -288,7 +296,7 @@ public class Main_control : MonoBehaviour
                 debugCount = 0;
                 break;
             case "store":
-                if(currentLocation == "park")
+                if (currentLocation == "park")
                 {
                     //parkToHome
                     gointToPark = false;
@@ -298,25 +306,29 @@ public class Main_control : MonoBehaviour
                     newStore.GetComponent<Animator>().SetTrigger("hide");
                     main_panel.GetComponent<Animator>().SetTrigger("show");
                     myAudio.PlayMusic(0);
-                } else if(currentLocation == "home")
-                {
-                if (GetComponent<Heart_Control>().heartCount >= 1)
-                {
-                    parkBtn.SetActive(false);
-                    GetComponent<Heart_Control>().SetHeart(-1);
-                    front_panel.SetActive(true);
-                    frontCha.GetComponent<Animator>().SetTrigger("walk");
-                    main_panel.GetComponent<Animator>().SetTrigger("hide");
-                    lower_bar.GetComponent<Animator>().SetTrigger("hide");
-                    currentLocation = "toStore";
-                    myAudio.PlayMusic(1);
-                    GoToStore();
-                } else
-                {
-                    balloon.ShowMsg("지금은 피곤하다.. \n 너튜브나 보면서 쉴까..");
                 }
-                debugCount = 0;
-                } else if (currentLocation == "store" | currentLocation == "alba")
+                else if (currentLocation == "home")
+                {
+                    if (GetComponent<Heart_Control>().heartCount >= 1)
+                    {
+                        parkBtn.SetActive(false);
+                        GetComponent<Heart_Control>().SetHeart(-1);
+                        front_panel.SetActive(true);
+                        frontCha.GetComponent<Animator>().SetTrigger("walk");
+                        main_panel.GetComponent<Animator>().SetTrigger("hide");
+                        lower_bar.GetComponent<Animator>().SetTrigger("hide");
+                        currentLocation = "toStore";
+                        myAudio.PlayMusic(1);
+                        GoToStore();
+                    }
+                    else
+                    {
+                        balloon.ShowMsg("지금은 피곤하다.. \n 너튜브나 보면서 쉴까..");
+                    }
+
+                    debugCount = 0;
+                }
+                else if ((currentLocation == "store") | (currentLocation == "alba"))
                 {
                     ActionHandler("go_home");
                     lower_bar.GetComponent<Animator>().SetTrigger("hide");
@@ -327,31 +339,31 @@ public class Main_control : MonoBehaviour
                 break;
             case "phone":
                 if (dangunIng) return;
-                if(prompter.activeSelf)
-                {
-                    if(prompter.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Lower_Bar_Idle")
+                if (prompter.activeSelf)
+                    if (prompter.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name ==
+                        "Lower_Bar_Idle")
                     {
-                    hidePhoneTmp = true;
-                    prompter.GetComponent<Animator>().SetTrigger("hide");
-
+                        hidePhoneTmp = true;
+                        prompter.GetComponent<Animator>().SetTrigger("hide");
                     }
-                }
+
                 lower_bar.GetComponent<Animator>().SetTrigger("hide");
                 phone_ui.SetActive(true);
                 phone_ui.GetComponent<Animator>().SetTrigger("show");
                 frontCha.GetComponent<Animator>().SetTrigger("phone");
                 break;
             case "close_phone":
-                if(hidePhoneTmp)
+                if (hidePhoneTmp)
                 {
                     prompter.GetComponent<Animator>().SetTrigger("show");
                     hidePhoneTmp = false;
-                } else
-                {
-                lower_bar.SetActive(true);
-                lower_bar.GetComponent<Animator>().SetTrigger("show");
-
                 }
+                else
+                {
+                    lower_bar.SetActive(true);
+                    lower_bar.GetComponent<Animator>().SetTrigger("show");
+                }
+
                 phone_ui.GetComponent<Animator>().SetTrigger("hide");
                 frontCha.GetComponent<Animator>().SetTrigger("idle");
                 break;
@@ -384,7 +396,8 @@ public class Main_control : MonoBehaviour
                 {
                     balloon.ShowMsg("똑똑- 노크소리가 들린다.");
                     gameObject.GetComponent<BbangBoyContol>().Boy_In();
-                } else
+                }
+                else
                 {
                     balloon.ShowMsg("집으로 돌아가자!");
                     callBbangboy = true;
@@ -392,11 +405,12 @@ public class Main_control : MonoBehaviour
                     phone_ui.GetComponent<Animator>().SetTrigger("hide");
                     lower_bar.GetComponent<Animator>().SetTrigger("hide");
 
-                    if(currentLocation == "park")
+                    if (currentLocation == "park")
                         BtnClicked("store");
                     else
                         ActionHandler("go_home");
                 }
+
                 break;
             case "CallMatBoy":
                 if (currentLocation == "home")
@@ -418,6 +432,7 @@ public class Main_control : MonoBehaviour
                     else
                         ActionHandler("go_home");
                 }
+
                 break;
             case "CallReSellBoy":
                 if (currentLocation == "home")
@@ -439,6 +454,7 @@ public class Main_control : MonoBehaviour
                     else
                         ActionHandler("go_home");
                 }
+
                 break;
             case "CallVacanceBoy":
                 if (currentLocation == "home")
@@ -460,6 +476,7 @@ public class Main_control : MonoBehaviour
                     else
                         ActionHandler("go_home");
                 }
+
                 break;
             case "CallYogurtBoy":
                 if (currentLocation == "home")
@@ -481,6 +498,7 @@ public class Main_control : MonoBehaviour
                     else
                         ActionHandler("go_home");
                 }
+
                 break;
             case "CallBuyBoy":
                 if (currentLocation == "home")
@@ -502,6 +520,7 @@ public class Main_control : MonoBehaviour
                     else
                         ActionHandler("go_home");
                 }
+
                 break;
             case "CallSellBoy":
                 if (currentLocation == "home")
@@ -523,6 +542,7 @@ public class Main_control : MonoBehaviour
                     else
                         ActionHandler("go_home");
                 }
+
                 break;
         }
     }
@@ -532,10 +552,10 @@ public class Main_control : MonoBehaviour
         print(currentLocation);
         print("ACTION " + action);
 
-        switch(action)
+        switch (action)
         {
             case "go_home":
-                if (currentLocation != "store" & currentLocation != "alba") return;
+                if ((currentLocation != "store") & (currentLocation != "alba")) return;
                 currentLocation = "toHome";
                 myAudio.PlayMusic(5);
                 frontCha.GetComponent<Animator>().SetTrigger("walkLeft");
@@ -547,7 +567,7 @@ public class Main_control : MonoBehaviour
 
             case "store_next":
                 if (currentLocation != "store") return;
-                
+
                 if (GetComponent<Heart_Control>().heartCount >= 1)
                 {
                     GetComponent<Heart_Control>().SetHeart(-1);
@@ -556,11 +576,13 @@ public class Main_control : MonoBehaviour
                     GoToStore();
                     albaMode = false;
                     currentLocation = "store_next";
-                } else
+                }
+                else
                 {
                     balloon.ShowMsg("피곤하다.. \n 집으로 돌아가서 쉬는게 좋겠어..");
                     currentLocation = "store";
                 }
+
                 break;
 
             case "store_in":
@@ -576,23 +598,28 @@ public class Main_control : MonoBehaviour
                 break;
 
             case "store_out":
+                domiTradePanel.HidePanel();
                 currentLocation = "store";
-                if (myStoreType == 0 & PlayerPrefs.GetInt("girl_friend") != 0)
+                if ((myStoreType == 0) & (PlayerPrefs.GetInt("girl_friend") != 0))
                     achievement.UpdateAchievement("미소녀");
-                else if (myStoreType == 1 & PlayerPrefs.GetInt("yang_friend") != 0)
+                else if ((myStoreType == 1) & (PlayerPrefs.GetInt("yang_friend") != 0))
                     achievement.UpdateAchievement("양아치");
-                else if (myStoreType == 2 & PlayerPrefs.GetInt("albaExp") != 0)
+                else if ((myStoreType == 2) & (PlayerPrefs.GetInt("albaExp") != 0))
                     achievement.UpdateAchievement("맛동석");
-                else if (myStoreType == 3 & PlayerPrefs.GetInt("bi_friend") != 0)
+                else if ((myStoreType == 3) & (PlayerPrefs.GetInt("bi_friend") != 0))
                     achievement.UpdateAchievement("비실이");
-                else if (myStoreType == 4 & PlayerPrefs.GetInt("yull_friend") != 0)
+                else if ((myStoreType == 4) & (PlayerPrefs.GetInt("yull_friend") != 0))
                     achievement.UpdateAchievement("열정맨");
+                else if ((myStoreType == 7) & PlayerPrefs.GetInt("NylonDomiTutorial") == 1)
+                    achievement.UpdateAchievement("나이롱마스크");
+                else if (myStoreType == 8 && PlayerPrefs.GetInt("tanghuru_friend", 0) == 1)
+                {
+                    achievement.UpdateAchievement("왕형");
+                }
 
                 myAudio.PlayMusic(1);
                 pmtComtrol.Reset();
-                if(storeOutAction != ""){
-                    pmtComtrol.AddString("훈이", storeOutAction);
-                }
+                if (storeOutAction != "") pmtComtrol.AddString("훈이", storeOutAction);
                 pmtComtrol.AddOption("다른 편의점으로 간다.", "main", "store_next");
                 pmtComtrol.AddOption("집으로 돌아간다.", "main", "go_home");
                 break;
@@ -625,18 +652,18 @@ public class Main_control : MonoBehaviour
     {
         parkBtn.SetActive(false);
         pmtComtrol.Reset();
-        string str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
+        var str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
         pmtComtrol.AddString("훈이", str);
         prompter.GetComponent<Animator>().SetTrigger("show");
         prompter.SetActive(true);
         currentLocation = "toStore";
-        
-        for(; ; )
+
+        for (;;)
         {
-            int rnd = Random.Range(0, 7);
+            var rnd = Random.Range(0, 9);
 
             //DEBUG
-            if(myStoreType != rnd)
+            if (myStoreType != rnd)
             {
                 myStoreType = rnd;
                 break;
@@ -654,34 +681,30 @@ public class Main_control : MonoBehaviour
 
     public void AlbaBtnClicked()
     {
-        if(PlayerPrefs.GetInt("albaExp") == 0)
+        if (PlayerPrefs.GetInt("albaExp") == 0)
         {
             phoneMsgBox.GetComponent<PhoneMsgCtrl>().SetMsg("지금은 알바 자리가 없습니다.\n쌈마트24에 가서 맛동석 점장에게 얘기해보는 건 어떨까요?", 1);
             return;
         }
 
-        if(gameObject.GetComponent<Heart_Control>().heartCount < 1)
+        if (gameObject.GetComponent<Heart_Control>().heartCount < 1)
         {
             balloon.ShowMsg("지금은 좀 피곤하다..");
             return;
-        } else
-        {
-            if(currentLocation == "home" | currentLocation == "store")
-            {
-                phoneMsgBox.GetComponent<PhoneMsgCtrl>().SetMsg("알바를 하기 위해\n3마트24로 이동할까요?", 2, "albaGo");
-            }
-            else balloon.ShowMsg("여기서는 할 수 없다..");
         }
+
+        if ((currentLocation == "home") | (currentLocation == "store"))
+            phoneMsgBox.GetComponent<PhoneMsgCtrl>().SetMsg("알바를 하기 위해\n3마트24로 이동할까요?", 2, "albaGo");
+        else balloon.ShowMsg("여기서는 할 수 없다..");
     }
 
     public void GoToAlba()
     {
         goBtnText_ui.text = "집으로 돌아가기";
         parkBtn.SetActive(false);
-        
+
         if (currentLocation == "home")
         {
-
             front_panel.SetActive(true);
             frontCha.GetComponent<Animator>().SetTrigger("walk");
             main_panel.GetComponent<Animator>().SetTrigger("hide");
@@ -698,7 +721,6 @@ public class Main_control : MonoBehaviour
             {
                 lower_bar.SetActive(true);
                 lower_bar.GetComponent<Animator>().SetTrigger("show");
-
             }
 
             BtnClicked("close_phone");
@@ -717,14 +739,16 @@ public class Main_control : MonoBehaviour
             newStore.GetComponent<Animator>().SetTrigger("show");
 
             albaMode = true;
-        } else if (currentLocation == "store")
+        }
+        else if (currentLocation == "store")
         {
-            if(myStoreType == 2)
+            if (myStoreType == 2)
             {
                 albaMode = true;
                 BtnClicked("close_phone");
                 WentToStore();
-            } else
+            }
+            else
             {
                 BtnClicked("close_phone");
                 frontCha.GetComponent<Animator>().SetTrigger("walk");
@@ -748,13 +772,14 @@ public class Main_control : MonoBehaviour
         currentLocation = "goToAlba";
     }
 
-    int storeCount()
+    private int storeCount()
     {
         if (!PlayerPrefs.HasKey("storeCount"))
         {
             PlayerPrefs.SetInt("storeCount", 1);
             PlayerPrefs.Save();
-        } else
+        }
+        else
         {
             PlayerPrefs.SetInt("storeCount", PlayerPrefs.GetInt("storeCount") + 1);
             PlayerPrefs.SetInt("storeDateCount", PlayerPrefs.GetInt("storeDateCount") + 1);
@@ -801,7 +826,7 @@ public class Main_control : MonoBehaviour
             return;
         }
 
-            switch (myStoreType)
+        switch (myStoreType)
         {
             case 0:
                 pmtComtrol.AddString("훈이", "오또기 포도씨유 앞에 왔다.");
@@ -828,23 +853,32 @@ public class Main_control : MonoBehaviour
             case 6:
                 pmtComtrol.AddString("훈이", "머박분식집 앞에 도착했다!");
                 break;
+            case 7:
+                pmtComtrol.AddString("훈이", "파랑새치킨 앞에 도착했다!");
+                break;
+            case 8:
+                pmtComtrol.AddString("훈이", "왕형 탕후루 앞에 도착했다!");
+                break;
         }
-            pmtComtrol.AddOption("편의점으로 들어간다.", "main", "store_in");
-            pmtComtrol.AddOption("다른 편의점으로 간다.", "main", "store_next");
-            pmtComtrol.AddOption("집으로 돌아간다.", "main", "go_home");
+
+        pmtComtrol.AddOption("편의점으로 들어간다.", "main", "store_in");
+        pmtComtrol.AddOption("다른 편의점으로 간다.", "main", "store_next");
+        pmtComtrol.AddOption("집으로 돌아간다.", "main", "go_home");
     }
 
-    void AlbaEnterStore()
+    private void AlbaEnterStore()
     {
         if (GetComponent<Heart_Control>().heartCount >= 1)
         {
             GetComponent<Heart_Control>().SetHeart(-1);
-        } else
+        }
+        else
         {
             balloon.ShowMsg("지금은 좀 피곤하다..");
             currentLocation = "alba";
             return;
         }
+
         pmtComtrol.Reset();
         pmtComtrol.imageMode = true;
         storeOutAction = "";
@@ -856,14 +890,14 @@ public class Main_control : MonoBehaviour
         pmtComtrol.AddOption("어떻게 하면 되나요?", "store", "alba_how");
     }
 
-    void EnterStore()
+    private void EnterStore()
     {
         pmtComtrol.Reset();
         pmtComtrol.imageMode = true;
         storeOutAction = "";
         currentLocation = "store_in";
         //int chaIdx = Random.Range(0, 3);
-        int chaIdx = myStoreType;
+        var chaIdx = myStoreType;
 
         //미소녀
         if (chaIdx == 0)
@@ -873,6 +907,7 @@ public class Main_control : MonoBehaviour
                 PlayerPrefs.SetInt("girl_friend", 0);
                 PlayerPrefs.Save();
             }
+
             if (PlayerPrefs.GetInt("girl_friend") == 0)
             {
                 pmtComtrol.AddString("미소녀", "어서오세요. (포도)씨유입니다.");
@@ -884,17 +919,18 @@ public class Main_control : MonoBehaviour
             else
             {
                 //timer not yet
-                if(notice.TimeGap() <= 0)
+                if (notice.TimeGap() <= 0)
                 {
                     pmtComtrol.AddString("미소녀", "어서와.");
                     pmtComtrol.AddOption("포켓볼빵 있어?", "store", "girlf_ball");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
-                } else if(notice.TimeGap() <= 5)
+                }
+                else if (notice.TimeGap() <= 5)
                 {
                     //2-3개
                     pmtComtrol.AddString("미소녀", "우와 바로 왔구나!");
                     pmtComtrol.AddString("훈이", "아직 안팔렸지?");
-                    int rnd = Random.Range(2, 4);
+                    var rnd = Random.Range(2, 4);
                     pmtComtrol.AddString("미소녀", "응 포켓볼빵 " + rnd + "개 있어!");
                     AddBBang(rnd);
                     pmtComtrol.AddString("훈이", "대박이다! 정말 고마워!");
@@ -902,19 +938,20 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddOption("또 문자 보내줄 수 있어?", "store", "girlf_yes");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
                 }
-                else if(notice.TimeGap() <= 30)
+                else if (notice.TimeGap() <= 30)
                 {
                     //1-2개
                     pmtComtrol.AddString("미소녀", "왔구나!!");
                     pmtComtrol.AddString("훈이", "포켓볼빵 아직 있지?!");
-                    int rnd = Random.Range(1, 3);
+                    var rnd = Random.Range(1, 3);
                     pmtComtrol.AddString("미소녀", "조금만 더 일찍 오지. \n 포켓볼빵 " + rnd + "개 남았어.");
                     AddBBang(rnd);
                     pmtComtrol.AddString("훈이", "우와 !정말 고마워!");
                     pmtComtrol.AddString("미소녀", "친구라면 이정도 쯤이야!");
                     pmtComtrol.AddOption("또 문자 보내줄 수 있어?", "store", "girlf_yes");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
-                } else if(notice.TimeGap() <= 60)
+                }
+                else if (notice.TimeGap() <= 60)
                 {
                     //1개
                     pmtComtrol.AddString("미소녀", "조금만 더 일찍 오지!");
@@ -925,7 +962,8 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("미소녀", "다음에는 조금 더 일찍와.");
                     pmtComtrol.AddOption("또 문자 보내줄 수 있어?", "store", "girlf_yes");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
-                } else
+                }
+                else
                 {
                     //late
                     pmtComtrol.AddString("미소녀", "어 왔구나!");
@@ -937,7 +975,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddOption("알림이 안왔어!", "store", "girlf_none");
                     pmtComtrol.AddOption("또 문자 보내줄 수 있어?", "store", "girlf_yes");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
-                } 
+                }
             }
         }
 
@@ -949,6 +987,7 @@ public class Main_control : MonoBehaviour
                 PlayerPrefs.SetInt("yang_friend", 0);
                 PlayerPrefs.Save();
             }
+
             if (PlayerPrefs.GetInt("yang_friend") == 1)
             {
                 pmtComtrol.AddString("양아치", "어 왔네.");
@@ -969,13 +1008,14 @@ public class Main_control : MonoBehaviour
         //점주
         else if (chaIdx == 2)
         {
-            if(PlayerPrefs.GetInt("albaExp") == 0)
+            if (PlayerPrefs.GetInt("albaExp") == 0)
             {
                 pmtComtrol.AddString("점주", "어서오세요! 쌈마트24입니다!");
                 pmtComtrol.AddOption("포켓볼빵 있나요?", "store", "host_ball");
                 pmtComtrol.AddOption("알바 자리 있어요?", "store", "host_alba");
                 pmtComtrol.AddOption("편의점을 나간다", "store", "host_out");
-            } else
+            }
+            else
             {
                 matdongsanBuy = false;
                 pmtComtrol.AddString("점주", "오 자네가 왔구만! 그래 무슨일인가?");
@@ -983,7 +1023,6 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.AddOption("알바하러 왔어요!", "store", "hostf_alba");
                 pmtComtrol.AddOption("편의점을 나간다", "store", "hostf_out");
             }
-            
         }
 
         //비실이
@@ -994,13 +1033,15 @@ public class Main_control : MonoBehaviour
                 PlayerPrefs.SetInt("bi_friend", 0);
                 PlayerPrefs.Save();
             }
+
             if (PlayerPrefs.GetInt("bi_friend") == 0)
             {
                 pmtComtrol.AddString("비실이", "어서오세요오~! 나인투식스입니다아~!");
                 pmtComtrol.AddOption("포켓볼빵 있나요?", "store", "bi_ball");
                 pmtComtrol.AddOption("나랑 친구할래?", "store", "bi_fried");
                 pmtComtrol.AddOption("편의점을 나간다", "store", "bi_out");
-            } else
+            }
+            else
             {
                 pmtComtrol.AddString("비실이", "어서와아!");
                 pmtComtrol.AddOption("포켓볼빵 있어?", "store", "bi_ball_2");
@@ -1016,13 +1057,15 @@ public class Main_control : MonoBehaviour
                 PlayerPrefs.SetInt("yull_friend", 0);
                 PlayerPrefs.Save();
             }
+
             if (PlayerPrefs.GetInt("yull_friend") == 0)
             {
                 pmtComtrol.AddString("열정맨", "어서오세요! 진상25입니다!");
                 pmtComtrol.AddOption("포켓볼빵 있나요?", "store", "y_ball");
                 pmtComtrol.AddOption("포켓볼빵 언제 들어와요?", "store", "y_when");
                 pmtComtrol.AddOption("편의점을 나간다", "store", "y_out");
-            } else
+            }
+            else
             {
                 pmtComtrol.AddString("열정맨", "어서오세요! 진상25입니다!");
                 pmtComtrol.AddString("열정맨", "간절한 손님이 왔네요!");
@@ -1040,6 +1083,7 @@ public class Main_control : MonoBehaviour
                 PlayerPrefs.SetInt("park_friend", 0);
                 PlayerPrefs.Save();
             }
+
             if (PlayerPrefs.GetInt("park_friend") == 0)
             {
                 pmtComtrol.AddString("박종업원", "어서오세유. 머박분식집이에유.");
@@ -1056,10 +1100,56 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.AddOption("편의점을 나간다", "store", "yf_out");
             }
         }
+        
+        //나이롱
+        else if (chaIdx == 7)
+        {
+            domiCoin.UpdateCurrentPrice();
+
+            if (PlayerPrefs.GetInt("NylonDrawBbangCount") < 4)
+            {
+                if (!PlayerPrefs.HasKey("NylonInvested"))
+                {
+                    Nylon("ID_F_FIRST");
+                }
+                else
+                {
+                    if (PlayerPrefs.GetInt("NylonInvested") == 1)
+                    {
+                        Nylon("ID_F_SECOND_IFINVESTED");
+                        
+                    }
+                    else
+                    {
+                        Nylon("ID_F_SECOND_IFNOTINVESTED");
+                    }
+                }
+            }
+            else
+            {
+                Nylon_f("ID_F_FRIEND_HELLO");
+            }
+        }
+        
+        //왕형 탕후루
+        else if (chaIdx == 8)
+        {
+            tanghuruState = "";
+            // Tanghuru("ID_T_OPEN_FRIEND"); //[진입점 2] <친구 이벤트> 친구가 되기 전 오후 12시에서 오후 6시 사이에 방문하면 여기로 진입됨.
+            //
+            if (PlayerPrefs.GetInt("tanghuru_friend", 0) == 1)
+            {
+                Tanghuru("ID_T_OPEN_AFTERFRIEND"); //[진입점 3] <친구가 된 후> 아무때나 가도 여기로 진입됨.
+            }
+            else
+            {
+                int hr = System.DateTime.Now.Hour;
+                if(hr >= 12 && hr < 18) Tanghuru("ID_T_OPEN_FRIEND"); //[진입점 2] <친구 이벤트> 친구가 되기 전 오후 12시에서 오후 6시 사이에 방문하면 여기로 진입됨.
+                else Tanghuru("ID_T_OPEN_STORE"); //[진입점 1] <친구 되기 전> 처음 만났을 때부터 친구가 되기 전까지. -> [연결점 1], [연결점 3]으로 연결.
+            }
+            
+        }
     }
-
-
-    int score = 0;
 
     public void SendtoSetting()
     {
@@ -1072,8 +1162,8 @@ public class Main_control : MonoBehaviour
     public void StoreEvent(string code)
     {
         print("STORE EVENT : " + code);
-
-        switch(code)
+        
+        switch (code)
         {
             case "p_ball":
                 pmtComtrol.Reset();
@@ -1153,7 +1243,7 @@ public class Main_control : MonoBehaviour
 
 
             case "hostf_ball":
-                if(!matdongsanBuy)
+                if (!matdongsanBuy)
                 {
                     pmtComtrol.Reset();
                     pmtComtrol.imageMode = true;
@@ -1163,7 +1253,8 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("점주", "맛동산은 만원이야. 어떻게 할 텐가?");
                     pmtComtrol.AddOption("산다.", "store", "hostf_buy_check");
                     pmtComtrol.AddOption("안 산다.", "store", "hostf_notbuy");
-                } else
+                }
+                else
                 {
                     pmtComtrol.Reset();
                     pmtComtrol.imageMode = true;
@@ -1173,6 +1264,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddOption("알바를 한다.", "store", "hostf_alba");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "hostf_out");
                 }
+
                 break;
 
             case "hostf_buy_check":
@@ -1216,10 +1308,12 @@ public class Main_control : MonoBehaviour
                 {
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "hostf_out");
                     pmtComtrol.AddOption("알바를 한다.", "store", "hostf_alba");
-                } else
+                }
+                else
                 {
                     pmtComtrol.AddNextAction("store", "hostf_out");
                 }
+
                 PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
                 PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 1);
                 PlayerPrefs.Save();
@@ -1245,17 +1339,20 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.imageMode = true;
                     pmtComtrol.AddString("훈이", "지금은 좀 피곤한데..");
                     pmtComtrol.AddString("훈이", "알바는 다음에 하는게 좋겠다.");
-                    
-                    if (!matdongsanBuy & PlayerPrefs.GetInt("money") >= 10000)
+
+                    if (!matdongsanBuy & (PlayerPrefs.GetInt("money") >= 10000))
                     {
                         pmtComtrol.AddOption("포켓볼빵 살게요! 아직 있죠?", "store", "hostf_ball");
                         pmtComtrol.AddOption("편의점을 나간다.", "store", "hostf_out");
-                    } else
+                    }
+                    else
                     {
                         pmtComtrol.AddNextAction("store", "hostf_out");
                     }
+
                     return;
                 }
+
                 pmtComtrol.Reset();
                 pmtComtrol.imageMode = true;
                 pmtComtrol.AddString("점주", "잘 됐다! 일손이 많이 부족했었는데!");
@@ -1264,10 +1361,7 @@ public class Main_control : MonoBehaviour
                 break;
 
             case "albaf_start":
-                if (GetComponent<Heart_Control>().heartCount >= 1)
-                {
-                    GetComponent<Heart_Control>().SetHeart(-1);
-                }
+                if (GetComponent<Heart_Control>().heartCount >= 1) GetComponent<Heart_Control>().SetHeart(-1);
                 alba.StartAlba(true);
                 break;
 
@@ -1277,7 +1371,7 @@ public class Main_control : MonoBehaviour
 
                 storeOutAction = "휴.. 편의점 알바도 쉬운게 아니구나..";
                 pmtComtrol.AddOption("알바 더할게요.", "store", "hostf_alba");
-                if (!matdongsanBuy & PlayerPrefs.GetInt("money") >= 10000)
+                if (!matdongsanBuy & (PlayerPrefs.GetInt("money") >= 10000))
                     pmtComtrol.AddOption("이제 포켓볼빵 살게요! 아직 있죠?", "store", "hostf_ball");
                 pmtComtrol.AddOption("편의점을 나간다.", "store", "hostf_out");
                 break;
@@ -1304,11 +1398,12 @@ public class Main_control : MonoBehaviour
                 break;
 
             case "bbobgi":
-                if(currentLocation == "store")
+                if (currentLocation == "store")
                 {
                     currentLocation = "bbobgi";
                     newStore.GetComponent<StoreControl>().StartBbobgi();
                 }
+
                 break;
 
             case "bbobgiStore":
@@ -1400,7 +1495,7 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.AddString("열정맨", "다음에도 지나갈때 또 들러요.");
                 pmtComtrol.AddString("훈이", "네. 감사합니다!");
 
-                
+
                 pmtComtrol.AddOption("편의점을 나간다.", "store", "yf_out");
                 break;
 
@@ -1461,14 +1556,15 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.imageMode = true;
                 pmtComtrol.AddString("열정맨", "아, 추억의 풀빵이요! 재고 있나 확인해볼게요!");
 
-                int rnd00 = Random.Range(0, 4);
-                if(rnd00 == 0)
+                var rnd00 = Random.Range(0, 4);
+                if (rnd00 == 0)
                 {
                     pmtComtrol.AddString("열정맨", "아이고.. 오늘은 빵이 다 떨어졌네요.");
                     pmtComtrol.AddString("열정맨", "다음에 다시 와야겠어요.");
                     pmtComtrol.AddString("훈이", "네, 다음에 다시 들를게요!");
                     pmtComtrol.AddNextAction("store", "yf_out");
-                } else
+                }
+                else
                 {
                     pmtComtrol.AddString("열정맨", "여기 하나 있네요!");
                     AddBBang(1, "maple");
@@ -1476,6 +1572,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("훈이", "네! 감사합니다!");
                     pmtComtrol.AddNextAction("store", "yf_out");
                 }
+
                 break;
 
             case "host_ball":
@@ -1562,6 +1659,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddOption("그게 뭔데요?", "store", "host_alba_dontknow");
                     PlayerPrefs.SetInt("albaExp", 1);
                 }
+
                 break;
 
             case "host_alba_ok":
@@ -1593,13 +1691,14 @@ public class Main_control : MonoBehaviour
 
                 if (Random.Range(0, 10) == 0)
                 {
-                    if(Random.Range(0,2) == 0)
+                    if (Random.Range(0, 2) == 0)
                     {
                         pmtComtrol.AddString("미소녀", "포켓볼빵 1개 있어요.");
                         AddBBang(1);
                         storeOutAction = "기분이 너무 좋다.";
                         pmtComtrol.AddOption("편의점을 나간다.", "store", "girl_noBbang");
-                    } else
+                    }
+                    else
                     {
                         pmtComtrol.AddString("미소녀", "포켓볼빵 2개 있어요.");
                         AddBBang(2);
@@ -1612,6 +1711,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("미소녀", "포켓볼빵 없어요.");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girl_noBbang");
                 }
+
                 break;
             case "girl_boy":
                 pmtComtrol.Reset();
@@ -1694,6 +1794,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddOption("거짓말.", "store", "girlf_lie");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
                 }
+
                 break;
             case "girlf_noBbang":
                 pmtComtrol.Reset();
@@ -1744,12 +1845,14 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("훈이", "고마워.");
                     pmtComtrol.AddOption("언제 또 들어와?", "store", "girlf_when");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
-                } else
+                }
+                else
                 {
                     pmtComtrol.AddString("미소녀", "무슨 소리 하는거야?");
                     pmtComtrol.AddString("미소녀", "귀찮게 하지말고 빨리 나가.");
                     pmtComtrol.AddNextAction("main", "store_out");
                 }
+
                 break;
 
             case "yang_ball":
@@ -1785,12 +1888,14 @@ public class Main_control : MonoBehaviour
                     storeOutAction = "기분이 너무 좋다.";
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "yang_exit2");
                     pmtComtrol.AddOption("빵을 더 찾아본다.", "store", "yang_find_2");
-                } else
+                }
+                else
                 {
                     pmtComtrol.AddString("훈이", "빵을 찾아봤지만 보이지 않는다.");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "yang_exit");
                     pmtComtrol.AddOption("빵을 더 찾아본다.", "store", "yang_find_2");
                 }
+
                 break;
 
             case "yang_find_2":
@@ -1811,6 +1916,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "yang_exit");
                     storeOutAction = "부지런한 사람들이 많나보다..";
                 }
+
                 break;
 
             case "yang_game":
@@ -1983,6 +2089,7 @@ public class Main_control : MonoBehaviour
                     storeOutAction = "다음에 또 들러야 겠다.";
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "yangf_out");
                 }
+
                 break;
 
             case "yangf_out":
@@ -2032,7 +2139,8 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("비실이", "다음에 또 오세요우~");
                     storeOutAction = "말투가 참 이상하다. 친해지면 재밌을것 같다.";
                     pmtComtrol.AddNextAction("main", "store_out");
-                } else
+                }
+                else
                 {
                     pmtComtrol.Reset();
                     pmtComtrol.imageMode = true;
@@ -2044,11 +2152,12 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddOption("바위를 낸다.", "store", "bi_game");
                     pmtComtrol.AddOption("보를 낸다.", "store", "bi_game");
                 }
+
                 break;
             case "bi_game":
                 pmtComtrol.Reset();
                 pmtComtrol.imageMode = true;
-                int rnd = Random.Range(0, 3);
+                var rnd = Random.Range(0, 3);
                 switch (rnd)
                 {
                     case 0:
@@ -2077,6 +2186,7 @@ public class Main_control : MonoBehaviour
                         pmtComtrol.AddNextAction("store", "bi_out");
                         break;
                 }
+
                 break;
 
             case "bi_out":
@@ -2147,7 +2257,7 @@ public class Main_control : MonoBehaviour
             case "bif_game_2":
                 pmtComtrol.Reset();
                 pmtComtrol.imageMode = true;
-                int rnd2 = Random.Range(0, 3);
+                var rnd2 = Random.Range(0, 3);
                 switch (rnd2)
                 {
                     case 0:
@@ -2167,7 +2277,7 @@ public class Main_control : MonoBehaviour
 
                         pmtComtrol.AddOption("두 번째 게임을 시작한다.", "store", "bif_game_3_start");
                         pmtComtrol.AddOption("빵 2개를 받고 끝낸다.", "store", "bif_finish_game");
-                        
+
                         score = 2;
                         break;
                     default:
@@ -2180,6 +2290,7 @@ public class Main_control : MonoBehaviour
                         pmtComtrol.AddNextAction("main", "store_out");
                         break;
                 }
+
                 break;
 
             case "bif_endgame":
@@ -2213,7 +2324,7 @@ public class Main_control : MonoBehaviour
             case "bif_game_3":
                 pmtComtrol.Reset();
                 pmtComtrol.imageMode = true;
-                int rnd3 = Random.Range(0, 3);
+                var rnd3 = Random.Range(0, 3);
                 switch (rnd3)
                 {
                     case 0:
@@ -2232,7 +2343,7 @@ public class Main_control : MonoBehaviour
                         pmtComtrol.AddString("비실이", "지면 어떻게 되는 지 알지?");
                         pmtComtrol.AddString("훈이", "우와.. 어떻게 하는 게 좋으려나..");
 
-                        pmtComtrol.AddOption("빵 " + score +"개를 받고 끝낸다.", "store", "bif_finish_game");
+                        pmtComtrol.AddOption("빵 " + score + "개를 받고 끝낸다.", "store", "bif_finish_game");
                         pmtComtrol.AddOption("다음 게임을 시작한다.", "store", "bif_game_3_start");
                         break;
 
@@ -2247,6 +2358,7 @@ public class Main_control : MonoBehaviour
                         pmtComtrol.AddNextAction("main", "store_out");
                         break;
                 }
+
                 break;
         }
     }
@@ -2292,13 +2404,16 @@ public class Main_control : MonoBehaviour
             {
                 print("ERROR: ADD BBANG IDX ERROR : " + idx);
             }
-            PlayerPrefs.SetInt("bbang", PlayerPrefs.GetInt("new_choco") + PlayerPrefs.GetInt("new_strawberry") + PlayerPrefs.GetInt("new_hot") + PlayerPrefs.GetInt("new_bingle") + PlayerPrefs.GetInt("new_maple") + PlayerPrefs.GetInt("new_purin"));
+
+            PlayerPrefs.SetInt("bbang",
+                PlayerPrefs.GetInt("new_choco") + PlayerPrefs.GetInt("new_strawberry") + PlayerPrefs.GetInt("new_hot") +
+                PlayerPrefs.GetInt("new_bingle") + PlayerPrefs.GetInt("new_maple") + PlayerPrefs.GetInt("new_purin"));
             PlayerPrefs.Save();
             UpdateBbangCount();
             return;
         }
 
-        int rnd = Random.Range(0, 6);
+        var rnd = Random.Range(0, 6);
         if (rnd == 4) rnd = 5;
 
         if (idx == "choco") rnd = 0;
@@ -2314,6 +2429,7 @@ public class Main_control : MonoBehaviour
             pmtComtrol.AddString("푸린글스빵", "푸린글스빵 " + amount + "개를 겟했다!");
             PlayerPrefs.SetInt("new_purin", PlayerPrefs.GetInt("new_purin") + amount);
         }
+
         if (rnd == 4)
         {
             print("maple ++");
@@ -2336,18 +2452,21 @@ public class Main_control : MonoBehaviour
             print("strawberry ++");
             pmtComtrol.AddString("딸기크림빵", "딸기크림빵 " + amount + "개를 겟했다!");
             PlayerPrefs.SetInt("new_strawberry", PlayerPrefs.GetInt("new_strawberry") + amount);
-        }  else if(rnd == 0)
+        }
+        else if (rnd == 0)
         {
             print("choco ++");
             pmtComtrol.AddString("초코롤빵", "초코롤빵 " + amount + "개를 겟했다!");
             PlayerPrefs.SetInt("new_choco", PlayerPrefs.GetInt("new_choco") + amount);
-            
-        } else
+        }
+        else
         {
             print("ERROR: ADD BBANG IDX ERROR : " + rnd);
         }
 
-        PlayerPrefs.SetInt("bbang", PlayerPrefs.GetInt("new_choco") + PlayerPrefs.GetInt("new_strawberry") + PlayerPrefs.GetInt("new_hot") + PlayerPrefs.GetInt("new_bingle") + PlayerPrefs.GetInt("new_maple") + PlayerPrefs.GetInt("new_purin"));
+        PlayerPrefs.SetInt("bbang",
+            PlayerPrefs.GetInt("new_choco") + PlayerPrefs.GetInt("new_strawberry") + PlayerPrefs.GetInt("new_hot") +
+            PlayerPrefs.GetInt("new_bingle") + PlayerPrefs.GetInt("new_maple") + PlayerPrefs.GetInt("new_purin"));
         PlayerPrefs.Save();
         UpdateBbangCount();
 
@@ -2369,92 +2488,85 @@ public class Main_control : MonoBehaviour
 
         bbangCount = PlayerPrefs.GetInt("bbang");
         bbangCount_ui.GetComponent<Text>().text = "" + bbangCount;
-        if(bbangCount == 0)
-        {
+        if (bbangCount == 0)
             bbangCountPanel.GetComponent<Animator>().SetTrigger("stop");
-        } else
-        {
+        else
             bbangCountPanel.GetComponent<Animator>().SetTrigger("play");
-        }
     }
 
     public void OpenBbang()
     {
-
         if (PlayerPrefs.GetInt("bbang") < 1) return;
-        else //AddBBang(-1);
-
+        //AddBBang(-1);
         if (currentLocation == "bbobgi") newStore.GetComponent<StoreControl>().bbobgiPanel.bbobgi.HideObjs();
 
         if (PlayerPrefs.GetInt("new_purin") > 0)
         {
             AddBBang(-1, "purin");
-            GameObject myBang = new GameObject();
+            var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(5);
 
             PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
             PlayerPrefs.SetInt("bbang_purin", PlayerPrefs.GetInt("bbang_purin") + 1);
-
         }
-        else if(PlayerPrefs.GetInt("new_maple") > 0)
+        else if (PlayerPrefs.GetInt("new_maple") > 0)
         {
             AddBBang(-1, "maple");
-            GameObject myBang = new GameObject();
+            var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(4);
 
             PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
             PlayerPrefs.SetInt("bbang_maple", PlayerPrefs.GetInt("bbang_maple") + 1);
-
         }
         else if (PlayerPrefs.GetInt("new_bingle") > 0)
         {
             AddBBang(-1, "bingle");
-            GameObject myBang = new GameObject();
+            var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(3);
 
             PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
             PlayerPrefs.SetInt("bbang_bingle", PlayerPrefs.GetInt("bbang_bingle") + 1);
-
         }
-        else if(PlayerPrefs.GetInt("new_hot") > 0)
+        else if (PlayerPrefs.GetInt("new_hot") > 0)
         {
             AddBBang(-1, "hot");
-            GameObject myBang = new GameObject();
+            var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(2);
 
-            PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount")+1);
-            PlayerPrefs.SetInt("bbang_hot", PlayerPrefs.GetInt("bbang_hot") +1);
-            
-        } else if(PlayerPrefs.GetInt("new_strawberry") > 0)
+            PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
+            PlayerPrefs.SetInt("bbang_hot", PlayerPrefs.GetInt("bbang_hot") + 1);
+        }
+        else if (PlayerPrefs.GetInt("new_strawberry") > 0)
         {
             AddBBang(-1, "strawberry");
-            GameObject myBang = new GameObject();
+            var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(1);
 
             PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
             PlayerPrefs.SetInt("bbang_strawberry", PlayerPrefs.GetInt("bbang_strawberry") + 1);
-        } else if (PlayerPrefs.GetInt("new_choco") > 0)
+        }
+        else if (PlayerPrefs.GetInt("new_choco") > 0)
         {
             AddBBang(-1, "choco");
-            GameObject myBang = new GameObject();
+            var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(0);
 
             PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 2);
             PlayerPrefs.SetInt("bbang_choco", PlayerPrefs.GetInt("bbang_choco") + 2);
-
         }
+
         originalMusic = myAudio.currentPlaying;
         myAudio.PlayMusic(3);
 
@@ -2465,7 +2577,7 @@ public class Main_control : MonoBehaviour
 
     public void BBangClosed()
     {
-       myAudio.PlayMusic(originalMusic);
+        myAudio.PlayMusic(originalMusic);
     }
 
     public void WatchAdBtnClicked()
@@ -2476,15 +2588,14 @@ public class Main_control : MonoBehaviour
 
     public void AdsYes()
     {
-        if(gameObject.GetComponent<Heart_Control>().heartCount >= 6)
+        if (gameObject.GetComponent<Heart_Control>().heartCount >= 6)
         {
             balloon.ShowMsg("이제 그만 쉬어도 되겠다.");
             return;
-        } else
-        {
-            gameObject.GetComponent<Ad_Control>().UserChoseToWatchAd();
-            watchAdPanel.SetActive(false);
         }
+
+        gameObject.GetComponent<Ad_Control>().PlayAds(Ad_Control.AdsType.heart);
+        watchAdPanel.SetActive(false);
     }
 
     public void AdsNo()
@@ -2506,10 +2617,11 @@ public class Main_control : MonoBehaviour
 
     public void BusLaunch()
     {
-        if(lauchText.text == "빵 받기")
+        if (lauchText.text == "빵 받기")
         {
             gameObject.GetComponent<Heart_Control>().Bus_Receive();
-        } else
+        }
+        else
         {
             gameObject.GetComponent<Heart_Control>().Bus_launch();
             if (PlayerPrefs.HasKey("ShuttleCount"))
@@ -2518,6 +2630,7 @@ public class Main_control : MonoBehaviour
                 PlayerPrefs.Save();
             }
         }
+
         BusBtnUpdate();
     }
 
@@ -2529,7 +2642,8 @@ public class Main_control : MonoBehaviour
         {
             launchBtn.GetComponent<Button>().interactable = false;
             lauchText.text = "빵셔틀 보내기";
-        } else
+        }
+        else
         {
             if (gameObject.GetComponent<Heart_Control>().received)
             {
@@ -2573,14 +2687,12 @@ public class Main_control : MonoBehaviour
             return;
         }
 
-        if (currentLocation == "home" | currentLocation == "store" | currentLocation == "alba")
-        {
-        if(lower_bar.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Lower_Bar_Hidden")
-        {
-            if (dangunIng) return;
-            lower_bar.GetComponent<Animator>().SetTrigger("show");
-        }
-        }
+        if ((currentLocation == "home") | (currentLocation == "store") | (currentLocation == "alba"))
+            if (lower_bar.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Lower_Bar_Hidden")
+            {
+                if (dangunIng) return;
+                lower_bar.GetComponent<Animator>().SetTrigger("show");
+            }
     }
 
     public void Debug_addBbang(string idx)
@@ -2642,13 +2754,1126 @@ public class Main_control : MonoBehaviour
         achievement.Autheticate();
     }
 
+    private void Nylon_TryInvestBbang(string inputString, string id_y, string id_n, string parent_id = "Nylon")
+    {
+        int price = 10000;
+        if(PlayerPrefs.GetInt("money") >= price)
+            pmtComtrol.AddOption(inputString , parent_id, id_y); 
+        else
+            pmtComtrol.AddOption(inputString , parent_id, id_n); 
+    }
+    
+
+    private void Nylon_DrawBbang(string id0, float weight0, string id1, float weight1, string id2, float weight2,
+        string id3, float weight3)
+    {
+        int count = PlayerPrefs.GetInt("NylonDrawBbangCount", 0);
+        count++;
+        PlayerPrefs.SetInt("NylonDrawBbangCount", count);
+        
+        float totalWeight = weight0 + weight1 + weight2 + weight3;
+        float rnd = Random.Range(0, totalWeight);
+        
+        if(rnd<weight0) pmtComtrol.AddNextAction("Nylon", id0);
+        else if(rnd<weight0+weight1) pmtComtrol.AddNextAction("Nylon", id1);
+        else if(rnd<weight0+weight1+weight2) pmtComtrol.AddNextAction("Nylon", id2);
+        else pmtComtrol.AddNextAction("Nylon", id3);
+    }
+    
+    private void Nylon_DrawBbang_f(string id0, float weight0, string id1, float weight1, string id2, float weight2,
+        string id3, float weight3)
+    {
+        int count = PlayerPrefs.GetInt("NylonDrawBbangCount", 0);
+        count++;
+        PlayerPrefs.SetInt("NylonDrawBbangCount", count);
+        
+        float totalWeight = weight0 + weight1 + weight2 + weight3;
+        float rnd = Random.Range(0, totalWeight);
+        
+        if(rnd<weight0) pmtComtrol.AddNextAction("Nylon_f", id0);
+        else if(rnd<weight0+weight1) pmtComtrol.AddNextAction("Nylon_f", id1);
+        else if(rnd<weight0+weight1+weight2) pmtComtrol.AddNextAction("Nylon_f", id2);
+        else pmtComtrol.AddNextAction("Nylon_f", id3);
+    }
+    //WangHyung
+
+    public void DialogueCheckMoney(int price, string id_y, string id_n, string inputString, string parent_id)
+    {
+        if(PlayerPrefs.GetInt("money") >= price)
+            pmtComtrol.AddOption(inputString , parent_id, id_y); 
+        else
+            pmtComtrol.AddOption(inputString , parent_id, id_n); 
+    }
+    public void Tanghuru(string ID)
+    {
+        print("EVENT ID Tanghuru : " + ID);
+        pmtComtrol.Reset();
+        pmtComtrol.imageMode = true;
+
+        switch (ID)
+        {
+            case "ID_T_OPEN_STORE":
+                pmtComtrol.AddString("왕형", "안녕하시오.");
+                pmtComtrol.AddString("왕형", "왕형 탕후루에 당도한 것을 환영하오, 낯선 이여.");
+                pmtComtrol.AddString("왕형", "나는 당이 떨어진 자들을 굽어살피는 달콤한 사업가, 왕형이오.");
+                tanghuruState = "ID_T_OPEN_STORE";
+                pmtComtrol.AddOption("탕후루 주세요.", "Tanghuru", "ID_T_OPEN_STORE_TANGHURU");
+                pmtComtrol.AddOption("포켓볼 빵 있어요?", "Tanghuru", "ID_T_OPEN_STORE_BREAD");
+                pmtComtrol.AddOption("편의점을 나간다.", "Tanghuru", "ID_T_OPEN_STORE_STOREOUT");
+                break;
+
+            case "ID_T_OPEN_STORE_STOREOUT":
+                storeOutAction = "";
+                pmtComtrol.AddNextAction("main", "store_out");
+                break;
+
+            case "ID_T_OPEN_STORE_TANGHURU":
+                pmtComtrol.AddString("왕형", "탕후루는 당 함량이 높아 원기를 회복시켜 주는 효과가 있소.");
+                pmtComtrol.AddString("왕형", "먹으면 편의점 하나 정도 더 찾아갈 수 있는 힘이 날 것이오.");
+                pmtComtrol.AddNextAction("Tanghuru", "ID_T_OPEN_STORE_TANGHURU_2");
+                break;
+
+            case "ID_T_OPEN_STORE_TANGHURU_2":
+                pmtComtrol.AddString("왕형", "탕후루는 하나에 3,000원이오. 구매하겠소?");
+                DialogueCheckMoney(3000, "ID_T_OPEN_STORE_TANGHURU_BUY_YES", "ID_T_OPEN_STORE_TANGHURU_BUY_NOMONEY",
+                    "네 주세요.", "Tanghuru");
+                pmtComtrol.AddOption("그냥 다음에 살게요.", "Tanghuru", "ID_T_OPEN_STORE_TANGHURU_STOREOUT");
+                break;
+
+            case "ID_T_OPEN_STORE_TANGHURU_BUY_YES":
+                pmtComtrol.AddString("왕형", "고맙소.");
+                pmtComtrol.AddString("왕형", "탕후루 여기 있소.");
+                heartControl.UpdateMoney(-3000);
+                heartControl.SetHeart(1);
+                heartControl.SetHeart(1);
+                pmtComtrol.AddString("훈이", "(탕후루를 먹고 하트가 두 개 회복되었다!)");
+                pmtComtrol.AddString("왕형", "또 오시오.");
+                if (tanghuruState == "ID_T_OPEN_STORE")
+                {
+                    pmtComtrol.AddString("왕형", "단, 오후 12시부터 오후 6시 사이는 손님이 많으니 되도록 피해 주시오.");
+                }
+
+                storeOutAction = "달고 맛있는 탕후루! 다음에 또 사러 와야겠다.";
+                pmtComtrol.AddNextAction("main", "store_out");
+                break;
+
+            case "ID_T_OPEN_STORE_TANGHURU_BUY_NOMONEY":
+                pmtComtrol.AddString("왕형", "그대가 소지하고 있는 돈이 부족하오.");
+                pmtComtrol.AddNextAction("Tanghuru", "ID_T_OPEN_STORE_TANGHURU_2");
+                break;
+
+            case "ID_T_OPEN_STORE_TANGHURU_STOREOUT":
+                pmtComtrol.AddString("왕형", "그럼 그렇게 하시오.");
+                pmtComtrol.AddString("왕형", "또 오시오.");
+                if (tanghuruState == "ID_T_OPEN_STORE")
+                {
+                    pmtComtrol.AddString("왕형", "단, 오후 12시부터 오후 6시 사이는 손님이 많으니 되도록 피해 주시오.");
+                }
+
+                storeOutAction = "달달한 탕후루가 먹고 싶긴 하지만... 다음에 사먹도록 하자.";
+                pmtComtrol.AddNextAction("main", "store_out");
+                break;
+
+            case "ID_T_OPEN_STORE_BREAD":
+                pmtComtrol.AddString("훈이", "포켓볼 빵 있어요?");
+                pmtComtrol.AddString("왕형", "어허. 말세로다. 어찌 탕후루 가게에서 빵 따위를 팔겠는가?");
+                pmtComtrol.AddString("훈이", "혹시 몰라서 여쭤봤어요...");
+                pmtComtrol.AddString("왕형", "어림없는 소리!");
+                pmtComtrol.AddString("왕형", "사대부의 나라가 어찌 오랑케의 음식을 팔겠는가. 당치도 않다!");
+                storeOutAction = "괜히 호통만 들었다... 다음에는 탕후루를 사러 오자.";
+                pmtComtrol.AddNextAction("main", "store_out");
+                break;
+
+            case "ID_T_OPEN_FRIEND":
+                pmtComtrol.AddString("왕형", "또 손님이 들이닥치다니, 난세로다!");
+                pmtComtrol.AddString("왕형", "이제 나의 워라벨은 누가 지켜준단 말인가! 암흑의 시대가 도래하였구나!");
+                tanghuruState = "ID_T_OPEN_FRIEND";
+                pmtComtrol.AddNextAction("Tanghuru", "ID_T_OPEN");
+                break;
+
+            case "ID_T_OPEN_AFTERFRIEND":
+                pmtComtrol.AddString("왕형", "어서오시오. 환영하오.");
+                pmtComtrol.AddString("왕형", "그대가 다시 찾아 주니 기쁘구려.");
+                // No command found on line 57 : 
+                pmtComtrol.AddNextAction("Tanghuru", "ID_T_OPEN");
+                break;
+
+            case "ID_T_OPEN":
+                pmtComtrol.AddOption("탕후루 주세요.", "Tanghuru", "ID_T_OPEN_ORDER");
+                pmtComtrol.AddOption("포켓볼 빵 있어요?", "Tanghuru", "ID_T_OPEN_BBANG");
+                pmtComtrol.AddOption("편의점을 나간다.", "Tanghuru", "ID_T_OPEN_END");
+                break;
+
+            case "ID_T_OPEN_ORDER":
+                pmtComtrol.AddString("왕형", "아아. 지금은 주문이 폭주해서 당장 드릴 수가 없소.");
+                pmtComtrol.AddString("왕형", "혹시 탕후루 만드는 것을 좀 도와주겠소? 도와준다면 내 넉넉하게 사례하겠소.");
+                pmtComtrol.AddOption("네, 도와 드릴게요!", "Tanghuru", "ID_T_OPEN_ORDER_HELP");
+                pmtComtrol.AddOption("다음에 다시 올게요.", "Tanghuru", "ID_T_OPEN_END");
+                break;
+
+            case "ID_T_OPEN_ORDER_HELP":
+                tanghuruGameManager.EnterGame();
+                break;
+
+            case "ID_T_OPEN_BBANG":
+                pmtComtrol.AddString("왕형", "어찌 탕후루 가게에서 빵 따위를 팔겠는가? 내 지금 바쁘니 당치 않은 이야기는 삼가 주시게.");
+                pmtComtrol.AddOption("탕후루 주세요.", "Tanghuru", "ID_T_OPEN_ORDER");
+                pmtComtrol.AddOption("편의점을 나간다.", "Tanghuru", "ID_T_OPEN_END");
+                break;
+
+            case "ID_T_OPEN_END":
+                pmtComtrol.AddString("왕형", "미안하오. 다음에 다시 와 주시오.");
+                storeOutAction = "괜히 호통만 들었다... 다음에는 탕후루를 사러 오자.";
+                pmtComtrol.AddNextAction("main", "store_out");
+                break;
+
+            case "ID_T_OPEN_ORDER_HELP_NOHEART":
+                break;
+
+            case "ID_T_OPEN_ORDER_HELP_NOHEART_STOREOUT":
+                break;
+
+            case "ID_T_GAME_OVER_LINK":
+                //앞으로는 알밥 천국을 통해서도 왕형 탕후루에 일을 도와주러 올 수 있소.
+                if (PlayerPrefs.GetInt("tanghuru_friend", 0) == 0)
+                {
+                    if (PlayerPrefs.GetString("tanghuru_rank") == "F")
+                    {
+                        pmtComtrol.AddString("왕형", "내가 괜한 부탁을 한 모양이오.");
+                        pmtComtrol.AddString("왕형", "돈이 궁할 때 와서 알바를 하든지 말든지 알아서 하시오.");
+                    }
+                    else
+                    {
+                        pmtComtrol.AddString("왕형", "고맙소.. 자네 덕분에 살았소.");
+                        pmtComtrol.AddString("왕형", "앞으로도 용돈이 필요할 때 가끔씩 들러서 알바를 해주시오.");
+                    }
+                    PlayerPrefs.SetInt("tanghuru_friend", 1);
+                }
+                else
+                {
+                    if (PlayerPrefs.GetString("tanghuru_rank") == "F")
+                    {
+                        pmtComtrol.AddString("왕형", "내가 괜한 부탁을 한 모양이오.");
+                    }
+                    else
+                    {
+                        pmtComtrol.AddString("왕형", "고생많았소.");
+                    }
+                }
+                pmtComtrol.AddString("왕형", "이제 좀 한숨 돌릴 여유가 생긴 듯 한데 탕후루를 구매하겠소?");
+                pmtComtrol.AddOption("탕후루를 산다.", "Tanghuru", "ID_T_OPEN_STORE_TANGHURU_2");
+                pmtComtrol.AddOption("편의점을 나간다.", "Tanghuru", "ID_T_GAME_CLOSE_END");
+                break;
+
+            case "ID_T_GAME_CLOSE_END":
+                pmtComtrol.AddString("왕형", "또 오시오.");
+                storeOutAction = "";
+                pmtComtrol.AddNextAction("main", "store_out");
+                break;
+
+            case "ID_T_ALBAB":
+                pmtComtrol.AddString("왕형", "어서오시오. 환영하오.");
+                pmtComtrol.AddString("왕형", "그대가 일부러 찾아 주니 기쁘구려.");
+                pmtComtrol.AddString("왕형", "탕후루 만드는 것을 좀 도와주겠소?");
+                pmtComtrol.AddOption("네, 도와 드릴게요!", "Tanghuru", "ID_T_ALBAB_HELP");
+                pmtComtrol.AddOption("다음에 다시 올게요.", "Tanghuru", "ID_T_ALBAB_STOREOUT");
+                break;
+
+            case "ID_T_ALBAB_HELP":
+                tanghuruGameManager.EnterGame();
+                break;
+
+            case "ID_T_ALBAB_STOREOUT":
+                pmtComtrol.AddString("왕형", "다음엔 꼭 도와주길 바라오.");
+                storeOutAction = "";
+                pmtComtrol.AddNextAction("main", "store_out");
+                break;
+        }
+    }
+    
+    //!nylon
+    public enum TradeType {buy, sell}
+    private void Nylon_TradeCoin(TradeType type, string confirmID, string cancelID, string noMoney = null) {
+        domiTradePanel.OpenPanel(type, confirmID, cancelID, noMoney);
+    }
+
+    private void Nylon_OpenTradePanel(bool flag)
+    {
+        // if(domiCoin.GetAmount() == 0) return;
+        if(flag) domiCoin.ShowPanel();
+            else domiCoin.HidePanel();
+    }
+    
+    public void Nylon(string ID)
+{
+    print("EVENT ID Nylon : " + ID);
+    pmtComtrol.Reset();
+    pmtComtrol.imageMode = true;
+
+    switch(ID)
+    {
+        case "ID_F_NOMONEY_BEFORECOIN":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 당신~ 빈털털이였네요우~");
+            pmtComtrol.AddString("나이롱마스크", "돈이 없으면 투자할 수 없어요우~ 돈 벌어와요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_NOMONEY_BEFORECOIN_END");
+            break;
+
+        case "ID_F_NOMONEY_BEFORECOIN_END":
+            storeOutAction = "(돈을 벌어서 빵에 투자해 보자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_NOMONEY_AFTERECOIN_BBANGLAST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 손님~ 돈이 부족하네요우~");
+            pmtComtrol.AddString("나이롱마스크", "세상엔 돈을 버는 방법이 많이 있어요우~ 행운을 빌어요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST_END");
+            break;
+
+        case "ID_F_NOMONEY_AFTERECOIN_BBANGLAST_END":
+            storeOutAction = "(돈이 부족해서 투자를 못하다니. 어서 돈을 벌어오자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_FIRST":
+            pmtComtrol.AddString("나이롱마스크", "아뇽하세요우~ 파랑새 치킨임니다~");
+            pmtComtrol.AddOption("포켓볼 빵 있어요?", "Nylon", "ID_F_BBANG");
+            pmtComtrol.AddOption("치킨 한 마리 주세요", "Nylon", "ID_F_CHICKEN");
+            pmtComtrol.AddOption("여기선 뭐 팔아요?", "Nylon", "ID_F_WHAT");
+            break;
+
+        case "ID_F_STOREOUT":
+            pmtComtrol.AddString("나이롱마스크", "나중에 또 오세요우~");
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_BBANG":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 포켓볼 뽱~ 그냥은 안 파라요우~");
+            pmtComtrol.AddString("훈이", "그러면 어떻게 하면 팔아요?");
+            pmtComtrol.AddString("나이롱마스크", "사지 말고 투자하세요우~");
+            pmtComtrol.AddString("나이롱마스크", "지금 만 원을 내면 나중에 포켓볼 뽱으로 돌려줄게요우~");
+            pmtComtrol.AddString("훈이", "몇 개 줄 건데요?");
+            pmtComtrol.AddString("나이롱마스크", "그때그때 달라요우~");
+            pmtComtrol.AddString("훈이", "(왠지 사기꾼 같은데...)");
+            Nylon_TryInvestBbang("네, 만 원 투자할게요.", "ID_F_BBANG_INVEST", "ID_F_NOMONEY_BEFORECOIN");
+            pmtComtrol.AddOption("아니요, 괜찮아요.", "Nylon", "ID_F_BBANG_NOTINVEST");
+            break;
+
+        case "ID_F_BBANG_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "감솨합니다~! 제가 뽱 많이 가져올게요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddOption("편의점을 나간다", "Nylon", "ID_F_BBANG_INVEST_END");
+            break;
+
+        case "ID_F_BBANG_INVEST_END":
+            storeOutAction = "(이상한 가게지만 일단 투자를 했으니 다시 와야겠다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_BBANG_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 아쉽네요우~ 저한테 투자하시면 한번에 포켓볼 뽱 세 개까지도 얻을 수 있는데~");
+            pmtComtrol.AddString("나이롱마스크", "물론 하나도 못 얻을 수도 있지만...");
+            pmtComtrol.AddString("훈이", "네? 뭐라고요?");
+            pmtComtrol.AddString("나이롱마스크", "손님 참 운이 좋아보인다고요우~");
+            Nylon_TryInvestBbang("정말요? 그럼 당장 투자할게요.", "ID_F_BBANG_NOTINVEST_INVEST", "ID_F_NOMONEY_BEFORECOIN");
+            pmtComtrol.AddOption("괜찮다니까요.", "Nylon", "ID_F_BBANG_NOTINVEST_NOTINVEST");
+            break;
+
+        case "ID_F_BBANG_NOTINVEST_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "정말 현명한 선택이에요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddString("나이롱마스크", "뽱 많이 가져올 테니까 다음에 봐요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_BBANG_NOTINVEST_INVEST_END");
+            break;
+
+        case "ID_F_BBANG_NOTINVEST_INVEST_END":
+            storeOutAction = "(빵을 세 개나 얻을 수 있다니 너무 기대된다. 그런데 투자가 망하면 어떡하지?)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_BBANG_NOTINVEST_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "그렇다면 어쩔 수 없죠우~");
+            pmtComtrol.AddOption("그냥 치킨 한 마리 주세요", "Nylon", "ID_F_BBANG_NOTINVEST_NOTINVEST_CHICKEN");
+            pmtComtrol.AddOption("안녕히 계세요.", "Nylon", "ID_F_BBANG_NOTINVEST_NOTINVEST_BYE");
+            break;
+
+        case "ID_F_BBANG_NOTINVEST_NOTINVEST_CHICKEN":
+            pmtComtrol.AddString("나이롱마스크", "재료가 다 떨어졌어요우~");
+            pmtComtrol.AddOption("편의점을 나간다", "Nylon", "ID_F_BBANG_NOTINVEST_NOTINVEST_CHICKEN_END");
+            break;
+
+        case "ID_F_BBANG_NOTINVEST_NOTINVEST_CHICKEN_END":
+            storeOutAction = "(이 시간에 재료가 다 떨어졌다? 역시 뭔가 수상한 가게다. 치킨을 팔긴 하는 걸까? 그래도 빵을 세 개나 얻을 수 있는 투자는 흥미롭다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_BBANG_NOTINVEST_NOTINVEST_BYE":
+            pmtComtrol.AddString("나이롱마스크", "또 오세요우~");
+            pmtComtrol.AddOption("편의점을 나간다", "Nylon", "ID_F_BBANG_NOTINVEST_NOTINVEST_BYE_END");
+            break;
+
+        case "ID_F_BBANG_NOTINVEST_NOTINVEST_BYE_END":
+            storeOutAction = "(수상한 가게다. 그런데 빵을 세 개나 얻을 수 있다고 하니 욕심이 난다. 여유가 생기면 다시 와보자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_CHICKEN":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 취킨~ 재료가 다 떨어졌어요우~ 안 팔아요우~");
+            pmtComtrol.AddOption("그럼 뭐 팔아요?", "Nylon", "ID_F_CHICKEN_WHAT");
+            pmtComtrol.AddOption("그럼 다음에 올게요.", "Nylon", "ID_F_CHICKEN_NOTINVEST");
+            break;
+
+        case "ID_F_CHICKEN_WHAT":
+            pmtComtrol.AddString("나이롱마스크", "취킨 사지 말고 저한테 투자하세요우~");
+            pmtComtrol.AddString("나이롱마스크", "지금 만 원을 내면 나중에 포켓볼 뽱으로 돌려줄게요우~");
+            pmtComtrol.AddString("훈이", "몇 개 줄 건데요?");
+            pmtComtrol.AddString("나이롱마스크", "그때그때 달라요우~");
+            pmtComtrol.AddString("훈이", "(왠지 사기꾼 같은데...)");
+            Nylon_TryInvestBbang("네, 만 원 투자할게요.", "ID_F_CHICKEN_WHAT_INVEST", "ID_F_NOMONEY_BEFORECOIN");
+            pmtComtrol.AddOption("아니요, 괜찮아요.", "Nylon", "ID_F_CHICKEN_WHAT_NOTINVEST");
+            break;
+
+        case "ID_F_CHICKEN_WHAT_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 잘 선택하셨어요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddString("나이롱마스크", "제가 뽱 잔뜩 가져올게요우~ 최대 3개까지 가져올 수 있어요우~");
+            pmtComtrol.AddString("나이롱마스크", "물론 하나도 못 가져올 수도 있지만...");
+            pmtComtrol.AddString("훈이", "네? 뭐라고요?");
+            pmtComtrol.AddString("나이롱마스크", "아무것도 아니에요우~");
+            pmtComtrol.AddString("나이롱마스크", "다음에 봐요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_CHICKEN_WHAT_INVEST_END");
+            break;
+
+        case "ID_F_CHICKEN_WHAT_INVEST_END":
+            storeOutAction = "(뭔가 하나도 못 가져올 수도 있다는 말을 들은 것 같은데... 잘못 들은 거겠지? 투자가 잘 되길 기도하자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_CHICKEN_WHAT_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 아쉽네요우~");
+            pmtComtrol.AddString("나이롱마스크", "저한테 투자하시면 한번에 포켓볼 뽱 세 개까지도 얻을 수 있는데~");
+            Nylon_TryInvestBbang("정말요? 그럼 당장 투자할게요.", "ID_F_CHICKEN_WHAT_NOTINVEST_INVEST", "ID_F_NOMONEY_BEFORECOIN");
+            pmtComtrol.AddOption("괜찮다니까요.", "Nylon", "ID_F_CHICKEN_WHAT_NOTINVEST_NOTINVEST");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            break;
+
+        case "ID_F_CHICKEN_WHAT_NOTINVEST_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "좋아요우~ 제가 뽱 많이 가져올게요우~");
+            pmtComtrol.AddString("나이롱마스크", "세 개까지 가져올 수 있어요우~");
+            pmtComtrol.AddString("나이롱마스크", "하나도 못 가져올 수도 있지만...");
+            pmtComtrol.AddString("훈이", "네?");
+            pmtComtrol.AddString("나이롱마스크", "아무말도 안 했어요우~ 다음에 봐요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_CHICKEN_WHAT_NOTINVEST_INVEST_END");
+            break;
+
+        case "ID_F_CHICKEN_WHAT_NOTINVEST_INVEST_END":
+            storeOutAction = "(빵을 한번에 세 개나 얻을 수 있다니! 그런데 하나도 못 가져올 수도 있다는 건... 잘못 들은 거겠지?)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_CHICKEN_WHAT_NOTINVEST_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "어쩔 수 없죠우~ 그래도 잘 생각해 봐요우~");
+            pmtComtrol.AddString("훈이", "포켓볼 빵을 팔지는 않으시나요?");
+            pmtComtrol.AddString("나이롱마스크", "안 팔아요우~!");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_CHICKEN_WHAT_NOTINVEST_NOTINVEST_END");
+            break;
+
+        case "ID_F_CHICKEN_WHAT_NOTINVEST_NOTINVEST_END":
+            storeOutAction = "(수상한 가게에 무턱대고 돈을 맡길 수는 없다. 그래도 빵을 세 개나 얻을 수 있다고 하니 더 고민해보고 방문하자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_CHICKEN_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 잠깐 기다려봐요우~");
+            pmtComtrol.AddString("나이롱마스크", "저는 사실 투자자에요우~");
+            pmtComtrol.AddString("나이롱마스크", "저한테 만 원을 투자하면 포켓볼 뽱을 세 개까지 가져올 수 있어요우~");
+            pmtComtrol.AddOption("진짜요? 그럼 당장 투자할게요.", "Nylon", "ID_F_CHICKEN_NOTINVEST_INVEST");
+            pmtComtrol.AddOption("필요 없어요.", "Nylon", "ID_F_CHICKEN_NOTINVEST_NOTINVEST");
+            break;
+
+        case "ID_F_CHICKEN_NOTINVEST_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "탁월한 선택이에요우~ 최선을 다할게요우~");
+            pmtComtrol.AddString("나이롱마스크", "물론 투자 실패 가능성도 있지만...");
+            pmtComtrol.AddString("훈이", "투자 실패요?");
+            pmtComtrol.AddString("나이롱마스크", "저는 그런 말 안 했어요우~ 다음에 또 와요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_CHICKEN_NOTINVEST_INVEST_END");
+            break;
+
+        case "ID_F_CHICKEN_NOTINVEST_INVEST_END":
+            storeOutAction = "(빵을 세 개나 한번에 얻을 수 있다니 기대된다. 그런데 투자에 실패하면 어떻게 되는 거지?)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_CHICKEN_NOTINVEST_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "그렇다면 어쩔 수 없죠우~");
+            pmtComtrol.AddString("훈이", "그냥 포켓볼 빵을 팔지는 않아요?");
+            pmtComtrol.AddString("나이롱마스크", "안 팔아요우~! 투자하고 싶을 때 다시 오세요우~!");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_CHICKEN_NOTINVEST_NOTINVEST_END");
+            break;
+
+        case "ID_F_CHICKEN_NOTINVEST_NOTINVEST_END":
+            storeOutAction = "(아저씨가 치킨 파는 데는 관심이 없나보다. 투자를 하고 싶어지면 다시 오자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_WHAT":
+            pmtComtrol.AddString("나이롱마스크", "아무것도 안 팔아요우~ 대신 투자해요우~");
+            pmtComtrol.AddString("훈이", "투자요?");
+            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱 투자에요우~ 만 원 투자로 최대 세 개까지 얻을 수 있어요우~");
+            pmtComtrol.AddString("나이롱마스크", "아무것도 못 얻을 수도 있지만...");
+            pmtComtrol.AddString("훈이", "뭐라고요?");
+            pmtComtrol.AddString("나이롱마스크", "아무것도 아니에요우~ 투자 하실래요우~? 뽱 많이 가져올 수 있어요우~");
+            Nylon_TryInvestBbang("좋아요. 만 원 투자할게요.", "ID_F_WHAT_INVEST", "ID_F_NOMONEY_BEFORECOIN");
+            pmtComtrol.AddOption("아니요. 괜찮아요.", "Nylon", "ID_F_WHAT_NOTINVEST");
+            break;
+
+        case "ID_F_WHAT_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "완죤 좋은 선택이에요우~ 열심히 투자해 볼게요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddString("나이롱마스크", "다음에 또 봐요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_WHAT_INVEST_END");
+            break;
+
+        case "ID_F_WHAT_INVEST_END":
+            storeOutAction = "(빵을 세 개나 얻을 수 있다니 기대된다. 그런데 투자에 실패해서 아무것도 못 돌려받는 건 아니겠지?)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_WHAT_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 겁쟁이군요우~ 투자할 생각이 생기면 다시 와요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_WHAT_NOTINVEST_END");
+            break;
+
+        case "ID_F_WHAT_NOTINVEST_END":
+            storeOutAction = "(겁쟁이라니. 기분은 별로 안 좋지만 왠지 오기가 생긴다. 다음번엔 투자해 봐야겠다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED":
+            pmtComtrol.AddString("나이롱마스크", "아뇽하세요우~ 파랑새 치킨임니다~");
+            pmtComtrol.AddOption("투자는 잘 됐나요?", "Nylon", "ID_F_SECOND_IFINVESTED_BREADS_???");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_STOREOUT");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_???":
+            Nylon_DrawBbang("ID_F_SECOND_IFINVESTED_BREADS_0", 20,
+            "ID_F_SECOND_IFINVESTED_BREADS_1", 45,
+            "ID_F_SECOND_IFINVESTED_BREADS_2", 30, 
+            "ID_F_SECOND_IFINVESTED_BREADS_3", 15);
+            PlayerPrefs.SetInt("NylonInvested", 0);
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_3":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 예~ 완죤 잘 됐어요우~ 마치 투자의 신이 된 기분이에요우~");
+            AddBBang(3);
+            pmtComtrol.AddString("훈이", "와 3개씩이나!");
+            pmtComtrol.AddString("나이롱마스크", "이 정돈 기본이에요우~! 또 투자해 볼래요우~?");
+            Nylon_TryInvestBbang("당연하죠! 당장 투자할래요.", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
+            pmtComtrol.AddOption("죄송하지만 이번에는 안 할래요.", "Nylon", "ID_F_SECOND_IFINVESTED_3BREADS_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_3BREADS_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "똑똑한 선택이네요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 대박의 기운이 가득한 이몸만 믿으세요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_3BREADS_INVEST_END":
+            storeOutAction = "(투자 한 번에 빵을 세 개나 얻다니, 완전 개이득이다. 다음 투자 결과도 무척 기대된다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_3BREADS_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "지금 투자의 신을 못 믿는 건가요우~? 어리석기 짝이 없군요우~ 아마 오늘 투자하지 않은 걸 후회할 거에요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_3BREADS_NOTINVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_3BREADS_NOTINVEST_END":
+            storeOutAction = "(투자 한 번에 빵을 세 개나 얻다니, 완전 개이득이다. 그래도 두 번 연속 세 개를 얻긴 힘들겠지. 투자는 다음에 하자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_2":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 꽤 잘 됐어요우~ 저는 투자 고수거든요우~");
+            AddBBang(2);
+            pmtComtrol.AddString("훈이", "오 2개나!");
+            pmtComtrol.AddString("나이롱마스크", "나름 만족스럽죠우~? 또 투자해보는 건 어때요우~?");
+            Nylon_TryInvestBbang("좋아요!", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
+            pmtComtrol.AddOption("죄송하지만 이번에는 안 할래요.", "Nylon", "ID_F_SECOND_IFINVESTED_2BREADS_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_2BREADS_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "투자의 묘미를 알아주는 분이군요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 제가 알아서 잘 투자해드릴테니 다음에 봐요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_2BREADS_INVEST_END":
+            storeOutAction = "(투자도 빵을 얻는 데 좋은 방법인 것 같다. 다음 투자 결과도 기대된다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_2BREADS_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "이번 투자 결과가 마음에 안 들었나요우~? 이 정도면 정말 잘 한 거라고요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_2BREADS_NOTINVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_2BREADS_NOTINVEST_END":
+            storeOutAction = "(투자 한 번에 빵 두 개 정도면 만족스럽다. 욕심을 너무 많이 부리는 건 좋지 않겠지. 투자는 다음에 하자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_1":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 손해는 안 봤어요우~");
+            AddBBang(1);
+            pmtComtrol.AddString("훈이", "1개네요.");
+            pmtComtrol.AddString("나이롱마스크", "맞아요우~ 이번에는 좀 아쉬운 결과지만 다음 번엔 더 잘할 수 있어요우~ 다시 한번 투자해 볼래요우~?");
+            Nylon_TryInvestBbang("한번만 더 믿어볼게요.", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
+            pmtComtrol.AddOption("아니요. 안 할래요.", "Nylon", "ID_F_SECOND_IFINVESTED_1BREAD_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "한 번 더 기회를 줘서 고마워요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 이번엔 더 잘해 볼게요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_END":
+            storeOutAction = "(만 원이나 투자해서 빵을 한 개밖에 못 얻다니. 조금 아쉽지만 다음 결과를 기다려보자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_1BREAD_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "정말 매정한 사람이네요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_1BREAD_NOTINVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_1BREAD_NOTINVEST_END":
+            storeOutAction = "(끼워 파는 포켓볼 빵이랑 가격이 같다니 너무 비싸다. 조금 여유가 생기면 다시 투자해 보자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_0":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 이번에 상황이 좀 좋지 않았어요우~");
+            AddBBang(0);
+            pmtComtrol.AddString("훈이", "한 개도 못 얻었다고요?");
+            pmtComtrol.AddString("나이롱마스크", "투자라는 게 원래 그런 거 아니겠어요우~? 맑은 날이 있으면 흐린 날이 있는 거죠우~");
+            pmtComtrol.AddString("나이롱마스크", "이번에는 정말 느낌이 좋은데 한번 더 투자해 볼래요우?");
+            Nylon_TryInvestBbang("정말이죠...? 그럼 딱 한번만 더 투자해 볼게요.", "ID_F_SECOND_IFINVESTED_0BREADS_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
+            pmtComtrol.AddOption("미쳤어요?", "Nylon", "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "물론 정말이죠우~");
+            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 이번엔 진짜 잘 될 거니까 저만 믿으세요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_END":
+            storeOutAction = "(만 원이나 투자해서 빵을 하나도 못 얻다니 이거 완전 손해잖아? 다음 투자는 잘 되기를 기도한다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 그렇게 험한 말을~! 원숭이도 나무에서 떨어질 때가 있는 법이라고요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST_END":
+            storeOutAction = "(완전 사기꾼이잖아? 분하다. 하지만 뭔가 또 투자하고 싶어서 손이 근질근질하다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFNOTINVESTED":
+            pmtComtrol.AddString("나이롱마스크", "아뇽하세요우~ 파랑새 치킨임니다~");
+            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱에 투자해볼 생각이 생기셨나요우~? 만 원이면 포켓볼 뽱을 최대 3개 까지 얻을 수 있어요우~");
+            Nylon_TryInvestBbang("네, 투자할게요.", "ID_F_SECOND_IFNOTINVESTED_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
+            pmtComtrol.AddOption("아니요, 투자 안 할 건데요?", "Nylon", "ID_F_SECOND_IFNOTINVESTED_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFNOTINVESTED_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "역시 투자할줄 있었어요우~ 저만 믿으세요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFNOTINVESTED_INVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFNOTINVESTED_INVEST_END":
+            storeOutAction = "(결국 투자했다. 왠지 포켓볼 빵을 잔뜩 얻을 수 있을 것 같은 기분이 든다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_SECOND_IFNOTINVESTED_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "그럼 뭐하러 온 거에요우~ 투자할 생각 생기면 다시 와요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFNOTINVESTED_NOTINVEST_END");
+            break;
+
+        case "ID_F_SECOND_IFNOTINVESTED_NOTINVEST_END":
+            storeOutAction = "(역시 투자는 위험하다. 빵을 세 개나 얻을 수 있다는 건 매력적이지만 역시 돈이 아깝다. 좀 더 고민해본 뒤 투자하자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+    }
+}
+    public void Nylon_f(string ID)
+{
+    print("EVENT ID Nylon_f : " + ID);
+    pmtComtrol.Reset();
+    pmtComtrol.imageMode = true;
+
+    switch(ID)
+    {
+        case "ID_F_FRIEND_HELLO":
+            pmtComtrol.AddString("나이롱마스크", "아뇽하세요우~ 파랑새 치킨임니다~ ");
+            pmtComtrol.AddString("나이롱마스크", "단골 손님~ 오늘도 이렇게 방문해 주셔서 캄사합니돠~");
+            if (PlayerPrefs.GetInt("NylonInvested") == 0)
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_BREADS_???");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_???":
+            Nylon_DrawBbang_f("ID_F_SECOND_IFINVESTED_BREADS_0", 20,
+            "ID_F_SECOND_IFINVESTED_BREADS_1", 50,
+            "ID_F_SECOND_IFINVESTED_BREADS_2", 20, 
+            "ID_F_SECOND_IFINVESTED_BREADS_3", 10);
+            PlayerPrefs.SetInt("NylonInvested", 0);
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_3":
+            pmtComtrol.AddString("훈이", "투자는 잘 됐나요?");
+            pmtComtrol.AddString("나이롱마스크", "오우~ 예~ 완죤 잘 됐어요우~ 마치 투자의 신이 된 기분이에요우~");
+            AddBBang(3);
+            pmtComtrol.AddString("훈이", "와 3개씩이나!");
+            pmtComtrol.AddString("나이롱마스크", "이 정돈 기본이에요우~! 또 투자해 볼래요우~?");
+            Nylon_TryInvestBbang("당연하죠! 당장 투자할래요.", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST", "ID_F_NOMONEY_BREAD", "Nylon_f");
+            pmtComtrol.AddOption("죄송하지만 이번에는 안 할래요.", "Nylon_f", "ID_F_SECOND_IFINVESTED_3BREADS_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_3BREADS_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "똑똑한 선택이네요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 이번에도 투자 잘해서 대봑 한번 터뜨려 볼게요우~");
+            if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_3BREADS_INVEST_2":
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_3BREADS_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "지금 투자의 신을 못 믿는 건가요우~? 어리석기 짝이 없군요우~ 오늘 투자하지 않으면 후회할 거에요우~");
+            if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_3BREADS_NOTINVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_3BREADS_NOTINVEST_2":
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_2":
+            pmtComtrol.AddString("훈이", "투자는 잘 됐나요?");
+            pmtComtrol.AddString("나이롱마스크", "오우~ 꽤 잘 됐어요우~ 저는 투자 고수거든요우~");
+            AddBBang(2);
+            pmtComtrol.AddString("훈이", "오 2개나!");
+            pmtComtrol.AddString("나이롱마스크", "나름 만족스럽죠우~? 또 투자해보는 건 어때요우~?");
+            Nylon_TryInvestBbang("좋아요!", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST", "ID_F_NOMONEY_BREAD", "Nylon_f");
+            pmtComtrol.AddOption("죄송하지만 이번에는 안 할래요.", "Nylon_f", "ID_F_SECOND_IFINVESTED_2BREADS_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_2BREADS_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "투자의 묘미를 알아주는 분이군요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 다음번엔 뽱을 더 많이 가져오도록 노력할게요우~");
+            if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_2BREADS_INVEST_2":
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_2BREADS_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "이번 투자 결과가 마음에 안 들었나요우~? 이 정도면 정말 잘 한 거라고요우~");
+            if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_2BREADS_NOTINVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_2BREADS_NOTINVEST_2":
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_1":
+            pmtComtrol.AddString("훈이", "투자는 잘 됐나요?");
+            pmtComtrol.AddString("나이롱마스크", "오우~ 손해는 안 봤어요우~");
+            AddBBang(1);
+            pmtComtrol.AddString("훈이", "1개네요.");
+            pmtComtrol.AddString("나이롱마스크", "맞아요우~ 이번에는 좀 아쉬운 결과지만 다음 번엔 더 잘 할 수 있어요우~ 다시 한번 투자해 볼래요우~?");
+            Nylon_TryInvestBbang("한번만 더 믿어볼게요.", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST", "ID_F_NOMONEY_BREAD", "Nylon_f");
+            pmtComtrol.AddOption("아니요. 안 할래요.", "Nylon_f", "ID_F_SECOND_IFINVESTED_1BREAD_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "한번 더 기회를 줘서 고마워요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 다음번엔 확실히 뽱을 더 많이 가져올 수 있을 거에요우~");
+            if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_2":
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_1BREAD_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "정말 매정한 사람이네요우~");
+            if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_1BREAD_NOTINVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_1BREAD_NOTINVEST_2":
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_BREADS_0":
+            // No command found on line 89 : 
+            pmtComtrol.AddString("나이롱마스크", "오우~ 이번에 상황이 좀 좋지 않았어요우~");
+            AddBBang(0);
+            pmtComtrol.AddString("훈이", "한 개 도 못 얻었다고요?");
+            pmtComtrol.AddString("나이롱마스크", "투자라는 게 원래 그런 거 아니겠어요우~? 맑은 날이 있으면 흐린 날이 있는 거죠우~");
+            pmtComtrol.AddString("나이롱마스크", "이번에는 정말 느낌이 좋은데 한번 더 투자해 볼래요우?");
+            Nylon_TryInvestBbang("정말이죠...? 그럼 딱 한번만 더 투자해 볼게요.", "ID_F_SECOND_IFINVESTED_0BREADS_INVEST", "ID_F_NOMONEY_BREAD", "Nylon_f");
+            pmtComtrol.AddOption("미쳤어요?", "Nylon_f", "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "물론 정말이죠우~ I am 신뢰에요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 다음 번엔 절대 투자 실패 같은 거 안 할 거에요우~");
+            if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_2":
+            pmtComtrol.AddString("", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 그렇게 험한 말을~! 원숭이도 나무에서 떨어질 때가 있는 법이라고요우~");
+            if (PlayerPrefs.HasKey("NylonDomiTutorial"))
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST_2");
+            else
+                pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN");
+            break;
+
+        case "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST_2":
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_MAIN":
+            pmtComtrol.AddString("나이롱마스크", "무엇에 투자하시겠어요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_MAIN_INTERSECTION":
+            if (PlayerPrefs.GetInt("NylonInvested") == 0) 
+                Nylon_TryInvestBbang("빵에 투자하기", "ID_F_FRIEND_MAIN_BREAD", "ID_F_NOMONEY_BREAD", "Nylon_f"); 
+            Nylon_OpenTradePanel(false);
+            pmtComtrol.AddOption("코인 거래하기", "Nylon_f", "ID_F_FRIEND_MAIN_COIN");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon_f", "ID_F_FRIEND_MAIN_OUT");
+            break;
+
+        case "ID_F_FRIEND_MAIN_BREAD":
+            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱~에 투자하고 싶으시군요우~ 만 원이면 포켓볼 뽱을 최대 3개 까지 얻을 수 있어요우~");
+            pmtComtrol.AddString("나이롱마스크", "투자를 확정하시겠어요우~?");
+            pmtComtrol.AddOption("네.", "Nylon_f", "ID_F_FRIEND_MAIN_BREAD_YES");
+            pmtComtrol.AddOption("아니요.", "Nylon_f", "ID_F_FRIEND_MAIN_BREAD_NO");
+            break;
+
+        case "ID_F_FRIEND_MAIN_BREAD_YES":
+            pmtComtrol.AddString("나이롱마스크", "역시 단골손님이에요우~ 화끈하네요우~");
+            heartControl.UpdateMoney(-10000);
+            PlayerPrefs.SetInt("NylonInvested", 1);
+            pmtComtrol.AddString("나이롱마스크", "다음에 들를 때 투자 결과를 알려드릴게요우~");
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_MAIN_BREAD_NO":
+            pmtComtrol.AddString("나이롱마스크", "그럼 뭐하러 온 거에요우~");
+            pmtComtrol.AddString("나이롱마스크", "다른 투자에 관심이 있는 건가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN":
+            Nylon_OpenTradePanel(true);
+            int balancePercent = domiCoin.GetBalancePercent();
+            if (domiCoin.GetAmount() > 0)
+                        {
+                            if(balancePercent > 70) 
+                                pmtComtrol.AddString("나이롱마스크", "현재 수익률은 " + balancePercent + "%에요우~ 엄청나요우~ 이러다 정말 화성 가겠어요우~");
+                            else if(balancePercent > 30) 
+                                pmtComtrol.AddString("나이롱마스크", "현재 수익률은 " + balancePercent + "%에요우~ 완전 떡상했네요우~");
+                            else if(balancePercent > -30) 
+                                pmtComtrol.AddString("나이롱마스크", "현재 수익률은 " + balancePercent + "%에요우~");
+                            else if(balancePercent > -70) 
+                                pmtComtrol.AddString("나이롱마스크", "현재 수익률은 " + balancePercent + "%에요우~ 떡락도 이런 떡락이 없네요우~");
+                            else 
+                                pmtComtrol.AddString("나이롱마스크", "현재 수익률은 " + balancePercent + "%에요우~ 오우~ 투자 정말 개못하시네요우~");
+                            
+                        }
+            pmtComtrol.AddOption("도미 코인을 사고 싶어요.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_BUY");
+            if (domiCoin.GetAmount() > 0)
+                            pmtComtrol.AddOption("도미 코인을 팔고 싶어요.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_SELL");
+            pmtComtrol.AddOption("다른 거래를 하고 싶어요.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_ANOTHER");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_ANOTHER":
+            Nylon_OpenTradePanel(false);
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_BUY":
+            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+"원 이에요우~");
+            Nylon_OpenTradePanel(true);
+            if(domiCoin.diff < 0.6) { 
+              pmtComtrol.AddString("나이롱마스크", "지금이니~? 평생에 한번 있을까말까한 기회에요우~ 저라면 몰빵했어요우~");
+              pmtComtrol.AddString("나이롱마스크", "차가 있다면 차를 팔고 집이 있다면 집을 팔아서 도미 코인을 사야해요우~");
+            }
+            else if(domiCoin.diff < 0.7) pmtComtrol.AddString("나이롱마스크", "오늘이 블랙프라이데이인가요우~? 도미 코인이 미친듯한 할인을 하고 있네요우~");
+            else if(domiCoin.diff < 0.85) pmtComtrol.AddString("나이롱마스크", "바닥을 다지는 중이네요우~ 저라면 추매했어요우~ 물을 탈 때에요우~");
+            else if(domiCoin.diff < 1) pmtComtrol.AddString("나이롱마스크", "도미 코인이 손님을 낚아먹으려고 하는군요우~ 물론 오를수도 있고 내릴 수도 있죠우~");
+            else if(domiCoin.diff < 1.15) pmtComtrol.AddString("나이롱마스크", "이건 오른 것도 아니에요우~ 상승세 한번 타면 오늘이 제일 싸다는 걸 알게 될 거에요우~");
+            else if(domiCoin.diff < 1.4) pmtComtrol.AddString("나이롱마스크", "꽤 올랐네요우~ 하지만 아직 늦지 않았어요우~ 이 가격보다 오르기만 하면 이득이에요우~");
+            else if(domiCoin.diff < 1.8) pmtComtrol.AddString("나이롱마스크", "이미 버스 떠나버렸네요우~ 다음 버스를 기다리는 게 어떨까요우~? 물론 다음 버스가 온다면 말이죠우~");
+            else {
+              pmtComtrol.AddString("나이롱마스크", "오우~ 은하수에 살던 도미가 안드로메다로 떠나갔군요우~ 배 아파해도 소용 없어요우~");
+              pmtComtrol.AddString("나이롱마스크", "진작에 샀어야죠우~");
+            }
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_COIN_BUY_TRADE");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_BUY_TRADE":
+            Nylon_TradeCoin(TradeType.buy, "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER", "ID_F_FRIEND_MAIN_COIN_BUY_NOTBUY", "ID_F_NOMONEY_COIN");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER":
+            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.BuyAmount * domiCoin.GetPrice()+"원이에요우~ 구매를 확정하시겠어요우~?");
+            pmtComtrol.AddOption("네.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER_YES");
+            pmtComtrol.AddOption("아니요.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER_NO");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER_YES":
+            domiCoin.BuyCoin(domiCoin.BuyAmount);
+            pmtComtrol.AddString("나이롱마스크", "여기 도미 코인 "+domiCoin.BuyAmount+"개에요우~ ");
+            pmtComtrol.AddString("나이롱마스크", "이제 도미 코인을 "+domiCoin.GetAmount()+"개 가지고 계시네요우~");
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER_NO":
+            pmtComtrol.AddString("나이롱마스크", "변덕이 심하시군요우~ 몇 개 살지 확실히 정하세요우~");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_COIN_BUY_TRADE");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_BUY_NOTBUY":
+            pmtComtrol.AddString("나이롱마스크", "신중한 성격이시군요우~ 하지만 때론 과감할 필요도 있어요우~ 화성 갈끄니까~");
+            Nylon_OpenTradePanel(false);
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_SELL":
+            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+"원 이에요우~");
+            Nylon_OpenTradePanel(true);
+            if(domiCoin.diff < 0.6) { 
+              pmtComtrol.AddString("나이롱마스크", "오우~ 쥐저스~! 대공황이에요우~ 제 돈 아니라서 다행이에요우~");
+              pmtComtrol.AddString("나이롱마스크", "만약 제가 지금 코인을 들고 있었다면 정신차리려고 세수하다가 화가나서 세면대를 부수고 말았을 거에요우~");
+            }
+            else if(domiCoin.diff < 0.7) pmtComtrol.AddString("나이롱마스크", "바닥 밑에 지하실이 있었네요우~ 당신이 선택한 코인이에요우~ 악으로 깡으로 버티세요우~!");
+            else if(domiCoin.diff < 0.85) pmtComtrol.AddString("나이롱마스크", "마음이 아프네요우~ 하지만 아프니까 청춘이죠우~ 단골 손님은 이팔청춘이네요우~ 너무 아프니까요우~");
+            else if(domiCoin.diff < 1) pmtComtrol.AddString("나이롱마스크", "약간의 손실이 있네요우~ 하지만 이정도로 엄살 부리는 찌질이는 없겠죠우~?");
+            else if(domiCoin.diff < 1.15) pmtComtrol.AddString("나이롱마스크", "오늘 장은 심심하네요우~ 차라리 적금을 드는 게 낫겠어요우~");
+            else if(domiCoin.diff < 1.4) pmtComtrol.AddString("나이롱마스크", "나쁘지 않은 수익이에요우~ 이 정도는 돼야 코인할 맛이 나죠우~");
+            else if(domiCoin.diff < 1.8) pmtComtrol.AddString("나이롱마스크", "가즈아~ 불꽃 같은 상승에 제 마음이 뜨거워지는군요우~");
+            else {
+              pmtComtrol.AddString("나이롱마스크", "오우~ 마취 로켓이 발사되는 것 같은 급등세로군요우~ 축하해요우~");
+              pmtComtrol.AddString("나이롱마스크", "이정도면 하늘나라 천사 똥침도 찌를 수 있겠어요우~ ");
+            }
+            pmtComtrol.AddString("나이롱마스크", "지금 도미 코인을 "+domiCoin.GetAmount()+"개 가지고 있으시네요우~ 몇 개 파시겠어요우~? ");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_COIN_SELL_TRADE");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_SELL_TRADE":
+            Nylon_TradeCoin(TradeType.sell, "ID_F_FRIEND_MAIN_COIN_SELL_NUMBER", "ID_F_FRIEND_MAIN_COIN_SELL_NOTSELL", "");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_SELL_NUMBER":
+            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.SellAmount*domiCoin.GetPrice()+"원을 얻을 수 있어요우~ 판매를 확정하시겠어요우~?");
+            pmtComtrol.AddOption("네.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_SELL_YES");
+            pmtComtrol.AddOption("아니요.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_SELL_NO");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_SELL_YES":
+            domiCoin.SellCoin(domiCoin.SellAmount);
+            pmtComtrol.AddString("나이롱마스크", "도미 코인을 "+domiCoin.SellAmount+"개 팔았어요우~ ");
+            pmtComtrol.AddString("나이롱마스크", "이제 도미 코인이 "+domiCoin.GetAmount()+"개 남았네요우~");
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_SELL_NO":
+            pmtComtrol.AddString("나이롱마스크", "완전 변덕쟁이군요우~ 몇 개 팔지 확실히 정하세요우~");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_COIN_SELL_TRADE");
+            break;
+
+        case "ID_F_FRIEND_MAIN_COIN_SELL_NOTSELL":
+            pmtComtrol.AddString("나이롱마스크", "지금 팔긴 좀 아깝긴 하죠우~ 하지만 언제나 떨어질 수 있다는 걸 명심하세요우~");
+            Nylon_OpenTradePanel(false);
+            pmtComtrol.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_MAIN_OUT":
+            storeOutAction = "(투자는 개인의 선택이다. 나는 오늘의 선택에 후회하지 않는다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_NOMONEY_BREAD":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 손님~ 돈이 부족하네요우~");
+            pmtComtrol.AddString("나이롱마스크", "돈을 벌어서 포켓볼 뽱에 투자해 보세요우~");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_NOMONEY_COIN":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 돈이 없잖아요우~");
+            Nylon_OpenTradePanel(false);
+            pmtComtrol.AddString("나이롱마스크", "티끌 모아 태산이라는 말이 있죠우~");
+            pmtComtrol.AddString("나이롱마스크", "티끌이라도 있어야 태산이 된다는 뜻이에요우~");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN":
+            pmtComtrol.AddString("나이롱마스크", "그나저나 우리가 투자로 인연을 쌓은지도 꽤 오래됐군요우~ 당신은 단골 손님이에요우~");
+            //become friend
+            PlayerPrefs.SetInt("NylonDomiTutorial", 1);
+            pmtComtrol.AddString("나이롱마스크", "그래서 제가 새로운 투자 상품을 준비해 봤어요우~ 한번 들어볼래요우~?");
+            pmtComtrol.AddString("훈이", "오! 어떤 거죠?");
+            pmtComtrol.AddString("나이롱마스크", "바로 도미 코인이에요우~");
+            pmtComtrol.AddString("훈이", "도미 코인이요?");
+            pmtComtrol.AddString("나이롱마스크", "비트코인 같은 거에요우~ 도미 코인을 사면 실시간으로 가격이 바뀌어요우~ 쌀 때 사서 비쌀 때 사면 되요우~");
+            pmtComtrol.AddString("훈이", "이것도 만 원씩 투자하면 되나요?");
+            pmtComtrol.AddString("나이롱마스크", "아니요우~ 원하는 금액만큼 자유롭게 투자할 수 있어요우~ 한번 질러 볼래요우~? 벼락 부자 될 수 있어요우~");
+            pmtComtrol.AddOption("좋아요. 한번 해볼게요.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST");
+            pmtComtrol.AddOption("아니요. 돈은 알바해서 정직하게 벌어야죠.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_NOTINVEST");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_INVEST":
+            pmtComtrol.AddString("나이롱마스크", "역시 손님이라면 코인의 가치를 알아봐 줄줄 알았어요우~");
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_2");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_INVEST_2":
+            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+"원 이에요우~ 코인을 몇 개 구매할래요우~?");
+            Nylon_OpenTradePanel(true);
+            pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_2_TRADE");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_INVEST_2_TRADE":
+            Nylon_TradeCoin(TradeType.buy, "ID_F_FRIEND_COINEXPLAIN_INVEST_NUMBER", "ID_F_FRIEND_COINEXPLAIN_INVEST_NOTINVEST", "ID_F_NOMONEY_COIN");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_INVEST_NUMBER":
+            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.GetPrice() * domiCoin.BuyAmount+"원이에요우~ 구매를 확정하시겠어요우~?");
+            pmtComtrol.AddOption("네.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_YES");
+            pmtComtrol.AddOption("아니요.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_2");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_INVEST_YES":
+            pmtComtrol.AddString("나이롱마스크", "여기 도미 코인 "+domiCoin.BuyAmount+"개에요우~ 역시 손님은 도전 정신이 투철하시군요우~ 도전하는 사람은 아름다워요우~");
+            Nylon_OpenTradePanel(false);
+            pmtComtrol.AddString("훈이", "가격이 이것보다 떨어지진 않겠죠?");
+            pmtComtrol.AddString("나이롱마스크", "걱정하지 마요우~ 떨어지면 또 사면 되죠우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_YES_OUT");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_INVEST_YES_OUT":
+            storeOutAction = "(도미 코인을 샀다. 올랐으면 좋겠다.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "오우~ 쫄보가 따로 없네요우~ 다음에 왔을 땐 도미 코인 가격 따따블 돼 있을 거에요우~ 그땐 후회해도 소용 없어요우~");
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_NOTINVEST_OUT");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_NOTINVEST_OUT":
+            storeOutAction = "(도미 코인에 투자할 수 있게 됐다. 다음에 한번 투자해 보자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_INVEST_NOTINVEST":
+            pmtComtrol.AddString("나이롱마스크", "답답하네요우~! 그런 푼돈 벌어서 언제 부자 될래요우~?");
+            Nylon_OpenTradePanel(false);
+            pmtComtrol.AddOption("편의점을 나간다.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_NOTINVEST_OUT");
+            break;
+
+        case "ID_F_FRIEND_COINEXPLAIN_INVEST_NOTINVEST_OUT":
+            storeOutAction = "(코인이라니. 열심히 번 돈을 하루 아침에 날려 버릴 수는 없다. 그래도 인생은 한방이긴 한데... 다음에 투자해 보자.)";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+    }
+}
+    
     public void Debug_gotoBbobgi()
     {
-        if(currentLocation == "bbobgi")
+        if (currentLocation == "bbobgi")
         {
             Debug_reloadBbobgi();
             return;
         }
+
         parkBtn.SetActive(false);
         GetComponent<Heart_Control>().SetHeart(-1);
         front_panel.SetActive(true);
@@ -2660,15 +3885,15 @@ public class Main_control : MonoBehaviour
 
         parkBtn.SetActive(false);
         pmtComtrol.Reset();
-        string str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
+        var str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
         pmtComtrol.AddString("훈이", str);
         prompter.GetComponent<Animator>().SetTrigger("show");
         prompter.SetActive(true);
         currentLocation = "toStore";
 
-        for (; ; )
+        for (;;)
         {
-            int rnd = 5;
+            var rnd = 5;
 
             if (myStoreType != rnd)
             {
@@ -2687,7 +3912,7 @@ public class Main_control : MonoBehaviour
 
     public void GotoCu()
     {
-        if(currentLocation == "home")
+        if (currentLocation == "home")
         {
             if (GetComponent<Heart_Control>().heartCount >= 1)
             {
@@ -2706,7 +3931,8 @@ public class Main_control : MonoBehaviour
             {
                 balloon.ShowMsg("지금은 피곤하다.. \n 너튜브나 보면서 쉴까..");
             }
-        } else if(currentLocation == "store")
+        }
+        else if (currentLocation == "store")
         {
             if (GetComponent<Heart_Control>().heartCount >= 1)
             {
@@ -2723,13 +3949,15 @@ public class Main_control : MonoBehaviour
                 balloon.ShowMsg("피곤하다.. \n 집으로 돌아가서 쉬는게 좋겠어..");
                 currentLocation = "store";
             }
-        } else
+        }
+        else
         {
             balloon.ShowMsg("여기서는 이동할 수 없어..\n집으로 돌아갈까?");
         }
     }
 
-    public void Debug_reloadBbobgi() {
+    public void Debug_reloadBbobgi()
+    {
         newStore.GetComponent<StoreControl>().bbobgiPanel.bbobgi.StartGame();
     }
 
@@ -2755,6 +3983,7 @@ public class Main_control : MonoBehaviour
             Debug_reloadBbobgi();
             return;
         }
+
         parkBtn.SetActive(false);
         GetComponent<Heart_Control>().SetHeart(-1);
         front_panel.SetActive(true);
@@ -2766,13 +3995,81 @@ public class Main_control : MonoBehaviour
 
         parkBtn.SetActive(false);
         pmtComtrol.Reset();
-        string str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
+        var str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
         pmtComtrol.AddString("훈이", str);
         prompter.GetComponent<Animator>().SetTrigger("show");
         prompter.SetActive(true);
         currentLocation = "toStore";
 
         myStoreType = 6;
+
+        newStore = Instantiate(store_panel, storePanelHolder.transform);
+        newStore.GetComponent<StoreControl>().UpdateStore(myStoreType);
+        newStore.SetActive(true);
+        newStore.GetComponent<Animator>().SetTrigger("show");
+        goBtnText_ui.text = "집으로 돌아가기";
+    }
+    
+    public void Debug_gotoBlurBird()
+    {
+        if (currentLocation == "bbobgi")
+        {
+            Debug_reloadBbobgi();
+            return;
+        }
+
+        parkBtn.SetActive(false);
+        GetComponent<Heart_Control>().SetHeart(-1);
+        front_panel.SetActive(true);
+        frontCha.GetComponent<Animator>().SetTrigger("walk");
+        main_panel.GetComponent<Animator>().SetTrigger("hide");
+        lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        currentLocation = "toStore";
+        myAudio.PlayMusic(1);
+
+        parkBtn.SetActive(false);
+        pmtComtrol.Reset();
+        var str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
+        pmtComtrol.AddString("훈이", str);
+        prompter.GetComponent<Animator>().SetTrigger("show");
+        prompter.SetActive(true);
+        currentLocation = "toStore";
+
+        myStoreType = 7;
+
+        newStore = Instantiate(store_panel, storePanelHolder.transform);
+        newStore.GetComponent<StoreControl>().UpdateStore(myStoreType);
+        newStore.SetActive(true);
+        newStore.GetComponent<Animator>().SetTrigger("show");
+        goBtnText_ui.text = "집으로 돌아가기";
+    }
+    
+    public void Debug_gotoTanghuru()
+    {
+        if (currentLocation == "bbobgi")
+        {
+            Debug_reloadBbobgi();
+            return;
+        }
+
+        parkBtn.SetActive(false);
+        GetComponent<Heart_Control>().SetHeart(-1);
+        front_panel.SetActive(true);
+        frontCha.GetComponent<Animator>().SetTrigger("walk");
+        main_panel.GetComponent<Animator>().SetTrigger("hide");
+        lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        currentLocation = "toStore";
+        myAudio.PlayMusic(1);
+
+        parkBtn.SetActive(false);
+        pmtComtrol.Reset();
+        var str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
+        pmtComtrol.AddString("훈이", str);
+        prompter.GetComponent<Animator>().SetTrigger("show");
+        prompter.SetActive(true);
+        currentLocation = "toStore";
+
+        myStoreType = 8;
 
         newStore = Instantiate(store_panel, storePanelHolder.transform);
         newStore.GetComponent<StoreControl>().UpdateStore(myStoreType);

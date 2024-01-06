@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 public class Strings
 {
@@ -33,6 +34,8 @@ public class PrompterControl : MonoBehaviour
     [SerializeField] Text prompter, name_ui;
     [SerializeField] GameObject nextBtn;
 
+    [SerializeField] BalloonControl balloon;
+    
     public List<Strings> myStrings = new List<Strings>();
     public List<Options> myOptions = new List<Options>();
     public NextActions myNextActions;
@@ -176,14 +179,19 @@ public class PrompterControl : MonoBehaviour
             case "메이풀빵":
                 target = 15;
                 break;
-            case "푸린글스":
+            case "푸린글스빵":
                 target = 16;
                 break;
             //박종업원
             case "박종업원":
                 target = 17;
                 break;
-
+            case "나이롱마스크":
+                target = 18;
+                break;
+            case "왕형":
+                target = 19;
+                break;
         }
 
         if (target == -1)
@@ -247,6 +255,12 @@ public class PrompterControl : MonoBehaviour
 
     public void AddNextAction(string parent, string action)
     {
+        if (myStrings.Count == 0)
+        {
+            print("AddNextAction : SHORTCUT");
+            CallAction(parent, action);
+            return;
+        }
         NextActions newAction = new NextActions();
         newAction.parent = parent;
         newAction.action = action;
@@ -313,8 +327,12 @@ public class PrompterControl : MonoBehaviour
         } 
     }
 
+    [Button]
     public void CallAction(string parent, string action)
     {
+        // balloon.ShowMsg(parent + " " + action);
+        if(parent == null) return;
+        
         switch (parent) {
             case "main":
                 MainPanel.GetComponent<Main_control>().ActionHandler(action);
@@ -347,6 +365,18 @@ public class PrompterControl : MonoBehaviour
 
                     CallAction("dangunCha", "BackToHome");
                 }
+                break;
+            case "Nylon" :
+                Main_control.Instance.Nylon(action);
+                break;
+            case "Nylon_f" :
+                Main_control.Instance.Nylon_f(action);
+                break;
+            case "Tanghuru" :
+                Main_control.Instance.Tanghuru(action);
+                break;
+            default :
+                Debug.LogError("PMTCTRL : No Action Found for " + parent);
                 break;
         } 
     }

@@ -46,10 +46,11 @@ public class AchievementCtrl : MonoBehaviour
         else
         {
 #if UNITY_IPHONE
-            balloon.ShowMsg("애플 게임센터 로그인 실패 : " + error);
+            balloon.ShowMsg("애플 게임센터 로그인 실패 : " + error);
 #elif UNITY_ANDROID
-                balloon.ShowMsg("플레이 게임 서비스 로그인 실패 : " + error);
+                balloon.ShowMsg("플레이 게임 서비스 로그인 실패 : " + error);
 #endif
+            msg.SetMsg("Failed login with error : " + error, 1);
             Debug.LogError("Failed login with error : " + error);
         }
     }
@@ -67,14 +68,17 @@ public class AchievementCtrl : MonoBehaviour
             GameServices.Authenticate();
             ReceiveRank();
         } else
-        {
+            {
 #if UNITY_IPHONE
-            msg.SetMsg("아이폰 설정에서 Game Center가 켜져 있는지 확인해주세요!", 1);
+                msg.SetMsg("아이폰 설정에서 Game Center가 켜져 있는지 확인해주세요!", 1);
 #elif UNITY_ANDROID
-            msg.SetMsg("Play Games Services에 로그인이 되어 있는지 확인해주세요!", 1);
+                msg.SetMsg("Play Games Services에 로그인이 되어 있는지 확인해주세요!", 1);
 #endif
-            Debug.LogError("!IsAvailable");
-        }
+                msg.SetMsg("GameServices.IsAvailable false", 1);
+                Debug.LogError("!IsAvailable");
+                if(!GameServices.IsAuthenticated)
+                    GameServices.Authenticate();
+            }
     }
 
     public void ShowLeaderBoard()
@@ -157,6 +161,15 @@ public class AchievementCtrl : MonoBehaviour
                 break;
             case "열정맨":
                 achievementId = "alba4";
+                break;
+            case "박종업원 아저씨":
+                achievementId = "alba5";
+                break;
+            case "나이롱마스크":
+                achievementId = "alba6";
+                break;
+            case "왕형":
+                achievementId = "alba7";
                 break;
         }
 

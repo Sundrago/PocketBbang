@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,13 @@ using UnityEngine.UI;
 
 public class BalloonControl : MonoBehaviour
 {
+    public static BalloonControl Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     [SerializeField] Text msg_text;
     bool hiding;
 

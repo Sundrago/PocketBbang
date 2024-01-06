@@ -715,6 +715,6 @@ public class DdukCtrl : MonoBehaviour
 
     public void RestartBtnClicked()
     {
-        ads.DdukAds();
+        ads.PlayAds(Ad_Control.AdsType.dduk);
     }
 }

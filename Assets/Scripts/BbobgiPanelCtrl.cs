@@ -167,7 +167,7 @@ public class BbobgiPanelCtrl : MonoBehaviour
 
     public void WatchAds()
     {
-        ads.BbobgiAds();
+        ads.PlayAds(Ad_Control.AdsType.bbogi);
         myAydio.StopMusic();
     }
 

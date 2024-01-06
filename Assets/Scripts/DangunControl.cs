@@ -341,7 +341,7 @@ public class DangunControl : MonoBehaviour
 
     public void WatchAdsToResetDangun()
     {
-        ad.PlayDangunAds();
+        ad.PlayAds(Ad_Control.AdsType.dangun);
     }
 
     public void PrintSellbuyCard()
