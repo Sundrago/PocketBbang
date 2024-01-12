@@ -192,6 +192,9 @@ public class PrompterControl : MonoBehaviour
             case "왕형":
                 target = 19;
                 break;
+            case "장왕":
+                target = 20;
+                break;
         }
 
         if (target == -1)
@@ -374,6 +377,9 @@ public class PrompterControl : MonoBehaviour
                 break;
             case "Tanghuru" :
                 Main_control.Instance.Tanghuru(action);
+                break;
+            case "JangJokBal" :
+                Main_control.Instance.JangJokBal(action);
                 break;
             default :
                 Debug.LogError("PMTCTRL : No Action Found for " + parent);

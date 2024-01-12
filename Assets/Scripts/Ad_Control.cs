@@ -15,6 +15,7 @@ public class Ad_Control : MonoBehaviour
     [SerializeField] IronSourceAd iron;
     [SerializeField] DdukCtrl dduck;
     [SerializeField] private TanghuruGameManager tanguru;
+    [SerializeField] private Bossam_GameManager bossam;
 
     public static Ad_Control Instance;
 
@@ -24,7 +25,8 @@ public class Ad_Control : MonoBehaviour
         dangun,
         bbogi,
         dduk,
-        tanghuru
+        tanghuru,
+        bossam
     }
 
     private AdsType adsType;
@@ -47,6 +49,7 @@ public class Ad_Control : MonoBehaviour
 
     public void PlayAds(AdsType type)
     {
+        audioC.PauseMusic();
         adsType = type;
         iron.ShowIronAds();
     }
@@ -69,6 +72,9 @@ public class Ad_Control : MonoBehaviour
                 break;
             case AdsType.tanghuru:
                 tanguru.WathcedAds();
+                break;
+            case AdsType.bossam:
+                bossam.WathcedAds();
                 break;
         }
         //

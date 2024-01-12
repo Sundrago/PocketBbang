@@ -12,7 +12,7 @@ public class PhoneMsgCtrl : MonoBehaviour
     [SerializeField] CloudSaving cloud;
     [SerializeField] IronSourceAd iron;
     [SerializeField] GameObject yes_ui, no_ui, ok_ui, main, msg_ui, parentPanel;
-
+    
     public string actionCode;
     public bool initiateMode = true;
     bool started = false;
@@ -92,6 +92,7 @@ public class PhoneMsgCtrl : MonoBehaviour
         switch (actionCode)
         {
             case "albaGo":
+                AlbabPhoneManager.Instance.gameObject.SetActive(false);
                 main.GetComponent<Main_control>().GoToAlba();
                 break;
             case "eat":

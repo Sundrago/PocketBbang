@@ -171,6 +171,9 @@ public class AchievementCtrl : MonoBehaviour
             case "왕형":
                 achievementId = "alba7";
                 break;
+            case "장왕":
+                achievementId = "alba8";
+                break;
         }
 
         GameServices.ReportAchievementProgress(achievementId, percentageCompleted, (error) =>

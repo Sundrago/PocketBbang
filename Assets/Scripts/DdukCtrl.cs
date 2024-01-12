@@ -596,6 +596,9 @@ public class DdukCtrl : MonoBehaviour
 
     private void GameFinished()
     {
+        Firebase.Analytics.FirebaseAnalytics
+            .LogEvent("GameScore", "Dduk", resultScore);
+        
         if (resultScore >= 10) myAudio.PlaySoundFx(1); //bgm
         else myAudio.PlaySoundFx(2); //failBGM
 

@@ -76,6 +76,8 @@ public class Main_control : MonoBehaviour
     [SerializeField] private DoMiCoinManager domiCoin;
     [SerializeField] private DomiTradePanel domiTradePanel;
     [SerializeField] private TanghuruGameManager tanghuruGameManager;
+    [SerializeField] private Bossam_GameManager bossamGameManager;
+    [SerializeField] private AlbabPhoneManager albabPhoneManager;
     
     public static Main_control Instance;
 
@@ -616,6 +618,10 @@ public class Main_control : MonoBehaviour
                 {
                     achievement.UpdateAchievement("왕형");
                 }
+                else if (myStoreType == 9 && PlayerPrefs.GetInt("bossam_friend", 0) == 1)
+                {
+                    achievement.UpdateAchievement("장왕");
+                }
 
                 myAudio.PlayMusic(1);
                 pmtComtrol.Reset();
@@ -626,7 +632,10 @@ public class Main_control : MonoBehaviour
 
             case "alba_end":
                 currentLocation = "alba";
-                WentToStore();
+                pmtComtrol.Reset();
+                if (storeOutAction != "") pmtComtrol.AddString("훈이", storeOutAction);
+                pmtComtrol.AddOption("다른 편의점으로 간다.", "main", "store_next");
+                pmtComtrol.AddOption("집으로 돌아간다.", "main", "go_home");
                 break;
 
             case "park":
@@ -660,7 +669,7 @@ public class Main_control : MonoBehaviour
 
         for (;;)
         {
-            var rnd = Random.Range(0, 9);
+            var rnd = Random.Range(0, 10);
 
             //DEBUG
             if (myStoreType != rnd)
@@ -681,27 +690,47 @@ public class Main_control : MonoBehaviour
 
     public void AlbaBtnClicked()
     {
-        if (PlayerPrefs.GetInt("albaExp") == 0)
-        {
-            phoneMsgBox.GetComponent<PhoneMsgCtrl>().SetMsg("지금은 알바 자리가 없습니다.\n쌈마트24에 가서 맛동석 점장에게 얘기해보는 건 어떨까요?", 1);
-            return;
-        }
+        albabPhoneManager.gameObject.SetActive(true);
+    }
 
-        if (gameObject.GetComponent<Heart_Control>().heartCount < 1)
+    //!alba
+    public void GoToAlba()
+    {
+        if (GetComponent<Heart_Control>().heartCount >= 1)
+        {
+            GetComponent<Heart_Control>().SetHeart(-1);
+        }
+        else
         {
             balloon.ShowMsg("지금은 좀 피곤하다..");
             return;
         }
-
-        if ((currentLocation == "home") | (currentLocation == "store"))
-            phoneMsgBox.GetComponent<PhoneMsgCtrl>().SetMsg("알바를 하기 위해\n3마트24로 이동할까요?", 2, "albaGo");
-        else balloon.ShowMsg("여기서는 할 수 없다..");
-    }
-
-    public void GoToAlba()
-    {
+        
         goBtnText_ui.text = "집으로 돌아가기";
         parkBtn.SetActive(false);
+        
+        int albaIdx = PlayerPrefs.GetInt("GotoAlbaIdx");
+        int albaStoreType = 0;
+        string albaString = "";
+        
+        switch (albaIdx)
+        {
+            //맛동석
+            case 0 :
+                albaStoreType = 2;
+                albaString = "알바를 하러 3마트24를 향해 걸어가고 있다.";
+                break;
+            //탕후루
+            case 1 :
+                albaStoreType = 8;
+                albaString = "알바를 하러 왕형탕후루를 향해 걸어가고 있다.";
+                break;
+            //보쌈
+            case 2 :
+                albaStoreType = 9;
+                albaString = "알바를 하러 장족발보쌈을 향해 걸어가고 있다.";
+                break;
+        }
 
         if (currentLocation == "home")
         {
@@ -727,11 +756,11 @@ public class Main_control : MonoBehaviour
 
             pmtComtrol.Reset();
             //string str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
-            pmtComtrol.AddString("훈이", "알바를 하러 3마트24를 향해 걸어가고 있다.");
+            pmtComtrol.AddString("훈이", albaString);
             prompter.GetComponent<Animator>().SetTrigger("show");
             prompter.SetActive(true);
 
-            myStoreType = 2;
+            myStoreType = albaStoreType;
 
             newStore = Instantiate(store_panel, storePanelHolder.transform);
             newStore.GetComponent<StoreControl>().UpdateStore(myStoreType);
@@ -755,10 +784,10 @@ public class Main_control : MonoBehaviour
                 newStore.GetComponent<Animator>().SetTrigger("hide");
                 pmtComtrol.Reset();
                 //string str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
-                pmtComtrol.AddString("훈이", "알바를 하러 3마트24를 향해 걸어가고 있다.");
+                pmtComtrol.AddString("훈이", albaString);
                 prompter.GetComponent<Animator>().SetTrigger("show");
 
-                myStoreType = 2;
+                myStoreType = albaStoreType;
 
                 newStore = Instantiate(store_panel, storePanelHolder.transform);
                 newStore.GetComponent<StoreControl>().UpdateStore(myStoreType);
@@ -821,8 +850,30 @@ public class Main_control : MonoBehaviour
         if (albaMode)
         {
             currentLocation = "alba";
-            pmtComtrol.AddOption("알바하러 들어간다.", "main", "alba_in");
-            pmtComtrol.AddOption("집으로 돌아간다.", "main", "go_home");
+            
+            int albaIdx = PlayerPrefs.GetInt("GotoAlbaIdx");
+            int albaStoreType = 0;
+            string albaString = "";
+        
+            switch (albaIdx)
+            {
+                //맛동석
+                case 0 :
+                    pmtComtrol.AddOption("알바하러 들어간다.", "main", "alba_in");
+                    pmtComtrol.AddOption("집으로 돌아간다.", "main", "go_home");
+                    break;
+                //탕후루
+                case 1 :
+                    pmtComtrol.AddOption("알바하러 들어간다.", "Tanghuru", "ID_T_ALBAB");
+                    pmtComtrol.AddOption("집으로 돌아간다.", "main", "go_home");
+                    break;
+                //보쌈
+                case 2 :
+                    pmtComtrol.AddOption("알바하러 들어간다.", "JangJokBal", "ID_J_ALBA");
+                    pmtComtrol.AddOption("집으로 돌아간다.", "main", "go_home");
+                    break;
+            }
+            
             return;
         }
 
@@ -859,6 +910,9 @@ public class Main_control : MonoBehaviour
             case 8:
                 pmtComtrol.AddString("훈이", "왕형 탕후루 앞에 도착했다!");
                 break;
+            case 9:
+                pmtComtrol.AddString("훈이", "왕충동 장 족발보쌈 앞에 도착했다!");
+                break;
         }
 
         pmtComtrol.AddOption("편의점으로 들어간다.", "main", "store_in");
@@ -868,16 +922,7 @@ public class Main_control : MonoBehaviour
 
     private void AlbaEnterStore()
     {
-        if (GetComponent<Heart_Control>().heartCount >= 1)
-        {
-            GetComponent<Heart_Control>().SetHeart(-1);
-        }
-        else
-        {
-            balloon.ShowMsg("지금은 좀 피곤하다..");
-            currentLocation = "alba";
-            return;
-        }
+        
 
         pmtComtrol.Reset();
         pmtComtrol.imageMode = true;
@@ -1147,7 +1192,21 @@ public class Main_control : MonoBehaviour
                 if(hr >= 12 && hr < 18) Tanghuru("ID_T_OPEN_FRIEND"); //[진입점 2] <친구 이벤트> 친구가 되기 전 오후 12시에서 오후 6시 사이에 방문하면 여기로 진입됨.
                 else Tanghuru("ID_T_OPEN_STORE"); //[진입점 1] <친구 되기 전> 처음 만났을 때부터 친구가 되기 전까지. -> [연결점 1], [연결점 3]으로 연결.
             }
-            
+        }
+        
+        //장왕 보쌈
+        else if (chaIdx == 9)
+        {
+            // [진입점 2] 친구가 된 후
+            if (PlayerPrefs.GetInt("bossam_friend", 0) == 1)
+            {
+                JangJokBal("ID_J_FRIEND");
+            }
+            else
+            {            
+                // [진입점 1] 친구가 되기 전
+                JangJokBal("ID_J_OPEN");
+            }
         }
     }
 
@@ -1382,7 +1441,7 @@ public class Main_control : MonoBehaviour
 
                 pmtComtrol.AddString("점주", "손님한테 포켓볼빵 없다고만 얘기하면 돼!");
                 pmtComtrol.AddString("점주", "만약 언제 들어오는지 묻는다면 모른다고 답하면 돼!");
-                pmtComtrol.AddString("점주", "참 별거 없네요.");
+                pmtComtrol.AddString("훈이", "참 별거 없네요.");
                 pmtComtrol.AddString("점주", "허허 그래도 상당한 어려운 일이라구!");
                 pmtComtrol.AddString("점주", "준비 됐나 이제?");
                 pmtComtrol.AddOption("네 시작할게요.", "store", "albaf_start");
@@ -3866,6 +3925,144 @@ public class Main_control : MonoBehaviour
     }
 }
     
+    //!bossam
+    public void JangJokBal(string ID)
+{
+    print("EVENT ID JangJokBal : " + ID);
+    pmtComtrol.Reset();
+    pmtComtrol.imageMode = true;
+
+    switch(ID)
+    {
+        case "ID_J_OPEN":
+            pmtComtrol.AddString("장왕", "어서오세요오!!");
+            pmtComtrol.AddString("장왕", "왕충동 장 족발 보싸암!!");
+            pmtComtrol.AddOption("포켓볼 빵 있나요?", "JangJokBal", "ID_J_OPEN_BREAD");
+            pmtComtrol.AddOption("족발 보쌈 한 세트 주세요.", "JangJokBal", "ID_J_OPEN_JOKBAL");
+            pmtComtrol.AddOption("편의점을 나간다.", "JangJokBal", "ID_J_OPEN_STOREOUT");
+            break;
+
+        case "ID_J_OPEN_STOREOUT":
+            storeOutAction = "";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_J_OPEN_BREAD":
+            pmtComtrol.AddString("장왕", "이거보세요오!!");
+            pmtComtrol.AddString("장왕", "족발 보쌈 집에 포켓볼 빵이 있겠냐고요오!!");
+            pmtComtrol.AddString("장왕", "족발 뼈로 맞고 싶어요오?? 어??");
+            pmtComtrol.AddString("장왕", "이렇게?? 이렇게?! 이렇게!!");
+            pmtComtrol.AddString("훈이", "죄송합니다...");
+            pmtComtrol.AddString("장왕", "됐고. 온 김에 일이나 좀 도와주세요.");
+            pmtComtrol.AddString("훈이", "갑자기요...?");
+            pmtComtrol.AddString("장왕", "그냥 좀 도와주세요오!!");
+            pmtComtrol.AddOption("네...", "JangJokBal", "ID_J_GAME");
+            pmtComtrol.AddOption("네!!", "JangJokBal", "ID_J_GAME");
+            break;
+
+        case "ID_J_OPEN_JOKBAL":
+            pmtComtrol.AddString("장왕", "이거보세요오!!");
+            pmtComtrol.AddString("장왕", "바빠 죽겠는데 주문을 받게 생겼냐고요오!!");
+            pmtComtrol.AddString("장왕", "족발 뼈로 맞고 싶어요오?? 어??");
+            pmtComtrol.AddString("장왕", "이렇게?? 이렇게?! 이렇게!!");
+            pmtComtrol.AddString("훈이", "죄송합니다...");
+            pmtComtrol.AddString("장왕", "됐고. 온 김에 일이나 좀 도와주세요.");
+            pmtComtrol.AddString("훈이", "갑자기요...?");
+            pmtComtrol.AddString("장왕", "그냥 좀 도와주세요오!!");
+            pmtComtrol.AddOption("네...", "JangJokBal", "ID_J_GAME");
+            pmtComtrol.AddOption("네!!", "JangJokBal", "ID_J_GAME");
+            break;
+
+        case "ID_J_GAME":
+            pmtComtrol.AddString("장왕", "쌈을 만들 때는 족발 두 개, 겨자 이만큼, 마늘 두 개, 청양고추 하나.");
+            pmtComtrol.AddString("장왕", "그리고 넌 뒤졌다, 딱 기다려. 하는 마음으로 손님 입에 던지면 돼요.");
+            pmtComtrol.AddOption("네!!", "JangJokBal", "ID_J_GAME_START");
+            pmtComtrol.AddOption("조금만 더 자세히 알려주시면 안 될까요?", "JangJokBal", "ID_J_GAME_EXPLAIN");
+            pmtComtrol.AddOption("그냥 도망간다.", "JangJokBal", "ID_J_GAME_RUN");
+            break;
+
+        case "ID_J_GAME_RUN":
+            pmtComtrol.AddString("훈이", "겨우 도망쳤다.");
+            storeOutAction = "역시 사장님이 조금 무서운 것 같다. 마음의 준비가 되면 다시 오자.";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_J_GAME_EXPLAIN":
+            pmtComtrol.AddString("장왕", "이거보세요오!!");
+            pmtComtrol.AddString("장왕", "한번 할 때 제대로 하려는 그 자세!!");
+            pmtComtrol.AddString("장왕", "저는 지금 굉장히 기분이 좋습니다. 궁금한 게 있으시면 몇 번이고 다시 물어보셔도 돼요.");
+            pmtComtrol.AddString("장왕", "쌈은 제가 싸드릴 거니까 걱정하실 필요 없고요.");
+            pmtComtrol.AddString("장왕", "일 시작하면 손님이 아기새마냥 입을 쩍 벌리고 계실 건데, 그 안에 제가 싸둔 쌈을 던져 넣으시면 됩니다.");
+            pmtComtrol.AddString("장왕", "스와이프 하면 그냥 던져지고요. 쌈을 회전시켜서 던지면 커브볼도 던질 수 있어요.");
+            pmtComtrol.AddString("장왕", "커브볼로 넣으면 추가 점수를 줄게요. 그런데 손님 입에 못 넣고 얼굴에 맞춰버리면 점수 까버릴 거에요.");
+            pmtComtrol.AddString("장왕", "그런데 가끔 손님들이 재채기를 하거나 목 스트레칭을 하니까 조심하세요.");
+            pmtComtrol.AddString("장왕", "아시겠어요오!!");
+            pmtComtrol.AddOption("네!!", "JangJokBal", "ID_J_GAME_START");
+            pmtComtrol.AddOption("다시 한번만 알려주시면 안 될까요?", "JangJokBal", "ID_J_GAME_EXPLAIN");
+            break;
+
+        case "ID_J_GAME_START":
+            pmtComtrol.AddString("장왕", "그럼 시작할게요오!!");
+            bossamGameManager.EnterGame();
+            break;
+
+        case "ID_J_GAME_OVER":
+            break;
+
+        case "ID_J_GAME_OVER_GOOD":
+            pmtComtrol.AddString("장왕", "이거보세요오!!");
+            pmtComtrol.AddString("장왕", "아주 잘해주셨어요.");
+            pmtComtrol.AddString("장왕", "저는 지금 굉장히 감동 받았습니다.");
+            pmtComtrol.AddString("장왕", "여기 오늘 일당 받으시고. 또 오세요.");
+            pmtComtrol.AddString("장왕", "왕충동 장 족발보쌈!!");
+            pmtComtrol.AddOption("편의점을 나간다.", "JangJokBal", "ID_J_GAME_OVER_GOOD_STOREOUT");
+            break;
+
+        case "ID_J_GAME_OVER_GOOD_STOREOUT":
+            storeOutAction = "뭔가 정신 없는 족발 보쌈집이다. 그래도 뭔가 재밌으니 다음에 또 알바하러 와야겠다.";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_J_GAME_OVER_BAD":
+            pmtComtrol.AddString("장왕", "이거보세요오!!");
+            pmtComtrol.AddString("장왕", "일을 정말 못하시네요.");
+            pmtComtrol.AddString("장왕", "저는 지금 굉장히 실망했습니다.");
+            pmtComtrol.AddString("장왕", "오늘 일당은 없고요. 두번 다시 오지 마세요.");
+            pmtComtrol.AddString("장왕", "왕충동 장 족발보쌈!!");
+            pmtComtrol.AddOption("편의점을 나간다.", "JangJokBal", "ID_J_GAME_OVER_BAD_STOREOUT");
+            break;
+
+        case "ID_J_GAME_OVER_BAD_STOREOUT":
+            storeOutAction = "정말 정신 없는 족발 보쌈집이다. 오지 말라고 했지만 재밌으니까 다음에 또 와야겠다.";
+            pmtComtrol.AddNextAction("main", "store_out");
+            break;
+
+        case "ID_J_FRIEND":
+            pmtComtrol.AddString("장왕", "이거보세요오!!");
+            pmtComtrol.AddString("장왕", "기다리고 있었잖아요.");
+            pmtComtrol.AddString("장왕", "왕충동 장 족발 보쌈!!");
+            pmtComtrol.AddOption("알바 하러 왔어요.", "JangJokBal", "ID_J_FRIEND_GAME");
+            pmtComtrol.AddOption("족발 보쌈 한 세트 주세요.", "JangJokBal", "ID_J_OPEN_JOKBAL");
+            pmtComtrol.AddOption("편의점을 나간다.", "JangJokBal", "ID_J_OPEN_STOREOUT");
+            break;
+
+        case "ID_J_FRIEND_GAME":
+            pmtComtrol.AddString("장왕", "그럴 줄 알았어요오!!");
+            pmtComtrol.AddString("장왕", "기억하고 있죠??");
+            pmtComtrol.AddNextAction("JangJokBal", "ID_J_GAME");
+            break;
+
+        case "ID_J_ALBA":
+            pmtComtrol.AddString("장왕", "이거보세요오!!");
+            pmtComtrol.AddString("장왕", "기다리고 있었잖아요.");
+            pmtComtrol.AddString("장왕", "왕충동 장 족발 보쌈!!");
+            pmtComtrol.AddOption("알바 하러 왔어요.", "JangJokBal", "ID_J_FRIEND_GAME");
+            pmtComtrol.AddOption("편의점을 나간다.", "JangJokBal", "ID_J_OPEN_STOREOUT");
+            break;
+    }
+}
+    
+    
     public void Debug_gotoBbobgi()
     {
         if (currentLocation == "bbobgi")
@@ -4070,6 +4267,40 @@ public class Main_control : MonoBehaviour
         currentLocation = "toStore";
 
         myStoreType = 8;
+
+        newStore = Instantiate(store_panel, storePanelHolder.transform);
+        newStore.GetComponent<StoreControl>().UpdateStore(myStoreType);
+        newStore.SetActive(true);
+        newStore.GetComponent<Animator>().SetTrigger("show");
+        goBtnText_ui.text = "집으로 돌아가기";
+    }
+    
+    public void Debug_gotoBossam()
+    {
+        if (currentLocation == "bbobgi")
+        {
+            Debug_reloadBbobgi();
+            return;
+        }
+
+        parkBtn.SetActive(false);
+        GetComponent<Heart_Control>().SetHeart(-1);
+        front_panel.SetActive(true);
+        frontCha.GetComponent<Animator>().SetTrigger("walk");
+        main_panel.GetComponent<Animator>().SetTrigger("hide");
+        lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        currentLocation = "toStore";
+        myAudio.PlayMusic(1);
+
+        parkBtn.SetActive(false);
+        pmtComtrol.Reset();
+        var str = "" + storeCount() + "번째 편의점을 향해 걸어가고 있다.";
+        pmtComtrol.AddString("훈이", str);
+        prompter.GetComponent<Animator>().SetTrigger("show");
+        prompter.SetActive(true);
+        currentLocation = "toStore";
+
+        myStoreType = 9;
 
         newStore = Instantiate(store_panel, storePanelHolder.transform);
         newStore.GetComponent<StoreControl>().UpdateStore(myStoreType);
