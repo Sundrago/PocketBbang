@@ -362,10 +362,10 @@ public class AlbaControl : MonoBehaviour
 
         pmtControl.AddString("점주", "1시간 일했으니까.."); //9,160
         pmtControl.AddString("점주", "자. 고생한만큼 두둑히 챙겨줬어.");
-        pmtControl.AddString("용돈", "최저시급 9,160원을 받았다!");
+        pmtControl.AddString("용돈", "최저시급 9,860원을 받았다!");
         pmtControl.AddString("훈이", "감사합니다.");
 
-        heart.UpdateMoney(9160);
+        heart.UpdateMoney(9860);
 
         if(fMode)
             pmtControl.AddNextAction("store", "albaf_end");

@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Cards
 {
@@ -20,7 +22,6 @@ public class CollectionControl : MonoBehaviour
     [SerializeField] Sprite[] imgsHighres = new Sprite[0];
     [SerializeField] AchievementCtrl achievement;
     [SerializeField] AudioControl myAydio;
-
     [SerializeField] GameObject CardPanel, card_image, card, fx1, fx2, title_ui, bbang, canvas, card_bg, text_board, pormpter_ui, pormpter_name_ui, trans_btn, new_ui;
 
     bool started = false;
@@ -30,14 +31,27 @@ public class CollectionControl : MonoBehaviour
     public List<Cards> myCard = new List<Cards>();
     public bool delay;
 
-    
+    public static CollectionControl Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+        gameObject.SetActive(false);
+    }
+
+    private List<int> S_idx;
+    private List<int> A_idx;
+    private List<int> B_idx;
 
     // Start is called before the first frame update
     public void Start()
     {
         if (started) return;
-
         started = true;
+
+        S_idx = new List<int>();
+        A_idx = new List<int>();
+        B_idx = new List<int>();
 
         Cards newCard = new Cards();
         newCard.image = imgs[0];
@@ -1464,9 +1478,12 @@ public class CollectionControl : MonoBehaviour
         newCard.rank = 'B';
         myCard.Add(newCard);
 
-
-
-
+        foreach (var card in myCard)
+        {
+            if(card.rank == 'S') S_idx.Add(card.idx);
+            else if(card.rank == 'A') A_idx.Add(card.idx);
+            else if(card.rank == 'B') B_idx.Add(card.idx);
+        }
         LoadData();
         PlayerPrefs.SetInt("TotalCards", myCard.Count);
         PlayerPrefs.Save();
@@ -1557,30 +1574,94 @@ public class CollectionControl : MonoBehaviour
         myBang.SetActive(true);
     }
 
+    //2, 35, 65
     public void OpenNew()
     {
-        int rnd = Random.Range(0, myCard.Count);
-        if (myCard[rnd].rank == 'M')
+        int rnd;
+        if (PlayerPrefs.GetInt("myRealTotalCard") < 30)
         {
-            OpenNew();
-            return;
+            int random = Random.Range(0, 100);
+            if (random < 1)
+            {
+                rnd = GetCardIdxByRank('S');
+            }
+            else if (random < 60)
+            {
+                rnd = GetCardIdxByRank('A');
+            }
+            else
+            {
+                rnd = GetCardIdxByRank('B');
+            }
+        }
+        else
+        {
+            int random = Random.Range(0, 100);
+            if (random < 2)
+            {
+                rnd = GetCardIdxByRank('S');
+            }
+            else if (random < 33)
+            {
+                rnd = GetCardIdxByRank('A');
+            }
+            else
+            {
+                rnd = GetCardIdxByRank('B');
+            }
         }
 
-        if (myCard[rnd].rank == 'S')
+        isnew = IsNew(rnd);
+        
+        if (isnew)
         {
-            if(Random.Range(0,15) > 2) rnd = Random.Range(0, myCard.Count);
-        }
-
-        isnew = false;
-        if (PlayerPrefs.GetInt("card_" + rnd) == 0)
-        {
-            isnew = true;
             myAydio.PlaySoundFx(0);
         }
         print("OPEN NEW : " + isnew);
 
         AddData(rnd);
         OpenCard(rnd, isnew);
+    }
+
+    public Sprite GetSpriteAt(int idx)
+    {
+        return imgs[idx];
+    }
+    
+    public void OpenCardAt(int rnd)
+    {
+        isnew = IsNew(rnd);
+        
+        if (isnew)
+        {
+            myAydio.PlaySoundFx(0);
+        }
+        print("OPEN NEW : " + isnew);
+        AddData(rnd);
+        OpenCard(rnd, isnew);
+    }
+
+    public int GetCardIdxByRank(char rank)
+    {
+        int random;
+        switch (rank)
+        {
+            case 'S' :
+                random = Random.Range(0, S_idx.Count);
+                return S_idx[random];
+                break;
+            case 'A' :
+                random = Random.Range(0, A_idx.Count);
+                return A_idx[random];
+                break;
+            case 'B' :
+                random = Random.Range(0, B_idx.Count);
+                return B_idx[random];
+                break;
+        }
+        
+        Debug.LogWarning("No rank found for GetCardIdxByRank : " + rank);
+        return -1;
     }
 
     public void OpenMaple()
@@ -1622,5 +1703,10 @@ public class CollectionControl : MonoBehaviour
             
         }
         achievement.ReceiveRank();
+    }
+
+    public bool IsNew(int idx)
+    {
+        return PlayerPrefs.GetInt("card_" + idx) == 0;
     }
 }

@@ -350,12 +350,12 @@ public class DangunControl : MonoBehaviour
         //ResetSellCard(0);
         sellbuyTitle[0].text = collection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].name + " 스티커 팔아요!";
         sellbuyImage[0].sprite = collection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].image;
-        sellbuyPrice[0].text = "판매가격 : " + PlayerPrefs.GetInt("sellPrice" + 0) + "원";
+        sellbuyPrice[0].text = "판매가격 : " + PlayerPrefs.GetInt("sellPrice" + 0) + "냥";
 
         //ResetBuyCard(1);
         sellbuyTitle[1].text = collection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].name + " 스티커 사요!";
         sellbuyImage[1].sprite = collection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].image;
-        sellbuyPrice[1].text = "보상 : " + PlayerPrefs.GetInt("sellPrice" + 1) + "원";
+        sellbuyPrice[1].text = "보상 : " + PlayerPrefs.GetInt("sellPrice" + 1) + "냥";
     }
 
     public void ResetSellCard(int idx)

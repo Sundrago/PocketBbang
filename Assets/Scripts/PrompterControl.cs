@@ -334,7 +334,7 @@ public class PrompterControl : MonoBehaviour
     public void CallAction(string parent, string action)
     {
         // balloon.ShowMsg(parent + " " + action);
-        if(parent == null) return;
+        if(string.IsNullOrEmpty(parent)) return;
         
         switch (parent) {
             case "main":

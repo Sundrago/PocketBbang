@@ -43,8 +43,10 @@ public class Ad_Control : MonoBehaviour
             PlayerPrefs.SetInt("adCount", 0);
         }
         
+#if UNITY_IOS && !UNITY_EDITOR
         Firebase.Analytics.FirebaseAnalytics
             .LogEvent("Ads", "adCount", PlayerPrefs.GetInt("adCount",0));
+#endif
     }
 
     public void PlayAds(AdsType type)
@@ -90,8 +92,10 @@ public class Ad_Control : MonoBehaviour
         
         audioC.ResumeMusic();
 
+#if UNITY_IOS && !UNITY_EDITOR
         Firebase.Analytics.FirebaseAnalytics
             .LogEvent("Ads", "WatchAds", adsType.ToString());
+#endif
         PlayerPrefs.SetInt("adCount", PlayerPrefs.GetInt("adCount") + 1);
         PlayerPrefs.Save();
     }

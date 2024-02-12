@@ -54,7 +54,7 @@ public class Main_control : MonoBehaviour
 
     public RankCtrl rank;
     public DdukCtrl dduk;
-    private bool albaMode;
+    public bool albaMode;
 
     private bool callBbangboy;
     private int callIdx;
@@ -68,7 +68,7 @@ public class Main_control : MonoBehaviour
     private int myStoreType, bbangCount;
 
     private int originalMusic = 1;
-    private PrompterControl pmtComtrol;
+    public PrompterControl pmtComtrol;
 
     private int score;
     private string tanghuruState;
@@ -355,6 +355,7 @@ public class Main_control : MonoBehaviour
                 frontCha.GetComponent<Animator>().SetTrigger("phone");
                 break;
             case "close_phone":
+                albabPhoneManager.gameObject.SetActive(false);
                 if (hidePhoneTmp)
                 {
                     prompter.GetComponent<Animator>().SetTrigger("show");
@@ -568,7 +569,7 @@ public class Main_control : MonoBehaviour
                 break;
 
             case "store_next":
-                if (currentLocation != "store") return;
+                if (currentLocation != "store" && !albaMode) return;
 
                 if (GetComponent<Heart_Control>().heartCount >= 1)
                 {
@@ -590,7 +591,8 @@ public class Main_control : MonoBehaviour
             case "store_in":
                 if (currentLocation != "store") return;
                 currentLocation = "store_in";
-                myAudio.PlayMusic(2);
+                if(myStoreType == 9) myAudio.PlayMusic(9);
+                else myAudio.PlayMusic(2);
                 EnterStore();
                 break;
 
@@ -922,8 +924,6 @@ public class Main_control : MonoBehaviour
 
     private void AlbaEnterStore()
     {
-        
-
         pmtComtrol.Reset();
         pmtComtrol.imageMode = true;
         storeOutAction = "";
@@ -977,7 +977,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("훈이", "아직 안팔렸지?");
                     var rnd = Random.Range(2, 4);
                     pmtComtrol.AddString("미소녀", "응 포켓볼빵 " + rnd + "개 있어!");
-                    AddBBang(rnd);
+                    AddBBangType(rnd, "미소녀");
                     pmtComtrol.AddString("훈이", "대박이다! 정말 고마워!");
                     pmtComtrol.AddString("미소녀", "후훗 천만에 말씀.");
                     pmtComtrol.AddOption("또 문자 보내줄 수 있어?", "store", "girlf_yes");
@@ -990,7 +990,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("훈이", "포켓볼빵 아직 있지?!");
                     var rnd = Random.Range(1, 3);
                     pmtComtrol.AddString("미소녀", "조금만 더 일찍 오지. \n 포켓볼빵 " + rnd + "개 남았어.");
-                    AddBBang(rnd);
+                    AddBBangType(rnd, "미소녀");
                     pmtComtrol.AddString("훈이", "우와 !정말 고마워!");
                     pmtComtrol.AddString("미소녀", "친구라면 이정도 쯤이야!");
                     pmtComtrol.AddOption("또 문자 보내줄 수 있어?", "store", "girlf_yes");
@@ -1002,7 +1002,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("미소녀", "조금만 더 일찍 오지!");
                     pmtComtrol.AddString("훈이", "허걱 벌써 다 팔렸어?");
                     pmtComtrol.AddString("미소녀", "아니 딱 한개 남았어.");
-                    AddBBang(1);
+                    AddBBangType(1, "미소녀");
                     pmtComtrol.AddString("훈이", "그래도 정말 고마워!");
                     pmtComtrol.AddString("미소녀", "다음에는 조금 더 일찍와.");
                     pmtComtrol.AddOption("또 문자 보내줄 수 있어?", "store", "girlf_yes");
@@ -1309,7 +1309,7 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddString("점주", "그럼. 자네를 위해서라면 당연히 있지!");
                     pmtComtrol.AddString("점주", "하지만 알지? 맛동산 한 박스를 같이 사야해!");
                     pmtComtrol.AddString("훈이", "그래서 얼마라구요?");
-                    pmtComtrol.AddString("점주", "맛동산은 만원이야. 어떻게 할 텐가?");
+                    pmtComtrol.AddString("점주", "맛동산은 만냥이야. 어떻게 할 텐가?");
                     pmtComtrol.AddOption("산다.", "store", "hostf_buy_check");
                     pmtComtrol.AddOption("안 산다.", "store", "hostf_notbuy");
                 }
@@ -1327,7 +1327,7 @@ public class Main_control : MonoBehaviour
                 break;
 
             case "hostf_buy_check":
-                Msg.SetMsg("맛동산 1상자와 포켓볼빵을 10,000원에 구매합니다.", 2, "matdongsanf");
+                Msg.SetMsg("맛동산 1상자와 포켓볼빵을 10,000냥에 구매합니다.", 2, "matdongsanf");
                 break;
 
             case "hostf_notbuy":
@@ -1358,7 +1358,6 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.AddString("훈이", "뭔가 손해보는 것 같지만..");
                 pmtComtrol.AddString("점주", "자 여기있어.");
                 pmtComtrol.AddString("맛동산", "맛동산 한박스를 겟했다.");
-                AddBBang(1);
                 pmtComtrol.AddString("훈이", "감사합니다..");
                 storeOutAction = "손해보는 것 같지만 기분은 좋다.";
                 matdongsanBuy = true;
@@ -1376,7 +1375,6 @@ public class Main_control : MonoBehaviour
                 PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
                 PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 1);
                 PlayerPrefs.Save();
-
                 showroom.UpdateBbangShow();
                 break;
 
@@ -1534,19 +1532,18 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.imageMode = true;
                 pmtComtrol.AddString("훈이", "스티커를 모으는 건 마치..");
                 pmtComtrol.AddString("훈이", "제 어릴적 추억을 모으는 것 같아요.");
-                pmtComtrol.AddString("훈이", "하나 둘 스티커를 모으다보면..");
-                pmtComtrol.AddString("훈이", "빵 하나에도 기뻐하던 어린 아이였던 제 모습이 떠올라요.");
+                pmtComtrol.AddString("훈이", "하나 둘 스티커를 모으다                                                                                  린 아이였던 제 모습이 떠올라요.");
                 pmtComtrol.AddString("훈이", "그래서 포켓볼빵을 다시 맛보고 싶어요.");
 
                 pmtComtrol.AddString("열정맨", "...");
                 pmtComtrol.AddString("열정맨", "합격!!");
                 pmtComtrol.AddString("열정맨", "간절함을 잘 느껴졌어요. 빵을 드릴게요!!");
                 pmtComtrol.AddString("열정맨", "하지만 우리 매장에는 메이풀빵만 들어와요.");
-
+ 
                 pmtComtrol.AddString("훈이", "메이풀빵이요..?");
                 pmtComtrol.AddString("열정맨", "네 추억의 과자 풀빵이죠.");
 
-                AddBBang(1, "maple");
+                AddBBangType(1, "열정맨", "maple");
                 storeOutAction = "면접을 합격한 기분이다.";
                 PlayerPrefs.SetInt("yull_friend", 1);
                 PlayerPrefs.Save();
@@ -1626,7 +1623,7 @@ public class Main_control : MonoBehaviour
                 else
                 {
                     pmtComtrol.AddString("열정맨", "여기 하나 있네요!");
-                    AddBBang(1, "maple");
+                    AddBBangType(1, "열정맨", "maple");
                     storeOutAction = "추억의 메이풀빵을 얻었다!";
                     pmtComtrol.AddString("훈이", "네! 감사합니다!");
                     pmtComtrol.AddNextAction("store", "yf_out");
@@ -1641,13 +1638,13 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.AddString("점주", "하지만 맛동산 한 박스를 같이 사야해!");
                 pmtComtrol.AddString("훈이", "네? 맛동산을 사야 포켓볼빵을 살 수 있다고요?");
                 pmtComtrol.AddString("훈이", "얼마인데요?");
-                pmtComtrol.AddString("점주", "맛동산은 만원이야. 어떻게 할 텐가?");
+                pmtComtrol.AddString("점주", "맛동산은 만냥이야. 어떻게 할 텐가?");
                 pmtComtrol.AddOption("산다.", "store", "host_buy_check");
                 pmtComtrol.AddOption("안 산다.", "store", "host_notbuy");
                 break;
 
             case "host_buy_check":
-                Msg.SetMsg("맛동산 1상자와 포켓볼빵을 10,000원에 구매합니다.", 2, "matdongsan");
+                Msg.SetMsg("맛동산 1상자와 포켓볼빵을 10,000에 구매합니다.", 2, "matdongsan");
                 break;
 
             case "host_buy_noMoney":
@@ -1667,7 +1664,7 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.AddString("훈이", "뭔가 손해보는 것 같지만..");
                 pmtComtrol.AddString("점주", "자 여기있어.");
                 pmtComtrol.AddString("맛동산", "맛동산 한박스를 겟했다.");
-                AddBBang(1);
+                AddBBangType(1, "점주");
                 pmtComtrol.AddString("훈이", "감사합니다..");
                 storeOutAction = "손해보는 것 같지만 기분은 좋다.";
                 pmtComtrol.AddOption("편의점을 나간다.", "store", "host_out");
@@ -1753,14 +1750,14 @@ public class Main_control : MonoBehaviour
                     if (Random.Range(0, 2) == 0)
                     {
                         pmtComtrol.AddString("미소녀", "포켓볼빵 1개 있어요.");
-                        AddBBang(1);
+                        AddBBangType(1, "미소녀");
                         storeOutAction = "기분이 너무 좋다.";
                         pmtComtrol.AddOption("편의점을 나간다.", "store", "girl_noBbang");
                     }
                     else
                     {
                         pmtComtrol.AddString("미소녀", "포켓볼빵 2개 있어요.");
-                        AddBBang(2);
+                        AddBBangType(2, "미소녀");
                         storeOutAction = "기분이 너무 너무 좋다.";
                         pmtComtrol.AddOption("편의점을 나간다.", "store", "girl_noBbang");
                     }
@@ -1834,14 +1831,14 @@ public class Main_control : MonoBehaviour
                     if (Random.Range(0, 2) == 0)
                     {
                         pmtComtrol.AddString("미소녀", "응, 포켓볼빵 1개 있어.");
-                        AddBBang(1);
+                        AddBBangType(1, "미소녀");
                         storeOutAction = "기분이 너무 좋다.";
                         pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
                     }
                     else
                     {
                         pmtComtrol.AddString("미소녀", "응, 포켓볼빵 2개 있어.");
-                        AddBBang(2);
+                        AddBBangType(2, "미소녀");
                         storeOutAction = "기분이 너무 너무 좋다.";
                         pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
                     }
@@ -1900,7 +1897,7 @@ public class Main_control : MonoBehaviour
                 if (Random.Range(0, 2) == 0)
                 {
                     pmtComtrol.AddString("미소녀", "헤헷 들켰네. 자 여기.");
-                    AddBBang(1);
+                    AddBBangType(1, "미소녀");
                     pmtComtrol.AddString("훈이", "고마워.");
                     pmtComtrol.AddOption("언제 또 들어와?", "store", "girlf_when");
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "girlf_noBbang");
@@ -1943,7 +1940,7 @@ public class Main_control : MonoBehaviour
                 if (Random.Range(0, 10) == 0)
                 {
                     pmtComtrol.AddString("훈이", "포켓볼빵 1개가 있다!");
-                    AddBBang(1);
+                    AddBBangType(1, "양아치");
                     storeOutAction = "기분이 너무 좋다.";
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "yang_exit2");
                     pmtComtrol.AddOption("빵을 더 찾아본다.", "store", "yang_find_2");
@@ -1964,7 +1961,7 @@ public class Main_control : MonoBehaviour
                 {
                     pmtComtrol.AddString("훈이", "구석진 곳까지 잘 찾아봐야겠다.");
                     pmtComtrol.AddString("훈이", "구석진 곳에서 포켓볼빵 1개를 발견했다!");
-                    AddBBang(1);
+                    AddBBangType(1, "양아치");
                     storeOutAction = "좋았어! 운이 정말 좋구나!";
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "yang_exit2");
                 }
@@ -2134,7 +2131,7 @@ public class Main_control : MonoBehaviour
                 if (Random.Range(0, 2) == 0)
                 {
                     pmtComtrol.AddString("양아치", "아 응. 빵 하나 내가 빼뒀어.");
-                    AddBBang(1);
+                    AddBBangType(1, "양아치");
                     pmtComtrol.AddString("훈이", "고맙다 친구야!");
                     pmtComtrol.AddString("양아치", "뭐 이런걸 갖고.");
                     storeOutAction = "좋은 친구를 두니 좋다.";
@@ -2231,7 +2228,7 @@ public class Main_control : MonoBehaviour
                         pmtComtrol.AddString("훈이", "...!!");
                         pmtComtrol.AddString("훈이", "이겼다!!!!");
                         pmtComtrol.AddString("비실이", "좋아요우 졌으니까 약속대로 포켓볼빵 하나 드릴게요우.");
-                        AddBBang(1);
+                        AddBBangType(1, "비실이");
                         pmtComtrol.AddString("훈이", "오예 신난다!");
                         storeOutAction = "신난다!! 저 알바와 친해지면 재밌을것 같다.";
                         pmtComtrol.AddNextAction("store", "bi_out");
@@ -2274,7 +2271,7 @@ public class Main_control : MonoBehaviour
                 storeOutAction = "재미있는 친구가 생겼다!";
                 pmtComtrol.AddString("비실이", "너무 죠와.");
                 pmtComtrol.AddString("비실이", "기념으로 빵 하나 줄겡.");
-                AddBBang(1);
+                AddBBangType(1, "비실이");
                 pmtComtrol.AddString("훈이", "고마워 친구야!");
                 pmtComtrol.AddString("비실이", "언제든 또 놀러왕.");
                 pmtComtrol.AddNextAction("main", "store_out");
@@ -2308,7 +2305,7 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.imageMode = true;
                 pmtComtrol.AddString("비실이", "칫 시시하긴.");
                 pmtComtrol.AddString("비실이", "언제든 또 오라구!");
-                AddBBang(1);
+                AddBBangType(1, "비실이");
                 storeOutAction = "도박은 역시 좋지 않아.";
                 pmtComtrol.AddNextAction("main", "store_out");
                 break;
@@ -2363,7 +2360,7 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.Reset();
                 pmtComtrol.imageMode = true;
                 pmtComtrol.AddString("비실이", "좋은 승부였어!");
-                AddBBang(score);
+                AddBBangType(score, "비실이");
                 pmtComtrol.AddString("훈이", "오예 신난다!");
                 pmtComtrol.AddString("비실이", "언제든 또 오라구!");
                 storeOutAction = "빵을 많이 얻었다! 역시 친구가 좋다!";
@@ -2422,10 +2419,22 @@ public class Main_control : MonoBehaviour
         }
     }
 
-    public void AddBBang(int amount, string idx = "")
+    public void AddBBangType(int amount, string type, string idx = "")
     {
         print("AddBBang amt:" + amount + " idx:" + idx);
-        if (amount > 0) myAudio.PlaySoundFx(1);
+
+        if (amount > 0)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+#if UNITY_IOS && !UNITY_EDITOR
+                Firebase.Analytics.FirebaseAnalytics
+                    .LogEvent("Bbang", "AddBBang", type);
+#endif
+            }
+        }
+        
+        if (amount > 0) AudioCtrl.Instance.PlaySFXbyTag(SFX_tag.winItem);
 
         if (amount < 0)
         {
@@ -2561,7 +2570,7 @@ public class Main_control : MonoBehaviour
 
         if (PlayerPrefs.GetInt("new_purin") > 0)
         {
-            AddBBang(-1, "purin");
+            AddBBangType(-1, "-", "purin");
             var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
@@ -2572,7 +2581,7 @@ public class Main_control : MonoBehaviour
         }
         else if (PlayerPrefs.GetInt("new_maple") > 0)
         {
-            AddBBang(-1, "maple");
+            AddBBangType(-1, "-", "maple");
             var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
@@ -2583,7 +2592,7 @@ public class Main_control : MonoBehaviour
         }
         else if (PlayerPrefs.GetInt("new_bingle") > 0)
         {
-            AddBBang(-1, "bingle");
+            AddBBangType(-1, "-", "bingle");
             var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
@@ -2594,7 +2603,7 @@ public class Main_control : MonoBehaviour
         }
         else if (PlayerPrefs.GetInt("new_hot") > 0)
         {
-            AddBBang(-1, "hot");
+            AddBBangType(-1, "-", "hot");
             var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
@@ -2605,7 +2614,7 @@ public class Main_control : MonoBehaviour
         }
         else if (PlayerPrefs.GetInt("new_strawberry") > 0)
         {
-            AddBBang(-1, "strawberry");
+            AddBBangType(-1, "-", "strawberry");
             var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
@@ -2616,7 +2625,7 @@ public class Main_control : MonoBehaviour
         }
         else if (PlayerPrefs.GetInt("new_choco") > 0)
         {
-            AddBBang(-1, "choco");
+            AddBBangType(-1, "-", "choco");
             var myBang = new GameObject();
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
@@ -2756,7 +2765,7 @@ public class Main_control : MonoBehaviour
 
     public void Debug_addBbang(string idx)
     {
-        AddBBang(1, idx);
+        AddBBangType(1,"DEBUG", idx);
     }
 
     public void Debug_BbangEatCount()
@@ -2780,6 +2789,14 @@ public class Main_control : MonoBehaviour
     public void Debug_AddYogurt()
     {
         PlayerPrefs.SetInt("bbang_yogurt", PlayerPrefs.GetInt("bbang_yogurt") + 1);
+        PlayerPrefs.Save();
+        showroom.UpdateBbangShow();
+    }
+
+    public void AddMatdongsan()
+    {
+        PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
+        PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 1);
         PlayerPrefs.Save();
         showroom.UpdateBbangShow();
     }
@@ -2893,7 +2910,7 @@ public class Main_control : MonoBehaviour
                 break;
 
             case "ID_T_OPEN_STORE_TANGHURU_2":
-                pmtComtrol.AddString("왕형", "탕후루는 하나에 3,000원이오. 구매하겠소?");
+                pmtComtrol.AddString("왕형", "탕후루는 하나에 3,000냥이오. 구매하겠소?");
                 DialogueCheckMoney(3000, "ID_T_OPEN_STORE_TANGHURU_BUY_YES", "ID_T_OPEN_STORE_TANGHURU_BUY_NOMONEY",
                     "네 주세요.", "Tanghuru");
                 pmtComtrol.AddOption("그냥 다음에 살게요.", "Tanghuru", "ID_T_OPEN_STORE_TANGHURU_STOREOUT");
@@ -3109,11 +3126,11 @@ public class Main_control : MonoBehaviour
             pmtComtrol.AddString("나이롱마스크", "오우~ 포켓볼 뽱~ 그냥은 안 파라요우~");
             pmtComtrol.AddString("훈이", "그러면 어떻게 하면 팔아요?");
             pmtComtrol.AddString("나이롱마스크", "사지 말고 투자하세요우~");
-            pmtComtrol.AddString("나이롱마스크", "지금 만 원을 내면 나중에 포켓볼 뽱으로 돌려줄게요우~");
+            pmtComtrol.AddString("나이롱마스크", "지금 만 냥을 내면 나중에 포켓볼 뽱으로 돌려줄게요우~");
             pmtComtrol.AddString("훈이", "몇 개 줄 건데요?");
             pmtComtrol.AddString("나이롱마스크", "그때그때 달라요우~");
             pmtComtrol.AddString("훈이", "(왠지 사기꾼 같은데...)");
-            Nylon_TryInvestBbang("네, 만 원 투자할게요.", "ID_F_BBANG_INVEST", "ID_F_NOMONEY_BEFORECOIN");
+            Nylon_TryInvestBbang("네, 만 냥 투자할게요.", "ID_F_BBANG_INVEST", "ID_F_NOMONEY_BEFORECOIN");
             pmtComtrol.AddOption("아니요, 괜찮아요.", "Nylon", "ID_F_BBANG_NOTINVEST");
             break;
 
@@ -3185,11 +3202,11 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_CHICKEN_WHAT":
             pmtComtrol.AddString("나이롱마스크", "취킨 사지 말고 저한테 투자하세요우~");
-            pmtComtrol.AddString("나이롱마스크", "지금 만 원을 내면 나중에 포켓볼 뽱으로 돌려줄게요우~");
+            pmtComtrol.AddString("나이롱마스크", "지금 만 을 내면 나중에 포켓볼 뽱으로 돌려줄게요우~");
             pmtComtrol.AddString("훈이", "몇 개 줄 건데요?");
             pmtComtrol.AddString("나이롱마스크", "그때그때 달라요우~");
             pmtComtrol.AddString("훈이", "(왠지 사기꾼 같은데...)");
-            Nylon_TryInvestBbang("네, 만 원 투자할게요.", "ID_F_CHICKEN_WHAT_INVEST", "ID_F_NOMONEY_BEFORECOIN");
+            Nylon_TryInvestBbang("네, 만 냥 투자할게요.", "ID_F_CHICKEN_WHAT_INVEST", "ID_F_NOMONEY_BEFORECOIN");
             pmtComtrol.AddOption("아니요, 괜찮아요.", "Nylon", "ID_F_CHICKEN_WHAT_NOTINVEST");
             break;
 
@@ -3248,7 +3265,7 @@ public class Main_control : MonoBehaviour
         case "ID_F_CHICKEN_NOTINVEST":
             pmtComtrol.AddString("나이롱마스크", "오우~ 잠깐 기다려봐요우~");
             pmtComtrol.AddString("나이롱마스크", "저는 사실 투자자에요우~");
-            pmtComtrol.AddString("나이롱마스크", "저한테 만 원을 투자하면 포켓볼 뽱을 세 개까지 가져올 수 있어요우~");
+            pmtComtrol.AddString("나이롱마스크", "저한테 만 냥을 투자하면 포켓볼 뽱을 세 개까지 가져올 수 있어요우~");
             pmtComtrol.AddOption("진짜요? 그럼 당장 투자할게요.", "Nylon", "ID_F_CHICKEN_NOTINVEST_INVEST");
             pmtComtrol.AddOption("필요 없어요.", "Nylon", "ID_F_CHICKEN_NOTINVEST_NOTINVEST");
             break;
@@ -3281,11 +3298,11 @@ public class Main_control : MonoBehaviour
         case "ID_F_WHAT":
             pmtComtrol.AddString("나이롱마스크", "아무것도 안 팔아요우~ 대신 투자해요우~");
             pmtComtrol.AddString("훈이", "투자요?");
-            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱 투자에요우~ 만 원 투자로 최대 세 개까지 얻을 수 있어요우~");
+            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱 투자에요우~ 만 냥 투자로 최대 세 개까지 얻을 수 있어요우~");
             pmtComtrol.AddString("나이롱마스크", "아무것도 못 얻을 수도 있지만...");
             pmtComtrol.AddString("훈이", "뭐라고요?");
             pmtComtrol.AddString("나이롱마스크", "아무것도 아니에요우~ 투자 하실래요우~? 뽱 많이 가져올 수 있어요우~");
-            Nylon_TryInvestBbang("좋아요. 만 원 투자할게요.", "ID_F_WHAT_INVEST", "ID_F_NOMONEY_BEFORECOIN");
+            Nylon_TryInvestBbang("좋아요. 만 냥 투자할게요.", "ID_F_WHAT_INVEST", "ID_F_NOMONEY_BEFORECOIN");
             pmtComtrol.AddOption("아니요. 괜찮아요.", "Nylon", "ID_F_WHAT_NOTINVEST");
             break;
 
@@ -3328,7 +3345,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_BREADS_3":
             pmtComtrol.AddString("나이롱마스크", "오우~ 예~ 완죤 잘 됐어요우~ 마치 투자의 신이 된 기분이에요우~");
-            AddBBang(3);
+            AddBBangType(3, "나이롱");
             pmtComtrol.AddString("훈이", "와 3개씩이나!");
             pmtComtrol.AddString("나이롱마스크", "이 정돈 기본이에요우~! 또 투자해 볼래요우~?");
             Nylon_TryInvestBbang("당연하죠! 당장 투자할래요.", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
@@ -3337,7 +3354,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_3BREADS_INVEST":
             pmtComtrol.AddString("나이롱마스크", "똑똑한 선택이네요우~");
-            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 대박의 기운이 가득한 이몸만 믿으세요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 대박의 기운이 가득한 이몸만 믿으세요우~");
             heartControl.UpdateMoney(-10000);
             PlayerPrefs.SetInt("NylonInvested", 1);
             pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST_END");
@@ -3360,7 +3377,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_BREADS_2":
             pmtComtrol.AddString("나이롱마스크", "오우~ 꽤 잘 됐어요우~ 저는 투자 고수거든요우~");
-            AddBBang(2);
+            AddBBangType(2, "나이롱");
             pmtComtrol.AddString("훈이", "오 2개나!");
             pmtComtrol.AddString("나이롱마스크", "나름 만족스럽죠우~? 또 투자해보는 건 어때요우~?");
             Nylon_TryInvestBbang("좋아요!", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
@@ -3369,7 +3386,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_2BREADS_INVEST":
             pmtComtrol.AddString("나이롱마스크", "투자의 묘미를 알아주는 분이군요우~");
-            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 제가 알아서 잘 투자해드릴테니 다음에 봐요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 제가 알아서 잘 투자해드릴테니 다음에 봐요우~");
             heartControl.UpdateMoney(-10000);
             PlayerPrefs.SetInt("NylonInvested", 1);
             pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST_END");
@@ -3392,7 +3409,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_BREADS_1":
             pmtComtrol.AddString("나이롱마스크", "오우~ 손해는 안 봤어요우~");
-            AddBBang(1);
+            AddBBangType(1, "나이롱");
             pmtComtrol.AddString("훈이", "1개네요.");
             pmtComtrol.AddString("나이롱마스크", "맞아요우~ 이번에는 좀 아쉬운 결과지만 다음 번엔 더 잘할 수 있어요우~ 다시 한번 투자해 볼래요우~?");
             Nylon_TryInvestBbang("한번만 더 믿어볼게요.", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
@@ -3401,14 +3418,14 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST":
             pmtComtrol.AddString("나이롱마스크", "한 번 더 기회를 줘서 고마워요우~");
-            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 이번엔 더 잘해 볼게요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 이번엔 더 잘해 볼게요우~");
             heartControl.UpdateMoney(-10000);
             PlayerPrefs.SetInt("NylonInvested", 1);
             pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_END");
             break;
 
         case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_END":
-            storeOutAction = "(만 원이나 투자해서 빵을 한 개밖에 못 얻다니. 조금 아쉽지만 다음 결과를 기다려보자.)";
+            storeOutAction = "(만 냥이나 투자해서 빵을 한 개밖에 못 얻다니. 조금 아쉽지만 다음 결과를 기다려보자.)";
             pmtComtrol.AddNextAction("main", "store_out");
             break;
 
@@ -3424,7 +3441,6 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_BREADS_0":
             pmtComtrol.AddString("나이롱마스크", "오우~ 이번에 상황이 좀 좋지 않았어요우~");
-            AddBBang(0);
             pmtComtrol.AddString("훈이", "한 개도 못 얻었다고요?");
             pmtComtrol.AddString("나이롱마스크", "투자라는 게 원래 그런 거 아니겠어요우~? 맑은 날이 있으면 흐린 날이 있는 거죠우~");
             pmtComtrol.AddString("나이롱마스크", "이번에는 정말 느낌이 좋은데 한번 더 투자해 볼래요우?");
@@ -3434,14 +3450,14 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST":
             pmtComtrol.AddString("나이롱마스크", "물론 정말이죠우~");
-            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 이번엔 진짜 잘 될 거니까 저만 믿으세요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 이번엔 진짜 잘 될 거니까 저만 믿으세요우~");
             heartControl.UpdateMoney(-10000);
             PlayerPrefs.SetInt("NylonInvested", 1);
             pmtComtrol.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_END");
             break;
 
         case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_END":
-            storeOutAction = "(만 원이나 투자해서 빵을 하나도 못 얻다니 이거 완전 손해잖아? 다음 투자는 잘 되기를 기도한다.)";
+            storeOutAction = "(만 냥이나 투자해서 빵을 하나도 못 얻다니 이거 완전 손해잖아? 다음 투자는 잘 되기를 기도한다.)";
             pmtComtrol.AddNextAction("main", "store_out");
             break;
 
@@ -3457,7 +3473,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFNOTINVESTED":
             pmtComtrol.AddString("나이롱마스크", "아뇽하세요우~ 파랑새 치킨임니다~");
-            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱에 투자해볼 생각이 생기셨나요우~? 만 원이면 포켓볼 뽱을 최대 3개 까지 얻을 수 있어요우~");
+            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱에 투자해볼 생각이 생기셨나요우~? 만 냥이면 포켓볼 뽱을 최대 3개 까지 얻을 수 있어요우~");
             Nylon_TryInvestBbang("네, 투자할게요.", "ID_F_SECOND_IFNOTINVESTED_INVEST", "ID_F_NOMONEY_AFTERECOIN_BBANGLAST");
             pmtComtrol.AddOption("아니요, 투자 안 할 건데요?", "Nylon", "ID_F_SECOND_IFNOTINVESTED_NOTINVEST");
             break;
@@ -3513,7 +3529,7 @@ public class Main_control : MonoBehaviour
         case "ID_F_SECOND_IFINVESTED_BREADS_3":
             pmtComtrol.AddString("훈이", "투자는 잘 됐나요?");
             pmtComtrol.AddString("나이롱마스크", "오우~ 예~ 완죤 잘 됐어요우~ 마치 투자의 신이 된 기분이에요우~");
-            AddBBang(3);
+            AddBBangType(3, "나이롱");
             pmtComtrol.AddString("훈이", "와 3개씩이나!");
             pmtComtrol.AddString("나이롱마스크", "이 정돈 기본이에요우~! 또 투자해 볼래요우~?");
             Nylon_TryInvestBbang("당연하죠! 당장 투자할래요.", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST", "ID_F_NOMONEY_BREAD", "Nylon_f");
@@ -3522,7 +3538,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_3BREADS_INVEST":
             pmtComtrol.AddString("나이롱마스크", "똑똑한 선택이네요우~");
-            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 이번에도 투자 잘해서 대봑 한번 터뜨려 볼게요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 이번에도 투자 잘해서 대봑 한번 터뜨려 볼게요우~");
             if (PlayerPrefs.HasKey("NylonDomiTutorial"))
                 pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST_2");
             else
@@ -3552,7 +3568,7 @@ public class Main_control : MonoBehaviour
         case "ID_F_SECOND_IFINVESTED_BREADS_2":
             pmtComtrol.AddString("훈이", "투자는 잘 됐나요?");
             pmtComtrol.AddString("나이롱마스크", "오우~ 꽤 잘 됐어요우~ 저는 투자 고수거든요우~");
-            AddBBang(2);
+            AddBBangType(2, "나이롱");
             pmtComtrol.AddString("훈이", "오 2개나!");
             pmtComtrol.AddString("나이롱마스크", "나름 만족스럽죠우~? 또 투자해보는 건 어때요우~?");
             Nylon_TryInvestBbang("좋아요!", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST", "ID_F_NOMONEY_BREAD", "Nylon_f");
@@ -3561,7 +3577,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_2BREADS_INVEST":
             pmtComtrol.AddString("나이롱마스크", "투자의 묘미를 알아주는 분이군요우~");
-            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 다음번엔 뽱을 더 많이 가져오도록 노력할게요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 다음번엔 뽱을 더 많이 가져오도록 노력할게요우~");
             if (PlayerPrefs.HasKey("NylonDomiTutorial"))
                 pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST_2");
             else
@@ -3591,7 +3607,7 @@ public class Main_control : MonoBehaviour
         case "ID_F_SECOND_IFINVESTED_BREADS_1":
             pmtComtrol.AddString("훈이", "투자는 잘 됐나요?");
             pmtComtrol.AddString("나이롱마스크", "오우~ 손해는 안 봤어요우~");
-            AddBBang(1);
+            AddBBangType(1, "나이롱");
             pmtComtrol.AddString("훈이", "1개네요.");
             pmtComtrol.AddString("나이롱마스크", "맞아요우~ 이번에는 좀 아쉬운 결과지만 다음 번엔 더 잘 할 수 있어요우~ 다시 한번 투자해 볼래요우~?");
             Nylon_TryInvestBbang("한번만 더 믿어볼게요.", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST", "ID_F_NOMONEY_BREAD", "Nylon_f");
@@ -3600,7 +3616,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST":
             pmtComtrol.AddString("나이롱마스크", "한번 더 기회를 줘서 고마워요우~");
-            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 다음번엔 확실히 뽱을 더 많이 가져올 수 있을 거에요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 다음번엔 확실히 뽱을 더 많이 가져올 수 있을 거에요우~");
             if (PlayerPrefs.HasKey("NylonDomiTutorial"))
                 pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_2");
             else
@@ -3630,7 +3646,6 @@ public class Main_control : MonoBehaviour
         case "ID_F_SECOND_IFINVESTED_BREADS_0":
             // No command found on line 89 : 
             pmtComtrol.AddString("나이롱마스크", "오우~ 이번에 상황이 좀 좋지 않았어요우~");
-            AddBBang(0);
             pmtComtrol.AddString("훈이", "한 개 도 못 얻었다고요?");
             pmtComtrol.AddString("나이롱마스크", "투자라는 게 원래 그런 거 아니겠어요우~? 맑은 날이 있으면 흐린 날이 있는 거죠우~");
             pmtComtrol.AddString("나이롱마스크", "이번에는 정말 느낌이 좋은데 한번 더 투자해 볼래요우?");
@@ -3640,7 +3655,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST":
             pmtComtrol.AddString("나이롱마스크", "물론 정말이죠우~ I am 신뢰에요우~");
-            pmtComtrol.AddString("나이롱마스크", "만 원 잘 받았어요우~ 다음 번엔 절대 투자 실패 같은 거 안 할 거에요우~");
+            pmtComtrol.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 다음 번엔 절대 투자 실패 같은 거 안 할 거에요우~");
             if (PlayerPrefs.HasKey("NylonDomiTutorial"))
                 pmtComtrol.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_2");
             else
@@ -3684,7 +3699,7 @@ public class Main_control : MonoBehaviour
             break;
 
         case "ID_F_FRIEND_MAIN_BREAD":
-            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱~에 투자하고 싶으시군요우~ 만 원이면 포켓볼 뽱을 최대 3개 까지 얻을 수 있어요우~");
+            pmtComtrol.AddString("나이롱마스크", "포켓볼 뽱~에 투자하고 싶으시군요우~ 만 냥이면 포켓볼 뽱을 최대 3개 까지 얻을 수 있어요우~");
             pmtComtrol.AddString("나이롱마스크", "투자를 확정하시겠어요우~?");
             pmtComtrol.AddOption("네.", "Nylon_f", "ID_F_FRIEND_MAIN_BREAD_YES");
             pmtComtrol.AddOption("아니요.", "Nylon_f", "ID_F_FRIEND_MAIN_BREAD_NO");
@@ -3734,7 +3749,7 @@ public class Main_control : MonoBehaviour
             break;
 
         case "ID_F_FRIEND_MAIN_COIN_BUY":
-            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+"원 이에요우~");
+            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+"냥 이에요우~");
             Nylon_OpenTradePanel(true);
             if(domiCoin.diff < 0.6) { 
               pmtComtrol.AddString("나이롱마스크", "지금이니~? 평생에 한번 있을까말까한 기회에요우~ 저라면 몰빵했어요우~");
@@ -3758,7 +3773,7 @@ public class Main_control : MonoBehaviour
             break;
 
         case "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER":
-            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.BuyAmount * domiCoin.GetPrice()+"원이에요우~ 구매를 확정하시겠어요우~?");
+            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.BuyAmount * domiCoin.GetPrice()+"냥이에요우~ 구매를 확정하시겠어요우~?");
             pmtComtrol.AddOption("네.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER_YES");
             pmtComtrol.AddOption("아니요.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_BUY_NUMBER_NO");
             break;
@@ -3784,7 +3799,7 @@ public class Main_control : MonoBehaviour
             break;
 
         case "ID_F_FRIEND_MAIN_COIN_SELL":
-            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+"원 이에요우~");
+            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+" 이에요우~");
             Nylon_OpenTradePanel(true);
             if(domiCoin.diff < 0.6) { 
               pmtComtrol.AddString("나이롱마스크", "오우~ 쥐저스~! 대공황이에요우~ 제 돈 아니라서 다행이에요우~");
@@ -3809,7 +3824,7 @@ public class Main_control : MonoBehaviour
             break;
 
         case "ID_F_FRIEND_MAIN_COIN_SELL_NUMBER":
-            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.SellAmount*domiCoin.GetPrice()+"원을 얻을 수 있어요우~ 판매를 확정하시겠어요우~?");
+            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.SellAmount*domiCoin.GetPrice()+"냥을 얻을 수 있어요우~ 판매를 확정하시겠어요우~?");
             pmtComtrol.AddOption("네.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_SELL_YES");
             pmtComtrol.AddOption("아니요.", "Nylon_f", "ID_F_FRIEND_MAIN_COIN_SELL_NO");
             break;
@@ -3862,7 +3877,7 @@ public class Main_control : MonoBehaviour
             pmtComtrol.AddString("나이롱마스크", "바로 도미 코인이에요우~");
             pmtComtrol.AddString("훈이", "도미 코인이요?");
             pmtComtrol.AddString("나이롱마스크", "비트코인 같은 거에요우~ 도미 코인을 사면 실시간으로 가격이 바뀌어요우~ 쌀 때 사서 비쌀 때 사면 되요우~");
-            pmtComtrol.AddString("훈이", "이것도 만 원씩 투자하면 되나요?");
+            pmtComtrol.AddString("훈이", "이것도 만 냥씩 투자하면 되나요?");
             pmtComtrol.AddString("나이롱마스크", "아니요우~ 원하는 금액만큼 자유롭게 투자할 수 있어요우~ 한번 질러 볼래요우~? 벼락 부자 될 수 있어요우~");
             pmtComtrol.AddOption("좋아요. 한번 해볼게요.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST");
             pmtComtrol.AddOption("아니요. 돈은 알바해서 정직하게 벌어야죠.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_NOTINVEST");
@@ -3874,7 +3889,7 @@ public class Main_control : MonoBehaviour
             break;
 
         case "ID_F_FRIEND_COINEXPLAIN_INVEST_2":
-            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+"원 이에요우~ 코인을 몇 개 구매할래요우~?");
+            pmtComtrol.AddString("나이롱마스크", "지금 코인 가격은 "+domiCoin.GetPrice()+"냥 이에요우~ 코인을 몇 개 구매할래요우~?");
             Nylon_OpenTradePanel(true);
             pmtComtrol.AddNextAction("Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_2_TRADE");
             break;
@@ -3884,7 +3899,7 @@ public class Main_control : MonoBehaviour
             break;
 
         case "ID_F_FRIEND_COINEXPLAIN_INVEST_NUMBER":
-            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.GetPrice() * domiCoin.BuyAmount+"원이에요우~ 구매를 확정하시겠어요우~?");
+            pmtComtrol.AddString("나이롱마스크", "총 "+domiCoin.GetPrice() * domiCoin.BuyAmount+"냥이에요우~ 구매를 확정하시겠어요우~?");
             pmtComtrol.AddOption("네.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_YES");
             pmtComtrol.AddOption("아니요.", "Nylon_f", "ID_F_FRIEND_COINEXPLAIN_INVEST_2");
             break;
@@ -3975,7 +3990,7 @@ public class Main_control : MonoBehaviour
 
         case "ID_J_GAME":
             pmtComtrol.AddString("장왕", "쌈을 만들 때는 족발 두 개, 겨자 이만큼, 마늘 두 개, 청양고추 하나.");
-            pmtComtrol.AddString("장왕", "그리고 넌 뒤졌다, 딱 기다려. 하는 마음으로 손님 입에 던지면 돼요.");
+            pmtComtrol.AddString("장왕", "그리고 너 각오해, 딱 기다려. 하는 마음으로 손님 입에 던지면 돼요.");
             pmtComtrol.AddOption("네!!", "JangJokBal", "ID_J_GAME_START");
             pmtComtrol.AddOption("조금만 더 자세히 알려주시면 안 될까요?", "JangJokBal", "ID_J_GAME_EXPLAIN");
             pmtComtrol.AddOption("그냥 도망간다.", "JangJokBal", "ID_J_GAME_RUN");
@@ -3993,9 +4008,10 @@ public class Main_control : MonoBehaviour
             pmtComtrol.AddString("장왕", "저는 지금 굉장히 기분이 좋습니다. 궁금한 게 있으시면 몇 번이고 다시 물어보셔도 돼요.");
             pmtComtrol.AddString("장왕", "쌈은 제가 싸드릴 거니까 걱정하실 필요 없고요.");
             pmtComtrol.AddString("장왕", "일 시작하면 손님이 아기새마냥 입을 쩍 벌리고 계실 건데, 그 안에 제가 싸둔 쌈을 던져 넣으시면 됩니다.");
-            pmtComtrol.AddString("장왕", "스와이프 하면 그냥 던져지고요. 쌈을 회전시켜서 던지면 커브볼도 던질 수 있어요.");
-            pmtComtrol.AddString("장왕", "커브볼로 넣으면 추가 점수를 줄게요. 그런데 손님 입에 못 넣고 얼굴에 맞춰버리면 점수 까버릴 거에요.");
-            pmtComtrol.AddString("장왕", "그런데 가끔 손님들이 재채기를 하거나 목 스트레칭을 하니까 조심하세요.");
+            pmtComtrol.AddString("장왕", "손님은 한 분만 오실 때도 있고요, 단체로 오실 때도 있어요.");
+            // No command found on line 57 : 
+            pmtComtrol.AddString("장왕", "그런데 손님 입에 못 넣으면 점수 까버릴 거에요.");
+            pmtComtrol.AddString("장왕", "대신 연속으로 성공하면 콤보 점수를 드릴게요.");
             pmtComtrol.AddString("장왕", "아시겠어요오!!");
             pmtComtrol.AddOption("네!!", "JangJokBal", "ID_J_GAME_START");
             pmtComtrol.AddOption("다시 한번만 알려주시면 안 될까요?", "JangJokBal", "ID_J_GAME_EXPLAIN");
@@ -4014,6 +4030,11 @@ public class Main_control : MonoBehaviour
             pmtComtrol.AddString("장왕", "아주 잘해주셨어요.");
             pmtComtrol.AddString("장왕", "저는 지금 굉장히 감동 받았습니다.");
             pmtComtrol.AddString("장왕", "여기 오늘 일당 받으시고. 또 오세요.");
+            if (PlayerPrefs.GetString("bossam_rank") == "A" && PlayerPrefs.GetInt("bossam_friend", 0) == 0)
+                    {
+                        pmtComtrol.AddString("장왕", "알밥 천국에도 등록해 드렸으니까, 이제부터는 원할 때 언제든지 오실 수  있어요.");
+                        PlayerPrefs.SetInt("bossam_friend", 1);
+                    }
             pmtComtrol.AddString("장왕", "왕충동 장 족발보쌈!!");
             pmtComtrol.AddOption("편의점을 나간다.", "JangJokBal", "ID_J_GAME_OVER_GOOD_STOREOUT");
             break;
@@ -4165,12 +4186,12 @@ public class Main_control : MonoBehaviour
 
     public void Debug_addMaple()
     {
-        AddBBang(1, "maple");
+        AddBBangType(1, "DEBUG", "maple");
     }
 
     public void Debug_addPurin()
     {
-        AddBBang(1, "purin");
+        AddBBangType(1,"DEBUG",  "purin");
     }
 
     public void Debug_gotoGS()

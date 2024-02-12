@@ -62,7 +62,7 @@ public class BbangBoyContol : MonoBehaviour
                         oldTime = Time.time;
                         showTextIdx = 5;
                         pmtComtrol.Reset();
-                        main.AddBBang(1, "choco");
+                        main.AddBBangType(1,"단군_빵먹기", "choco");
                         pmtComtrol.AddString("훈이", "집이 좀 깨끗해진 것 같아서 좋다.");
                         pmtComtrol.AddNextAction("bbangBoy", "bbangBoyOut");
                         prompter.SetActive(true);

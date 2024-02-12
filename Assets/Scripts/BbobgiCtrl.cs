@@ -53,7 +53,16 @@ public class BbobgiCtrl : MonoBehaviour
 
     public void CheckScore()
     {
+        StartCoroutine(CheckScoreAsync());
+    }
+
+    IEnumerator CheckScoreAsync()
+    {
         string bbangType;
+        List<int> idxs, amts;
+        idxs = new List<int>();
+        amts = new List<int>();
+        
         for (int i = gameObjects.Count - 1; i >= 0; i--)
         {
             if (gameObjects[i].transform.position.y >= guideline.transform.position.y)
@@ -65,20 +74,24 @@ public class BbobgiCtrl : MonoBehaviour
                     switch (bbangType)
                     {
                         case "choco":
-                            balloon.ShowMsg("초코롤빵을 획득했다!");
+                            idxs.Add(2005);
+                            amts.Add(1);
                             break;
                         case "hot":
-                            balloon.ShowMsg("핫소스빵을 획득했다!");
+                            idxs.Add(2003);
+                            amts.Add(1);
                             break;
                         case "bingle":
-                            balloon.ShowMsg("빙글빙글빵을 획득했다!");
+                            idxs.Add(2002);
+                            amts.Add(1);
                             break;
                         case "strawberry":
-                            balloon.ShowMsg("딸기크림빵을 획득했다!");
+                            idxs.Add(2004);
+                            amts.Add(1);
                             break;
                     }
                     
-                    main.AddBBang(1, bbangType);
+                    main.AddBBangType(1,"뽑기", bbangType);
                     bbangCount -= 1;
 
                     PlayerPrefs.SetInt("bbobgiCount", PlayerPrefs.GetInt("bbobgiCount") + 1);
@@ -87,7 +100,10 @@ public class BbobgiCtrl : MonoBehaviour
                 gameObjects.RemoveAt(i);
                 Destroy(Clone);
             }
+            yield return new WaitForSeconds(0.05f);
         }
+        RewardItemManager.Instance.Init(MyUtility.Converter.List2Array(idxs),MyUtility.Converter.List2Array(amts), "Bbobgi","포켓볼빵을 뽑았다!");
+        yield return new WaitForSeconds(0.5f);
         bbobgiPanel.GameFinished();
     }
 
@@ -107,7 +123,7 @@ public class BbobgiCtrl : MonoBehaviour
         bbangCount = 0;
         int rnd = Random.Range(0, 10);
         int objCount = 20;
-        if (rnd <= 5)
+        if (rnd <= 7)
         {
             objCount = Random.Range(25, 35);
             count = 1;
@@ -172,6 +188,7 @@ public class BbobgiCtrl : MonoBehaviour
             newObj.SetActive(true);
             newObj.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-1.2f, 1.2f), Random.Range(-1.2f, 1.2f)), ForceMode2D.Impulse);
             gameObjects.Add(newObj);
+            yield return new WaitForSeconds(0.015f);
         }
 
         for (int i = 0; i < myIdxs.Count; i++)
@@ -192,6 +209,7 @@ public class BbobgiCtrl : MonoBehaviour
                     gameObjects[j].transform.position = new Vector3(gameObjects[j].transform.position.x, guideline.transform.position.y + 1f);
                 }
             }
+            yield return new WaitForSeconds(0.015f);
         }
 
         for (int i = 0; i < myIdxs.Count; i++)
@@ -214,7 +232,7 @@ public class BbobgiCtrl : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         foreach (GameObject obj in clawBoneParts)
         {
             obj.GetComponent<CapsuleCollider2D>().enabled = true;

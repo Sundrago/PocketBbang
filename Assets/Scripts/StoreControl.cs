@@ -12,7 +12,8 @@ public class StoreControl : MonoBehaviour
     [SerializeField] GameObject cloud;
     [SerializeField] GameObject bbobgiMachine;
     [SerializeField] public BbobgiPanelCtrl bbobgiPanel;
-
+    [SerializeField] private GameObject scrumb;
+    
     public void UpdateStore(int i)
     {
         storeImg_ui.GetComponent<Image>().sprite = storeImgs[i];
@@ -26,6 +27,7 @@ public class StoreControl : MonoBehaviour
             bbobgiPanel.reload = true;
         } else
         {
+            scrumb.gameObject.SetActive(Random.value < 0.33f);
             bbobgiMachine.SetActive(false);
         }
     }
@@ -48,5 +50,12 @@ public class StoreControl : MonoBehaviour
     public void StartBbobgi()
     {
         bbobgiPanel.GetComponent<BbobgiPanelCtrl>().OpenGame();
+    }
+
+    public void ScrumbBtnClicked()
+    {
+        int rnd = Random.Range(1, 4);
+        RewardItemManager.Instance.Init(new int[1]{1001}, new int[1]{rnd}, "scrumb", "반짝이는 빵 부스러기를 주웠다!");
+        scrumb.gameObject.SetActive(false);
     }
 }

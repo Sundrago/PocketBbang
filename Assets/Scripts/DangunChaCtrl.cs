@@ -64,7 +64,7 @@ public class DangunChaCtrl : MonoBehaviour
                 maxCount = Mathf.FloorToInt(PlayerPrefs.GetInt("money") / 20000f);
                 if (maxCount > 3) maxCount = 3;
                 MsgCtrl.Start();
-                MsgCtrl.SetMsg("핫소스 빵을 몇개 구매할까요?\n3개까지 구매할 수 있습니다.\n (빵 1개당 2만원)\n(내가 가진 돈 : " + PlayerPrefs.GetInt("money")+"원)", maxCount, "DangunChaMsgCallBack");
+                MsgCtrl.SetMsg("핫소스 빵을 몇개 구매할까요?\n3개까지 구매할 수 있습니다.\n (빵 1개당 2만냥)\n(내가 가진 돈 : " + PlayerPrefs.GetInt("money")+"냥)", maxCount, "DangunChaMsgCallBack");
                 break;
             case 3:
                 SimpleMsg.Start();
@@ -78,14 +78,14 @@ public class DangunChaCtrl : MonoBehaviour
                 SimpleMsg.Start();
                 endDangun = false;
                 SimpleMsg.SetMsg("[" + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].name + "] 스티커를" +
-                    "\n" + PlayerPrefs.GetInt("sellPrice" + 0) + "원을 내고 구매합니다.\n" +
+                    "\n" + PlayerPrefs.GetInt("sellPrice" + 0) + "냥을 내고 구매합니다.\n" +
                     "\n(나의 보유 슈량 : " + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].count + "개)", 2, "DangunChaMsgCallBack");
                 break;
             case 6:
                 SimpleMsg.Start();
                 endDangun = false;
                 SimpleMsg.SetMsg("[" + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].name + "] 스티커를" +
-                    "\n" + PlayerPrefs.GetInt("sellPrice" + 1) + "원에 판매합니다.\n" +
+                    "\n" + PlayerPrefs.GetInt("sellPrice" + 1) + "냥에 판매합니다.\n" +
                     "\n(나의 보유 슈량 : " + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].count + "개)", 2, "DangunChaMsgCallBack");
                 break;
         }
@@ -138,7 +138,7 @@ public class DangunChaCtrl : MonoBehaviour
                 heart.UpdateMoney(returnCount * 2000);
                 break;
             case 2:
-                main.AddBBang(returnCount, "hot");
+                main.AddBBangType(returnCount,"단군_빵구매", "hot");
                 //Add Money and Update UI
                 heart.UpdateMoney(-returnCount * 20000);
                 break;
@@ -179,7 +179,7 @@ public class DangunChaCtrl : MonoBehaviour
             case 5:
                 /*
                  * "[" + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].name + "] 스티커를" +
-                    "\n" + PlayerPrefs.GetInt("sellPrice" + 0) + "원에 구매합니다.\n" +
+                    "\n" + PlayerPrefs.GetInt("sellPrice" + 0) + "냥에 구매합니다.\n" +
                     PlayerPrefs.GetInt("card_" + i)
                  */
                 if (endDangun)
@@ -247,7 +247,7 @@ public class DangunChaCtrl : MonoBehaviour
                 Msg("혹시.. 단군~?");
                 break;
             case 2:
-                Msg("한개당 2만원이에요!");
+                Msg("한개당 2만냥이에요!");
                 break;
             case 3:
                 Msg("혹시 단군..?!");
@@ -341,12 +341,12 @@ public class DangunChaCtrl : MonoBehaviour
         switch (chaIdx)
         {
             case 1:
-                pmtCtrl.AddString("용돈", "맛동산 " + returnCount + "개를 팔고\n" + (returnCount * 2000) + "원을 받았다!");
+                pmtCtrl.AddString("용돈", "맛동산 " + returnCount + "개를 팔고\n" + (returnCount * 2000) + "냥을 받았다!");
                 pmtCtrl.AddString("훈이", "좋은 거래였다!");
                 pmtCtrl.AddNextAction("dangunCha", "BackToHome");
                 break;
             case 2:
-                pmtCtrl.AddString("핫소스빵", returnCount * 20000 + "원을 내고\n핫소스빵 " + returnCount + "개를 겟했다!");
+                pmtCtrl.AddString("핫소스빵", returnCount * 20000 + "냥을 내고\n핫소스빵 " + returnCount + "개를 겟했다!");
                 pmtCtrl.AddString("훈이", "가성비가 좋은지는 모르겠다.");
                 pmtCtrl.AddNextAction("dangunCha", "BackToHome");
                 break;
@@ -384,11 +384,11 @@ public class DangunChaCtrl : MonoBehaviour
                 else
                 {
                     /*SimpleMsg.SetMsg("[" + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].name + "] 스티커를" +
-                    "\n" + PlayerPrefs.GetInt("sellPrice" + 0) + "원에 구매합니다.\n" +
+                    "\n" + PlayerPrefs.GetInt("sellPrice" + 0) + "냥에 구매합니다.\n" +
                     "\n(나의 보유 슈량 : " + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].count + "개)", 2, "DangunChaMsgCallBack");
                     */
 
-                    pmtCtrl.AddString("훈이", PlayerPrefs.GetInt("sellPrice" + 0) + "원을 내고 \n["
+                    pmtCtrl.AddString("훈이", PlayerPrefs.GetInt("sellPrice" + 0) + "냥을 내고 \n["
                         + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].name + "] 스티커를 겟했다!");
                     pmtCtrl.AddNextAction("OpenCard", PlayerPrefs.GetInt("sellIdx" + 0) + "");
                 }
@@ -403,11 +403,11 @@ public class DangunChaCtrl : MonoBehaviour
                 {
                     /*
                      * SimpleMsg.SetMsg("[" + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].name + "] 스티커를" +
-                    "\n" + PlayerPrefs.GetInt("sellPrice" + 1) + "원에 판매합니다.\n" +
+                    "\n" + PlayerPrefs.GetInt("sellPrice" + 1) + "냥에 판매합니다.\n" +
                     "\n(나의 보유 슈량 : " + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].count + "개)", 2, "DangunChaMsgCallBack");
                     */
                     pmtCtrl.AddString("훈이", "[" + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].name + "] 스티커를 팔았다!\n(남은 수량 : " + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].count + "개)");
-                    pmtCtrl.AddString("용돈", "보상으로 " + PlayerPrefs.GetInt("sellPrice" + 1) + "원을 받았다!");
+                    pmtCtrl.AddString("용돈", "보상으로 " + PlayerPrefs.GetInt("sellPrice" + 1) + "냥을 받았다!");
                     pmtCtrl.AddNextAction("dangunCha", "BackToHome");
                 }
                 break;

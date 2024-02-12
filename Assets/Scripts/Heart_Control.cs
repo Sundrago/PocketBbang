@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -13,11 +14,13 @@ public class Heart_Control : MonoBehaviour
 
     [SerializeField] GameObject[] heartImg = new GameObject[6];
     [SerializeField] GameObject timerHolder;
-    [SerializeField] GameObject btn1, btn2, bbangEatCount_ui, chocoCount_ui, money_ui;
+    [SerializeField] GameObject btn1, btn2, bbangEatCount_ui, chocoCount_ui;
     [SerializeField] GameObject moneyAmount_ui;
     [SerializeField] Text timer;
     [SerializeField] Text busText;
-
+    
+    [SerializeField] private Text coinCount_ui, diamondCount_ui, scrumbCount_ui;
+    
     const string format = "yyyy/MM/dd HH:mm:ss";
 
     System.DateTime oldTime, arriveTime;
@@ -30,6 +33,7 @@ public class Heart_Control : MonoBehaviour
 
     int bbang_choco, bbang_mat, bbang_strawberry, bbang_hot;
 
+    private int coinCount, scrumbCount, diamondCount;
     public static Heart_Control Instance;
 
     private void Awake()
@@ -39,8 +43,10 @@ public class Heart_Control : MonoBehaviour
 
     void Start()
     {
+#if UNITY_IOS && !UNITY_EDITOR
         Firebase.Analytics.FirebaseAnalytics
             .LogEvent("Money", "totalBalance", GetBalance());
+#endif
         
         if (!PlayerPrefs.HasKey("heartCount"))
         {
@@ -110,8 +116,13 @@ public class Heart_Control : MonoBehaviour
         {
             went = true;
         }
-
-        UpdateMoney(0);
+        
+        coinCount = PlayerPrefs.GetInt("money", 0);
+        scrumbCount = PlayerPrefs.GetInt("scrumbCount", 0);
+        diamondCount = PlayerPrefs.GetInt("diamondCount", 0);
+        UpdateUI();
+        
+        // UpdateMoney(0);
     }
 
     public void Bus_launch()
@@ -140,12 +151,24 @@ public class Heart_Control : MonoBehaviour
     public void Bus_Receive()
     {
         int rnd;
-        if (PlayerPrefs.GetInt("myRealTotalCard") >= 200) rnd = Random.Range(1, 2);
+        if (PlayerPrefs.GetInt("myRealTotalCard") >= 250) rnd = Random.Range(1, 2);
         else if (PlayerPrefs.GetInt("myRealTotalCard") >= 100) rnd = Random.Range(1, 3);
         else rnd = Random.Range(1, 4);
 
-        gameObject.GetComponent<Main_control>().AddBBang(rnd, "choco");
-        gameObject.GetComponent<Main_control>().balloon.ShowMsg("셔틀이 초코롤빵 " + rnd + "개를 가져왔습니다!");
+        // gameObject.GetComponent<Main_control>().AddBBangType(rnd, "빵셔틀","choco");
+        // gameObject.GetComponent<Main_control>().balloon.ShowMsg("셔틀이 초코롤빵 " + rnd + "개를 가져왔습니다!");
+
+        int[] idx = new int[rnd];
+        int[] amt = new int[rnd];
+        
+        for(int i = 0; i<rnd; i++)
+        {
+            idx[i] = 2000;
+            amt[i] = 1;
+        }
+
+        RewardItemManager.Instance.Init(idx, amt, "shuttle","셔틀이 빵 " + rnd + "개를 가져왔다!");
+        
         received = true;
         PlayerPrefs.SetInt("received", 1);
         PlayerPrefs.Save();
@@ -163,26 +186,26 @@ public class Heart_Control : MonoBehaviour
     public void UpdateMoney(int money)
     {
         print("UpdateMoney : " + money);
-        PlayerPrefs.SetInt("money", PlayerPrefs.GetInt("money") + money);
+        // PlayerPrefs.SetInt("money", PlayerPrefs.GetInt("money") + money);
 
+        string moneyString = string.Format("{0:#,###0}", money);
+        string totlaMoneyString = string.Format("{0:#,###0}", PlayerPrefs.GetInt("money"));
+        
         if(money > 0)
         {
             PlayerPrefs.SetInt("totalMoney", PlayerPrefs.GetInt("totalMoney") + money);
             moneyAmount_ui.GetComponent<Text>().color = Color.red;
-            moneyAmount_ui.GetComponent<Text>().text = "+ " + money + "원";
+            moneyAmount_ui.GetComponent<Text>().text = "+ " + moneyString + "냥";
         } else if(money < 0)
         {
             moneyAmount_ui.GetComponent<Text>().color = Color.blue;
-            moneyAmount_ui.GetComponent<Text>().text = money + "원";
-        } else
-        {
-            money_ui.GetComponent<Text>().text = PlayerPrefs.GetInt("money") + "";
-            return;
-        }
+            moneyAmount_ui.GetComponent<Text>().text = moneyString + "냥";
+        } 
         moneyAmount_ui.GetComponent<Animator>().SetTrigger("show");
-        money_ui.GetComponent<Text>().text = PlayerPrefs.GetInt("money") + "";
-
         PlayerPrefs.Save();
+
+        if (money >= 0) AddMoney(MoneyType.Coin, money);
+        else SubtractMoney(MoneyType.Coin, -money);
     }
 
     public int GetBalance()
@@ -379,5 +402,149 @@ public class Heart_Control : MonoBehaviour
                     break;
             }
         }
+    }
+    
+    public enum MoneyType { Coin, Scrumb, Diamond }
+
+    public int GetAmount(MoneyType type)
+    {
+        switch (type)
+        {
+            case MoneyType.Coin:
+                return coinCount;
+                break;
+            case MoneyType.Scrumb :
+                return scrumbCount;
+                break;
+            case MoneyType.Diamond:
+                return diamondCount;
+                break;
+        }
+
+        return -1;
+    }
+
+    private void UpdateUI()
+    {
+        coinCount_ui.text = string.Format("{0:#,###0}", coinCount);
+        diamondCount_ui.text = string.Format("{0:#,###0}", diamondCount);
+        scrumbCount_ui.text = string.Format("{0:#,###0}", scrumbCount);
+        
+        PlayerPrefs.SetInt("money", coinCount);
+        PlayerPrefs.SetInt("diamondCount", diamondCount);
+        PlayerPrefs.SetInt("scrumbCount", scrumbCount);
+        PlayerPrefs.Save();
+    }
+
+    public void AddMoney(MoneyType _type, int amount)
+    {
+        // AudioCtrl.Instance.PlaySFXbyTag(SFX_tag.coinInJar);
+        int startValue, endValue;
+        switch (_type)
+        {
+            case MoneyType.Coin:
+                startValue = coinCount;
+                coinCount += amount;
+                PlayerPrefs.SetInt("money", coinCount);
+                // ticketHolder_ui.transform.localScale = Vector3.one;
+                // ticketHolder_ui.transform.DOPunchScale(Vector3.one * 0.1f, 0.5f);
+                
+                endValue = startValue + amount;
+                DOVirtual.Int(startValue, endValue, 0.5f, value => {
+                    coinCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
+                });
+                break;
+            case MoneyType.Scrumb:
+                startValue = scrumbCount;
+                scrumbCount += amount;
+                PlayerPrefs.SetInt("scrumbCount", scrumbCount);
+                // gachaCoinHolder_ui.transform.localScale = Vector3.one;
+                // gachaCoinHolder_ui.transform.DOPunchScale(Vector3.one * 0.1f, 0.5f);
+                
+                endValue = startValue + amount;
+                DOVirtual.Int(startValue, endValue, 0.5f, value => {
+                    scrumbCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
+                });
+                break;
+            case MoneyType.Diamond:
+                startValue = diamondCount;
+                diamondCount += amount;
+                PlayerPrefs.SetInt("diamondCount", diamondCount);
+                // keyHolder_ui.transform.localScale = Vector3.one;
+                // keyHolder_ui.transform.DOPunchScale(Vector3.one * 0.1f, 0.5f);
+                
+                endValue = startValue + amount;
+                DOVirtual.Int(startValue, endValue, 0.5f, value => {
+                    diamondCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
+                });
+                break;
+            default:
+                break;
+        }
+        UpdateUI();
+    }
+
+    public bool HasEnoughMoney(MoneyType _type, int amount)
+    {
+        switch (_type)
+        {
+            case MoneyType.Coin:
+                return (coinCount >= amount);
+                break;
+            case MoneyType.Scrumb:
+                return (scrumbCount >= amount);
+                break;
+            case MoneyType.Diamond:
+                return (diamondCount >= amount);
+                break;
+            default:
+                return false;
+                break;
+        }
+    }
+
+    public bool SubtractMoney(MoneyType _type, int amount)
+    {
+        if (!HasEnoughMoney(_type, amount)) return false;
+        
+        int startValue, endValue;
+        switch (_type)
+        {
+            case MoneyType.Coin:
+                startValue = coinCount;
+                coinCount -= amount;
+                PlayerPrefs.SetInt("money", coinCount);
+                endValue = startValue - amount;
+                DOVirtual.Int(startValue, endValue, 0.5f, value => {
+                    coinCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
+                });
+                
+                break;
+            case MoneyType.Scrumb:
+                startValue = scrumbCount;
+                scrumbCount -= amount;
+                PlayerPrefs.SetInt("scrumbCount", scrumbCount);
+                endValue = startValue - amount;
+                
+                DOVirtual.Int(startValue, endValue, 0.5f, value => {
+                    scrumbCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
+                });
+                break;
+            case MoneyType.Diamond:
+                startValue = diamondCount;
+                diamondCount -= amount;
+                PlayerPrefs.SetInt("diamondCount", diamondCount);
+                endValue = startValue - amount;
+                
+                DOVirtual.Int(startValue, endValue, 0.5f, value => {
+                    diamondCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
+                });
+                break;
+            default:
+                startValue = 0;
+                break;
+        }
+        UpdateUI();
+        return true;
     }
 }
