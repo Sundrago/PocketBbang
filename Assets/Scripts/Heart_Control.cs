@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -11,15 +12,17 @@ public class Heart_Control : MonoBehaviour
     [SerializeField] NotificationCtrl notice;
     [SerializeField] BalloonControl balloon;
     [SerializeField] Animator bus;
-
-    [SerializeField] GameObject[] heartImg = new GameObject[6];
+    [SerializeField] private FishManager fishManager;
+    
+    [SerializeField] HeartIcon[] heartImg = new HeartIcon[8];
     [SerializeField] GameObject timerHolder;
     [SerializeField] GameObject btn1, btn2, bbangEatCount_ui, chocoCount_ui;
     [SerializeField] GameObject moneyAmount_ui;
     [SerializeField] Text timer;
     [SerializeField] Text busText;
     
-    [SerializeField] private Text coinCount_ui, diamondCount_ui, scrumbCount_ui;
+    [SerializeField] private Text coinCount_ui, diamondCount_ui, scrumbCount_ui, fish0Count_ui, fish1Count_ui, fish2Count_ui;
+    [SerializeField] private GameObject scrumbObj, diamondObj, fishObj;
     
     const string format = "yyyy/MM/dd HH:mm:ss";
 
@@ -27,25 +30,45 @@ public class Heart_Control : MonoBehaviour
     System.TimeSpan timeGap, leftTime, remainTime;
     System.IFormatProvider provider;
 
-    public int heartCount = 0;
+    private int heartCount = 0;
     public int currentBbangCount;
     public bool received, went;
 
     int bbang_choco, bbang_mat, bbang_strawberry, bbang_hot;
 
-    private int coinCount, scrumbCount, diamondCount;
+    private int coinCount, scrumbCount, diamondCount, fish0Count, fish1Count, fish2Count;
     public static Heart_Control Instance;
+    private int maxHeartCount = 6;
 
+    private bool isGoldFishActive;
+    
     private void Awake()
     {
         Instance = this;
+        InitMaxHeart();
     }
 
+    private void InitMaxHeart()
+    {
+        if (PlayerPrefs.GetInt("product_maxheartplus", 0) == 1)
+        {
+            maxHeartCount = 6;
+        }
+        else maxHeartCount = 8;
+
+        for (int i = 0; i < heartImg.Length; i++)
+        {
+            if(i<maxHeartCount) heartImg[i].SetEnabled(true);
+            else heartImg[i].SetEnabled(false);
+        }
+    }
     void Start()
     {
+        InitMaxHeart();
+
 #if UNITY_IOS && !UNITY_EDITOR
         Firebase.Analytics.FirebaseAnalytics
-            .LogEvent("Money", "totalBalance", GetBalance());
+            .LogEvent("Money", "totaBalance", GetBalance());
 #endif
         
         if (!PlayerPrefs.HasKey("heartCount"))
@@ -120,11 +143,31 @@ public class Heart_Control : MonoBehaviour
         coinCount = PlayerPrefs.GetInt("money", 0);
         scrumbCount = PlayerPrefs.GetInt("scrumbCount", 0);
         diamondCount = PlayerPrefs.GetInt("diamondCount", 0);
+        fish0Count = PlayerPrefs.GetInt("fish0Count", 0);
+        fish1Count = PlayerPrefs.GetInt("fish1Count", 0);
+        fish2Count = PlayerPrefs.GetInt("fish2Count", 0);
         UpdateUI();
         
         // UpdateMoney(0);
     }
 
+    public bool IsHeartFull()
+    {
+        return heartCount >= maxHeartCount;
+    }
+
+    public bool ConsumeSingleHeart()
+    {
+        if (heartCount <= 0) return false;
+        SetHeart(-1);
+        return true;
+    }
+
+    public bool IsHeartEmpty()
+    {
+        return heartCount < 1;
+    }
+    
     public void Bus_launch()
     {
         went = true;
@@ -232,7 +275,7 @@ public class Heart_Control : MonoBehaviour
             StoreDateCheck();
             //UpdateBbangInfo();
 
-            if (heartCount < 6 & timeGap.TotalMinutes < 5)
+            if (heartCount < maxHeartCount & timeGap.TotalMinutes < 5)
             {
                 timerHolder.transform.position = new Vector3(heartImg[heartCount].transform.position.x, timerHolder.transform.position.y, 1);
                 if (!timerHolder.activeSelf) timerHolder.SetActive(true);
@@ -265,11 +308,37 @@ public class Heart_Control : MonoBehaviour
         }
     }
 
+    public void SetFishAnim(bool _isGoldFishActive)
+    {
+        isGoldFishActive = _isGoldFishActive;
+        
+        if (isGoldFishActive)
+        {
+            StartCoroutine(DoFishHeartAnim());
+        }
+        else
+        {
+            for (int i = 0; i < maxHeartCount; i++)
+            {
+                heartImg[i].EndFishAnim();
+            }
+        }
+    }
+
+    private IEnumerator DoFishHeartAnim()
+    {
+        for (int i = 0; i < maxHeartCount; i++)
+        {
+            heartImg[i].DoFishAnim();
+            yield return new WaitForSeconds(0.08f);
+        }
+    }
+
     void UpdateHeartCount()
     {
-        if (heartCount == 6) return;
+        if (heartCount == maxHeartCount) return;
         timeGap = System.DateTime.Now - oldTime;
-        while (heartCount < 6 & timeGap.TotalMinutes >= 5)
+        while (heartCount < maxHeartCount & timeGap.TotalMinutes >= 5)
         {
             SetHeart(1);
             oldTime = oldTime.AddMinutes(5);
@@ -280,7 +349,7 @@ public class Heart_Control : MonoBehaviour
     public void UpdateHeartUI(int count = -1)
     {
         if (count == -1) count = heartCount;
-        if(count > 6)
+        if(count > maxHeartCount)
         {
             print("heart count error");
             return;
@@ -288,12 +357,14 @@ public class Heart_Control : MonoBehaviour
 
         for(int i = 0; i < count; i++)
         {
-            heartImg[i].GetComponent<Animator>().SetTrigger("show");
+            heartImg[i].Show();
         }
-        for (int i = count; i < heartImg.Length; i++)
+        for (int i = count; i < maxHeartCount; i++)
         {
-            heartImg[i].GetComponent<Animator>().SetTrigger("hide");
+            heartImg[i].Hide();
         }
+        PlayerPrefs.SetInt("heartCount", heartCount);
+        PlayerPrefs.Save();
     }
 
     public void SetHeart(int i)
@@ -302,8 +373,8 @@ public class Heart_Control : MonoBehaviour
         {
             if(heartCount > 0)
             {
-                heartImg[heartCount - 1].GetComponent<Animator>().SetTrigger("disappear");
-                if(heartCount == 6)
+                heartImg[heartCount - 1].Hide();
+                if(heartCount == maxHeartCount)
                 {
                     oldTime = System.DateTime.Now;
                 }
@@ -312,9 +383,9 @@ public class Heart_Control : MonoBehaviour
         }
         if (i == 1)
         {
-            if (heartCount < 6)
+            if (heartCount < maxHeartCount)
             {
-                heartImg[heartCount].GetComponent<Animator>().SetTrigger("appear");
+                heartImg[heartCount].Show();
                 heartCount += 1;
             }
         }
@@ -327,9 +398,17 @@ public class Heart_Control : MonoBehaviour
     public void HeartFull()
     {
         heartCount += 3;
-        if (heartCount > 6) heartCount = 6;
+        if (heartCount > maxHeartCount) heartCount = maxHeartCount;
         UpdateHeartUI(heartCount);
     }
+
+    public void AddHeartByAmt(int amount)
+    {
+        heartCount += amount;
+        if (heartCount > maxHeartCount) heartCount = maxHeartCount;
+        UpdateHeartUI(heartCount);
+    }
+    
     public void UpdateBbangInfo()
     {
         currentBbangCount = PlayerPrefs.GetInt("currentBbangCount");
@@ -371,11 +450,7 @@ public class Heart_Control : MonoBehaviour
         }
         else if (currentBbangCount < 100)
         {
-            balloon.ShowMsg("빵을 어떻게 하는게 좋을 것 같다.");
-        }
-        else if (currentBbangCount < 150)
-        {
-            balloon.ShowMsg("이게 사람 사는 집인가..");
+            balloon.ShowMsg("빵을 단군에 팔 수는 없을까?");
         }
         else
         {
@@ -395,7 +470,7 @@ public class Heart_Control : MonoBehaviour
                     balloon.ShowMsg("빵이 인간적으로 너무 많다.");
                     break;
                 case 4:
-                    balloon.ShowMsg("집이 빵으로 가득 찼잖아...?!");
+                    balloon.ShowMsg("단군마켓에 팔아야겠어..");
                     break;
                 case 5:
                     balloon.ShowMsg("빵때문에 렉이 걸리는 것 같아..");
@@ -404,7 +479,7 @@ public class Heart_Control : MonoBehaviour
         }
     }
     
-    public enum MoneyType { Coin, Scrumb, Diamond }
+    public enum MoneyType { Coin, Scrumb, Diamond, Fish0, Fish1, Fish2 }
 
     public int GetAmount(MoneyType type)
     {
@@ -419,21 +494,46 @@ public class Heart_Control : MonoBehaviour
             case MoneyType.Diamond:
                 return diamondCount;
                 break;
+            case MoneyType.Fish0:
+                return fish0Count;
+                break;
+            case MoneyType.Fish1:
+                return fish1Count;
+                break;
+            case MoneyType.Fish2:
+                return fish2Count;
+                break;
         }
 
         return -1;
     }
-
-    private void UpdateUI()
+    
+    public void UpdateUI()
     {
         coinCount_ui.text = string.Format("{0:#,###0}", coinCount);
         diamondCount_ui.text = string.Format("{0:#,###0}", diamondCount);
         scrumbCount_ui.text = string.Format("{0:#,###0}", scrumbCount);
+        fish0Count_ui.text = fish0Count.ToString();
+        fish1Count_ui.text = fish1Count.ToString();
+        fish2Count_ui.text = fish2Count.ToString();
         
         PlayerPrefs.SetInt("money", coinCount);
         PlayerPrefs.SetInt("diamondCount", diamondCount);
         PlayerPrefs.SetInt("scrumbCount", scrumbCount);
+        PlayerPrefs.SetInt("fish0Count", fish0Count);
+        PlayerPrefs.SetInt("fish1Count", fish1Count);
+        PlayerPrefs.SetInt("fish2Count", fish2Count);
         PlayerPrefs.Save();
+        
+        /*
+         * PlayerPrefs.SetInt("totalScrubCount", PlayerPrefs.GetInt("totalScrubCount",0) + amount);
+           PlayerPrefs.SetInt("totalDiamondCount", PlayerPrefs.GetInt("totalDiamondCount",0) + amount);
+         */
+        scrumbObj.SetActive(PlayerPrefs.GetInt("totalScrubCount",0)>0 || scrumbCount > 0);
+        diamondObj.SetActive(PlayerPrefs.GetInt("totalDiamondCount",0)>0 || diamondCount > 0);
+        fishObj.SetActive(PlayerPrefs.GetInt("totalFishCount",0)>0 ||fish0Count>0 || fish1Count>0 || fish2Count>0 || isGoldFishActive);
+        
+        fishManager.UpdateFishStatus();
     }
 
     public void AddMoney(MoneyType _type, int amount)
@@ -446,9 +546,7 @@ public class Heart_Control : MonoBehaviour
                 startValue = coinCount;
                 coinCount += amount;
                 PlayerPrefs.SetInt("money", coinCount);
-                // ticketHolder_ui.transform.localScale = Vector3.one;
-                // ticketHolder_ui.transform.DOPunchScale(Vector3.one * 0.1f, 0.5f);
-                
+
                 endValue = startValue + amount;
                 DOVirtual.Int(startValue, endValue, 0.5f, value => {
                     coinCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
@@ -458,9 +556,8 @@ public class Heart_Control : MonoBehaviour
                 startValue = scrumbCount;
                 scrumbCount += amount;
                 PlayerPrefs.SetInt("scrumbCount", scrumbCount);
-                // gachaCoinHolder_ui.transform.localScale = Vector3.one;
-                // gachaCoinHolder_ui.transform.DOPunchScale(Vector3.one * 0.1f, 0.5f);
-                
+                PlayerPrefs.SetInt("totalScrubCount", PlayerPrefs.GetInt("totalScrubCount",0) + amount);
+
                 endValue = startValue + amount;
                 DOVirtual.Int(startValue, endValue, 0.5f, value => {
                     scrumbCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
@@ -470,13 +567,28 @@ public class Heart_Control : MonoBehaviour
                 startValue = diamondCount;
                 diamondCount += amount;
                 PlayerPrefs.SetInt("diamondCount", diamondCount);
-                // keyHolder_ui.transform.localScale = Vector3.one;
-                // keyHolder_ui.transform.DOPunchScale(Vector3.one * 0.1f, 0.5f);
-                
+                PlayerPrefs.SetInt("totalDiamondCount", PlayerPrefs.GetInt("totalDiamondCount",0) + amount);
+
                 endValue = startValue + amount;
                 DOVirtual.Int(startValue, endValue, 0.5f, value => {
                     diamondCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
                 });
+                break;
+            
+            case MoneyType.Fish0:
+                fish0Count += amount;
+                PlayerPrefs.SetInt("fish0Count", fish0Count);
+                PlayerPrefs.SetInt("totalFishCount", PlayerPrefs.GetInt("totalFishCount",0) + amount);
+                break;
+            case MoneyType.Fish1:
+                fish1Count += amount;
+                PlayerPrefs.SetInt("fish1Count", fish1Count);
+                PlayerPrefs.SetInt("totalFishCount", PlayerPrefs.GetInt("totalFishCount",0) + amount);
+                break;
+            case MoneyType.Fish2:
+                fish2Count += amount;
+                PlayerPrefs.SetInt("fish2Count", fish2Count);
+                PlayerPrefs.SetInt("totalFishCount", PlayerPrefs.GetInt("totalFishCount",0) + amount);
                 break;
             default:
                 break;
@@ -496,6 +608,15 @@ public class Heart_Control : MonoBehaviour
                 break;
             case MoneyType.Diamond:
                 return (diamondCount >= amount);
+                break;
+            case MoneyType.Fish0:
+                return (fish0Count >= amount);
+                break;
+            case MoneyType.Fish1:
+                return (fish1Count >= amount);
+                break;
+            case MoneyType.Fish2:
+                return (fish2Count >= amount);
                 break;
             default:
                 return false;
@@ -539,6 +660,18 @@ public class Heart_Control : MonoBehaviour
                 DOVirtual.Int(startValue, endValue, 0.5f, value => {
                     diamondCount_ui.text = string.Format("{0:#,###0}", Mathf.Round(value));
                 });
+                break;
+            case MoneyType.Fish0:
+                fish0Count -= amount;
+                PlayerPrefs.SetInt("fish0Count", fish0Count);
+                break;
+            case MoneyType.Fish1:
+                fish1Count -= amount;
+                PlayerPrefs.SetInt("fish1Count", fish1Count);
+                break;
+            case MoneyType.Fish2:
+                fish2Count -= amount;
+                PlayerPrefs.SetInt("fish2Count", fish2Count);
                 break;
             default:
                 startValue = 0;

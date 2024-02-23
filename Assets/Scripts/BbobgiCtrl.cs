@@ -91,7 +91,7 @@ public class BbobgiCtrl : MonoBehaviour
                             break;
                     }
                     
-                    main.AddBBangType(1,"뽑기", bbangType);
+                    // main.AddBBangType(1,"뽑기", bbangType);
                     bbangCount -= 1;
 
                     PlayerPrefs.SetInt("bbobgiCount", PlayerPrefs.GetInt("bbobgiCount") + 1);
@@ -100,9 +100,9 @@ public class BbobgiCtrl : MonoBehaviour
                 gameObjects.RemoveAt(i);
                 Destroy(Clone);
             }
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.01f);
         }
-        RewardItemManager.Instance.Init(MyUtility.Converter.List2Array(idxs),MyUtility.Converter.List2Array(amts), "Bbobgi","포켓볼빵을 뽑았다!");
+        if(idxs.Count > 0) RewardItemManager.Instance.Init(MyUtility.Converter.List2Array(idxs),MyUtility.Converter.List2Array(amts), "Bbobgi","포켓볼빵을 뽑았다!");
         yield return new WaitForSeconds(0.5f);
         bbobgiPanel.GameFinished();
     }

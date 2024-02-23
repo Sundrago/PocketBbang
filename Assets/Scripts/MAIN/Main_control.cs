@@ -302,7 +302,7 @@ public class Main_control : MonoBehaviour
                 {
                     //parkToHome
                     gointToPark = false;
-                    currentLocation = "park";
+                    currentLocation = "park_toHome";
                     frontCha.GetComponent<Animator>().SetTrigger("walk");
                     lower_bar.GetComponent<Animator>().SetTrigger("hide");
                     newStore.GetComponent<Animator>().SetTrigger("hide");
@@ -311,10 +311,9 @@ public class Main_control : MonoBehaviour
                 }
                 else if (currentLocation == "home")
                 {
-                    if (GetComponent<Heart_Control>().heartCount >= 1)
+                    if (heartControl.ConsumeSingleHeart())
                     {
                         parkBtn.SetActive(false);
-                        GetComponent<Heart_Control>().SetHeart(-1);
                         front_panel.SetActive(true);
                         frontCha.GetComponent<Animator>().SetTrigger("walk");
                         main_panel.GetComponent<Animator>().SetTrigger("hide");
@@ -571,9 +570,8 @@ public class Main_control : MonoBehaviour
             case "store_next":
                 if (currentLocation != "store" && !albaMode) return;
 
-                if (GetComponent<Heart_Control>().heartCount >= 1)
+                if (heartControl.ConsumeSingleHeart())
                 {
-                    GetComponent<Heart_Control>().SetHeart(-1);
                     newStore.GetComponent<Animator>().SetTrigger("hide");
                     frontCha.GetComponent<Animator>().SetTrigger("walk");
                     GoToStore();
@@ -698,11 +696,7 @@ public class Main_control : MonoBehaviour
     //!alba
     public void GoToAlba()
     {
-        if (GetComponent<Heart_Control>().heartCount >= 1)
-        {
-            GetComponent<Heart_Control>().SetHeart(-1);
-        }
-        else
+        if (!heartControl.ConsumeSingleHeart())
         {
             balloon.ShowMsg("지금은 좀 피곤하다..");
             return;
@@ -1362,7 +1356,7 @@ public class Main_control : MonoBehaviour
                 storeOutAction = "손해보는 것 같지만 기분은 좋다.";
                 matdongsanBuy = true;
 
-                if (GetComponent<Heart_Control>().heartCount >= 1)
+                if (!heartControl.IsHeartEmpty())
                 {
                     pmtComtrol.AddOption("편의점을 나간다.", "store", "hostf_out");
                     pmtComtrol.AddOption("알바를 한다.", "store", "hostf_alba");
@@ -1386,11 +1380,7 @@ public class Main_control : MonoBehaviour
                 break;
 
             case "hostf_alba":
-                if (GetComponent<Heart_Control>().heartCount >= 1)
-                {
-                    //GetComponent<Heart_Control>().SetHeart(-1);
-                }
-                else
+                if (heartControl.IsHeartEmpty())
                 {
                     pmtComtrol.Reset();
                     pmtComtrol.imageMode = true;
@@ -1418,7 +1408,7 @@ public class Main_control : MonoBehaviour
                 break;
 
             case "albaf_start":
-                if (GetComponent<Heart_Control>().heartCount >= 1) GetComponent<Heart_Control>().SetHeart(-1);
+                heartControl.ConsumeSingleHeart();
                 alba.StartAlba(true);
                 break;
 
@@ -2656,7 +2646,7 @@ public class Main_control : MonoBehaviour
 
     public void AdsYes()
     {
-        if (gameObject.GetComponent<Heart_Control>().heartCount >= 6)
+        if (gameObject.GetComponent<Heart_Control>().IsHeartFull())
         {
             balloon.ShowMsg("이제 그만 쉬어도 되겠다.");
             return;
@@ -2755,7 +2745,7 @@ public class Main_control : MonoBehaviour
             return;
         }
 
-        if ((currentLocation == "home") | (currentLocation == "store") | (currentLocation == "alba"))
+        if ((currentLocation == "home") | (currentLocation == "store") | (currentLocation == "alba") | (currentLocation == "park"))
             if (lower_bar.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Lower_Bar_Hidden")
             {
                 if (dangunIng) return;
@@ -4132,10 +4122,9 @@ public class Main_control : MonoBehaviour
     {
         if (currentLocation == "home")
         {
-            if (GetComponent<Heart_Control>().heartCount >= 1)
+            if (heartControl.ConsumeSingleHeart())
             {
                 parkBtn.SetActive(false);
-                GetComponent<Heart_Control>().SetHeart(-1);
                 front_panel.SetActive(true);
                 frontCha.GetComponent<Animator>().SetTrigger("walk");
                 main_panel.GetComponent<Animator>().SetTrigger("hide");
@@ -4152,9 +4141,8 @@ public class Main_control : MonoBehaviour
         }
         else if (currentLocation == "store")
         {
-            if (GetComponent<Heart_Control>().heartCount >= 1)
+            if (heartControl.ConsumeSingleHeart())
             {
-                GetComponent<Heart_Control>().SetHeart(-1);
                 newStore.GetComponent<Animator>().SetTrigger("hide");
                 frontCha.GetComponent<Animator>().SetTrigger("walk");
                 GoToStore(0);

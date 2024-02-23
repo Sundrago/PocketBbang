@@ -77,7 +77,7 @@ public class CloudSaving : MonoBehaviour
             balloon.ShowMsg("데이터 저장 완료");
         } else
         {
-            balloon.ShowMsg("데이터 동기화 완료");
+            // balloon.ShowMsg("데이터 동기화 완료");
         }
     }
 

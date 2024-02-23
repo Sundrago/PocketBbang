@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using Sirenix.OdinInspector;
 
 public class Cards
 {
@@ -37,6 +38,7 @@ public class CollectionControl : MonoBehaviour
     {
         Instance = this;
         gameObject.SetActive(false);
+        Start();
     }
 
     private List<int> S_idx;
@@ -1480,9 +1482,9 @@ public class CollectionControl : MonoBehaviour
 
         foreach (var card in myCard)
         {
-            if(card.rank == 'S') S_idx.Add(card.idx);
-            else if(card.rank == 'A') A_idx.Add(card.idx);
-            else if(card.rank == 'B') B_idx.Add(card.idx);
+            if(card.rank == 'S') S_idx.Add(myCard.IndexOf(card));
+            else if(card.rank == 'A') A_idx.Add(myCard.IndexOf(card));
+            else if(card.rank == 'B') B_idx.Add(myCard.IndexOf(card));
         }
         LoadData();
         PlayerPrefs.SetInt("TotalCards", myCard.Count);
@@ -1502,7 +1504,7 @@ public class CollectionControl : MonoBehaviour
         }
     }
 
-    public void AddData(int i)
+    public bool AddData(int i)
     {
         if (!PlayerPrefs.HasKey("card_" + i))
         {
@@ -1512,6 +1514,8 @@ public class CollectionControl : MonoBehaviour
         PlayerPrefs.SetInt("card_"+i, PlayerPrefs.GetInt("card_" + i) + 1);
         PlayerPrefs.Save();
         LoadData();
+
+        return (PlayerPrefs.GetInt("card_" + i, 0) == 1);
     }
 
     public void OpenCard(int i, bool isnew = false)
@@ -1628,21 +1632,28 @@ public class CollectionControl : MonoBehaviour
         return imgs[idx];
     }
     
-    public void OpenCardAt(int rnd)
-    {
-        isnew = IsNew(rnd);
-        
-        if (isnew)
-        {
-            myAydio.PlaySoundFx(0);
-        }
-        print("OPEN NEW : " + isnew);
-        AddData(rnd);
-        OpenCard(rnd, isnew);
-    }
+    // public void OpenCardAt(int rnd)
+    // {
+    //     isnew = IsNew(rnd);
+    //     
+    //     if (isnew)
+    //     {
+    //         myAydio.PlaySoundFx(0);
+    //     }
+    //     print("OPEN NEW : " + isnew);
+    //     AddData(rnd);
+    //     OpenCard(rnd, isnew);
+    // }
 
+    [Button]
+    private void Debug()
+    {
+        int idx = GetCardIdxByRank('B');
+        print(myCard[idx].name + " " + myCard[idx].rank);
+    }
     public int GetCardIdxByRank(char rank)
     {
+        if (!started) Start();
         int random;
         switch (rank)
         {
@@ -1660,7 +1671,7 @@ public class CollectionControl : MonoBehaviour
                 break;
         }
         
-        Debug.LogWarning("No rank found for GetCardIdxByRank : " + rank);
+        // Debug.LogWarning("No rank found for GetCardIdxByRank : " + rank);
         return -1;
     }
 

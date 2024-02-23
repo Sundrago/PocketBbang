@@ -675,7 +675,12 @@ public class DdukCtrl : MonoBehaviour
             main.GetComponent<Main_control>().storeOutAction = "다음에도 떡볶이를 먹으러 와야겠다.";
         } else
         {
-            if(heart.heartCount + quotient >= 6)
+            for (int i = 0; i<quotient; i++)
+            {
+                heart.SetHeart(1);
+            }
+            
+            if(heart.IsHeartFull())
             {
                 pmtControl.AddString("훈이", "든든하다..!");
                 pmtControl.AddString("훈이", "체력이 가득 찼다!!");
@@ -699,11 +704,6 @@ public class DdukCtrl : MonoBehaviour
                 pmtControl.AddString("훈이", "다음에 또 들러도 되죠?");
                 pmtControl.AddString("박종업원", "그럼유. 언제든 또 오세유.");
                 pmtControl.AddNextAction("main", "store_out");
-            }
-
-            for (int i = 0; i<quotient; i++)
-            {
-                heart.SetHeart(1);
             }
         }
     }
