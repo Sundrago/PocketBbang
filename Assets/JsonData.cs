@@ -13,7 +13,10 @@ public class JsonData : MonoBehaviour
     public List<ScrumbEventData> ScrumbEventDatas;
     [ReadOnly]
     public List<StoreDiamondData> StoreDiamondDatas;
-
+    [ReadOnly] 
+    public List<StorePackageData> StorePackageDatas;
+    
+    [Button]
     private void Awake()
     {
         Instance = this;
@@ -44,6 +47,18 @@ public class JsonData : MonoBehaviour
             StoreDiamondDatas.Add(chain.Value);
         }
     }
+    [Button]
+    private void ImportStorePackageData(string json)
+    {
+        // string json = File.ReadAllText(Application.dataPath + "/Resources/JSON/" + "StoreDiamondData" + ".json"); 
+        Dictionary<int, StorePackageData> tmp = JsonConvert.DeserializeObject<Dictionary<int, StorePackageData>>(json);
+
+        StorePackageDatas = new List<StorePackageData>();
+        foreach (var chain in tmp)
+        {
+            StorePackageDatas.Add(chain.Value);
+        }
+    }
 #endif
     
     [Serializable] 
@@ -60,5 +75,26 @@ public class JsonData : MonoBehaviour
     {
         public int amount;
         public int price;
+    }
+    [Serializable]
+    public class StorePackageData
+    {
+        public PackageType packageType;
+        public NeedItemType NeedItemType;
+        public int needAmt;
+        public string name, descr;
+        public int[] itemCode, itemAmt;
+    }
+    
+    //------ENUMS------//
+    
+    public enum PackageType
+    {
+        oneTime, weekly
+    }
+
+    public enum NeedItemType
+    {
+        KRW, diamond
     }
 }

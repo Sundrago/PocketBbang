@@ -45,16 +45,15 @@ public class Heart_Control : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        InitMaxHeart();
     }
 
-    private void InitMaxHeart()
+    public void InitMaxHeart()
     {
         if (PlayerPrefs.GetInt("product_maxheartplus", 0) == 1)
         {
-            maxHeartCount = 6;
+            maxHeartCount = 8;
         }
-        else maxHeartCount = 8;
+        else maxHeartCount = 6;
 
         for (int i = 0; i < heartImg.Length; i++)
         {
