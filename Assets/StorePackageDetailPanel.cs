@@ -35,7 +35,7 @@ public class StorePackageDetailPanel : MonoBehaviour
         //Init Price
         if (data.NeedItemType == JsonData.NeedItemType.KRW)
         {
-            price_ui.text = "\u20a9" + MyUtility.Converter.IntToCommaSeporatedString(data.needAmt);
+            price_ui.text = "\u20a9" + MyUtility.Converter.IntToCommaSeparatedString(data.needAmt);
             diamondIcon_ui.SetActive(false);
         }
         else

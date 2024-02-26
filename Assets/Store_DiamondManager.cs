@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Android;
 
 public class Store_DiamondManager : MonoBehaviour
 {
@@ -12,8 +11,15 @@ public class Store_DiamondManager : MonoBehaviour
 
     private StoreDiamondBoughtData boughtData = null;
     [SerializeField] private Store_DiamondDetailInfo diamondDetailInfo;
+    [SerializeField] private StoreDiamondWatchAdsPanel watchAdsPanel;
     [SerializeField] private GameObject loadingBar;
 
+    private void OnEnable()
+    {
+        diamondDetailInfo.gameObject.SetActive(false);
+        watchAdsPanel.gameObject.SetActive(false);
+        watchAdsPanel.UpateUI();
+    }
     
     [Button]
     private void InitDiamondStore()
@@ -30,7 +36,8 @@ public class Store_DiamondManager : MonoBehaviour
     public void BuyBtnClicked(int idx)
     {
         if (boughtData == null) LoadDiamondBoughtData();
-        if (idx > 0)
+        if(idx == 0) watchAdsPanel.OpenPanel();
+        else
         {
             diamondDetailInfo.Init(idx, JsonData.Instance.StoreDiamondDatas[idx].amount, JsonData.Instance.StoreDiamondDatas[idx].price, boughtData.boughtCount[idx] == 0);
         }

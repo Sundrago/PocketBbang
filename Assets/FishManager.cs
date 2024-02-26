@@ -94,7 +94,7 @@ public class FishManager : MonoBehaviour
                     BalloonControl.Instance.ShowMsg("황금 잉어빵이 없다.. 먹고싶다..");
                     break;
                 }
-                PopupTextManager.Instance.ShowYesNoPopup("황금 잉어빵을 먹을까요?\n(30분 동안 체력 무한 효과)", () =>
+                PopupTextManager.Instance.ShowYesNoPopup("황금 잉어빵을 먹을까요?\n(10분 동안 체력 무한 효과)", () =>
                 {
                     if(isGoldFishActive) PopupTextManager.Instance.ShowOKPopup("황금 잉어빵 효과가 아직 남아있다!");
                     else
@@ -149,7 +149,7 @@ public class FishManager : MonoBehaviour
         if (isGoldFishActive)
         {
             isGoldFishActive = true;
-            goldFishEndTime = System.DateTime.Now.AddSeconds(10);
+            goldFishEndTime = System.DateTime.Now.AddMinutes(10);
         
             PlayerPrefs.SetString("goldFishEndTime", MyUtility.Converter.DateTimeToString(goldFishEndTime));
             PlayerPrefs.Save();

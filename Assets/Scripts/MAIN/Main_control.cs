@@ -193,12 +193,9 @@ public class Main_control : MonoBehaviour
         debugPanel.SetActive(false);
         //dangunPanel.SetActive(false);
 
-        /*
-        if (PlayerPrefs.GetInt("myTotalCards") == 116 & PlayerPrefs.GetInt("myRealTotalCard") >= 1800)
-        {
-            PlayerPrefs.SetInt("debugMode", 1);
-        }
-        */
+        
+        goToStoreBtn.GetComponent<Image>().color = (PlayerPrefs.GetInt("totalBbangCount", 0) == 0) ? Color.yellow : Color.white;
+        
         if (PlayerPrefs.GetInt("debugMode") == 1) SetDebugMode();
 
         rank.Start();
@@ -298,6 +295,8 @@ public class Main_control : MonoBehaviour
                 debugCount = 0;
                 break;
             case "store":
+                goToStoreBtn.GetComponent<Image>().color = Color.white;
+
                 if (currentLocation == "park")
                 {
                     //parkToHome
@@ -2628,7 +2627,7 @@ public class Main_control : MonoBehaviour
         originalMusic = myAudio.currentPlaying;
         myAudio.PlayMusic(3);
 
-        PlayerPrefs.SetInt("totalBbangCount", PlayerPrefs.GetInt("totalBbangCount") + 1);
+        PlayerPrefs.SetInt("totalBbangCount", PlayerPrefs.GetInt("totalBbangCount", 0) + 1);
         PlayerPrefs.Save();
         showroom.UpdateBbangShow();
     }

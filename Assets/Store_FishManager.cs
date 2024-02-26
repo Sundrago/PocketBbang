@@ -11,6 +11,12 @@ public class Store_FishManager : MonoBehaviour
     [SerializeField, TableList] private List<StoreFishData> StoreFishDatas;
     [SerializeField] private List<Store_fish_item> storeFishItems;
     [SerializeField] private Store_FishDetailPanel detailPanel;
+    
+    private void OnEnable()
+    {
+        detailPanel.gameObject.SetActive(false);
+    }
+    
     public void ItemClicked(int idx)
     {
         detailPanel.Init(StoreFishDatas[idx]);

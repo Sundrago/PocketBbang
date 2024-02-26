@@ -25,11 +25,11 @@ public class Store_DiamondDetailInfo : MonoBehaviour
         if(DOTween.IsTweening(panel)) return;
 
         idx = _idx;
-        price_ui.text = "\u20a9" + MyUtility.Converter.IntToCommaSeporatedString(price);
-        descr_ui.text = "다이아몬드\n" +  MyUtility.Converter.IntToCommaSeporatedString(amount) + "개를 구매할까요?";
+        price_ui.text = "\u20a9" + MyUtility.Converter.IntToCommaSeparatedString(price);
+        descr_ui.text = "다이아몬드\n" +  MyUtility.Converter.IntToCommaSeparatedString(amount) + "개를 구매할까요?";
         
-        amt0.text = MyUtility.Converter.IntToCommaSeporatedString(amount) + "개";
-        amt1.text = MyUtility.Converter.IntToCommaSeporatedString(amount) + "개";
+        amt0.text = MyUtility.Converter.IntToCommaSeparatedString(amount) + "개";
+        amt1.text = MyUtility.Converter.IntToCommaSeparatedString(amount) + "개";
         
         gameObject.SetActive(true);
         plusIcon.SetActive(false);
@@ -52,15 +52,15 @@ public class Store_DiamondDetailInfo : MonoBehaviour
     private IEnumerator LoadRewardItems(int amount)
     {
         plusIcon.SetActive(true);
+        bonusItem.gameObject.SetActive(true);
         bonusItem.transform.localScale = Vector3.one;
         yield return new WaitForSeconds(0.2f);
-        bonusItem.gameObject.SetActive(true);
         bonusItem.transform.DOPunchScale(Vector3.one*0.1f, 0.5f, 5);
         shineFX.localPosition = new Vector3(-300, 0, 0);
         shineFX.DOLocalMoveX(350, 1f).SetEase(Ease.OutQuint);
         DOVirtual.Int(amount, amount * 2, 2f, (x) =>
         {
-            descr_ui.text = "다이아몬드\n" +  MyUtility.Converter.IntToCommaSeporatedString(x) + "개를 구매할까요?";
+            descr_ui.text = "다이아몬드\n" +  MyUtility.Converter.IntToCommaSeparatedString(x) + "개를 구매할까요?";
         }).SetEase(Ease.OutExpo);
     }
     

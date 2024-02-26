@@ -16,7 +16,8 @@ public class Ad_Control : MonoBehaviour
     [SerializeField] DdukCtrl dduck;
     [SerializeField] private TanghuruGameManager tanguru;
     [SerializeField] private Bossam_GameManager bossam;
-
+    [SerializeField] private StoreDiamondWatchAdsPanel diamondWatchAdsPanel;
+    
     public static Ad_Control Instance;
 
     public enum AdsType
@@ -26,7 +27,8 @@ public class Ad_Control : MonoBehaviour
         bbogi,
         dduk,
         tanghuru,
-        bossam
+        bossam,
+        diamondStore
     }
 
     private AdsType adsType;
@@ -51,9 +53,21 @@ public class Ad_Control : MonoBehaviour
 
     public void PlayAds(AdsType type)
     {
+        if (!IronSource.Agent.isRewardedVideoAvailable())
+        {
+            balloon.ShowMsg("광고를 로드하지 못했습니다..");
+            return;
+        }
+        
         audioC.PauseMusic();
         adsType = type;
         iron.ShowIronAds();
+    }
+
+    public void AdFailed()
+    {
+        balloon.ShowMsg("오류가 발생했습니다.");
+        audioC.ResumeMusic();
     }
 
     public void IronAdsWatched()
@@ -77,6 +91,9 @@ public class Ad_Control : MonoBehaviour
                 break;
             case AdsType.bossam:
                 bossam.WathcedAds();
+                break;
+            case AdsType.diamondStore :
+                diamondWatchAdsPanel.WatchedAd();
                 break;
         }
         //

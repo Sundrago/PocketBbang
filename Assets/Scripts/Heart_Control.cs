@@ -335,6 +335,7 @@ public class Heart_Control : MonoBehaviour
 
     void UpdateHeartCount()
     {
+        if(isGoldFishActive) return;
         if (heartCount == maxHeartCount) return;
         timeGap = System.DateTime.Now - oldTime;
         while (heartCount < maxHeartCount & timeGap.TotalMinutes >= 5)
@@ -347,6 +348,7 @@ public class Heart_Control : MonoBehaviour
 
     public void UpdateHeartUI(int count = -1)
     {
+        if(count <0 && isGoldFishActive) return;
         if (count == -1) count = heartCount;
         if(count > maxHeartCount)
         {
@@ -368,6 +370,7 @@ public class Heart_Control : MonoBehaviour
 
     public void SetHeart(int i)
     {
+        if(isGoldFishActive) return;
         if (i == -1)
         {
             if(heartCount > 0)
