@@ -1479,6 +1479,35 @@ public class CollectionControl : MonoBehaviour
         newCard.description = "마치 핸드폰 광고 같지만\n협찬은 아니예요.";
         newCard.rank = 'B';
         myCard.Add(newCard);
+        
+        //
+        newCard = new Cards();
+        newCard.image = imgs[166];
+        newCard.name = "썬더치킨";
+        newCard.description = "튀기면 바나나 맛이 날 것 같은\n전설의 독수리! 눈빛이 매섭다.";
+        newCard.rank = 'S';
+        myCard.Add(newCard);
+        
+        newCard = new Cards();
+        newCard.image = imgs[167];
+        newCard.name = "냉동고";
+        newCard.description = "튀기면 블루베리 맛이 날 것 같은\n전설의 앵무새! 수다스럽다.";
+        newCard.rank = 'S';
+        myCard.Add(newCard);
+        
+        newCard = new Cards();
+        newCard.image = imgs[168];
+        newCard.name = "딸기파이(어)";
+        newCard.description = "튀기면 딸기 맛이 날 것 같은\n전설의 비둘기! 윤기가 흐른다.";
+        newCard.rank = 'S';
+        myCard.Add(newCard);
+        
+        newCard = new Cards();
+        newCard.image = imgs[169];
+        newCard.name = "십색조";
+        newCard.description = "튀기면 후루츠 칵테일 맛이 나는\n같은 전설의 알록새! 달콤한 냄새가 난다.";
+        newCard.rank = 'S';
+        myCard.Add(newCard);
 
         foreach (var card in myCard)
         {

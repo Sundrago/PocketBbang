@@ -22,7 +22,7 @@ public class Heart_Control : MonoBehaviour
     [SerializeField] Text busText;
     
     [SerializeField] private Text coinCount_ui, diamondCount_ui, scrumbCount_ui, fish0Count_ui, fish1Count_ui, fish2Count_ui;
-    [SerializeField] private GameObject scrumbObj, diamondObj, fishObj;
+    [SerializeField] private GameObject scrumbObj, diamondObj, fishObj, watchAdsBtn;
     
     const string format = "yyyy/MM/dd HH:mm:ss";
 
@@ -41,6 +41,8 @@ public class Heart_Control : MonoBehaviour
     private int maxHeartCount = 6;
 
     private bool isGoldFishActive;
+    
+    private int launchDate = -1, launchCount = 0;
     
     private void Awake()
     {
@@ -169,10 +171,34 @@ public class Heart_Control : MonoBehaviour
     
     public void Bus_launch()
     {
+        launchCount = PlayerPrefs.GetInt("launchCount", 0);
+        
+        if (!PlayerPrefs.HasKey("launchDate"))
+        {
+            launchDate = MyUtility.Converter.GetDayOfYear(DateTime.Now);
+            launchCount = 0;
+            PlayerPrefs.SetInt("launchDate", launchDate);
+        }
+        else
+        {
+            launchDate = PlayerPrefs.GetInt("launchDate");
+        }
+
+        if (launchDate != MyUtility.Converter.GetDayOfYear(DateTime.Now))
+        {
+            launchDate = MyUtility.Converter.GetDayOfYear(DateTime.Now);
+            PlayerPrefs.SetInt("launchDate", launchDate);
+            launchCount = 1;
+        }
+        else launchCount += 1;
+        
+        PlayerPrefs.SetInt("launchCount",launchCount);
+        
+        
         went = true;
         PlayerPrefs.SetInt("went", 1);
         arriveTime = System.DateTime.Now;
-        arriveTime = arriveTime.AddMinutes(30);
+        arriveTime = arriveTime.AddMinutes(30 * launchCount);
         print(arriveTime);
         PlayerPrefs.SetString("arriveTime", arriveTime.ToString(format));
         PlayerPrefs.Save();
@@ -273,7 +299,7 @@ public class Heart_Control : MonoBehaviour
             UpdateHeartCount();
             StoreDateCheck();
             //UpdateBbangInfo();
-
+            
             if (heartCount < maxHeartCount & timeGap.TotalMinutes < 5)
             {
                 timerHolder.transform.position = new Vector3(heartImg[heartCount].transform.position.x, timerHolder.transform.position.y, 1);
@@ -289,11 +315,20 @@ public class Heart_Control : MonoBehaviour
             if (went)
             {
                 remainTime = arriveTime - System.DateTime.Now;
-                busText.text = remainTime.ToString(@"mm\:ss") + " 후에 도착합니다.";
+                busText.text = remainTime.ToString(@"hh\:mm\:ss") + " 후에 도착합니다.";
                 if (remainTime.TotalSeconds < 1)
                 {
                     Bus_arrive();
+                    watchAdsBtn.SetActive(false);
                 }
+                else
+                {
+                    watchAdsBtn.SetActive(true);
+                }
+            }
+            else
+            {
+                watchAdsBtn.SetActive(false);
             }
 
             if(!went & !received)
@@ -307,6 +342,23 @@ public class Heart_Control : MonoBehaviour
         }
     }
 
+    public void WatchAdsAndReduceTime()
+    {
+        PopupTextManager.Instance.ShowYesNoPopup("광고를 보고 빵 셔틀 시간을\n30분 단축할까요?", () =>
+        {
+            Ad_Control.Instance.PlayAds(Ad_Control.AdsType.bbangShuttle);
+            // ReduceTime();
+        });
+    }
+    
+    [Button]
+    public void ReduceTime()
+    {
+        arriveTime = arriveTime.AddMinutes(-30);
+        PlayerPrefs.SetString("arriveTime", arriveTime.ToString(format));
+        balloon.ShowMsg("빵 셔틀 시간이 30분 단축되었다!");
+    }
+    
     public void SetFishAnim(bool _isGoldFishActive)
     {
         isGoldFishActive = _isGoldFishActive;

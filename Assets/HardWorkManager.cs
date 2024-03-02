@@ -17,7 +17,7 @@ public class HardWorkManager : MonoBehaviour
     [SerializeField] private RectTransform doolgiImg, doolgiBalloon;
     [SerializeField] private GameObject gotoStoreBtn;
 
-    private const int RewardAmt = 40;
+    private const int RewardAmt = 80;
     
     public bool hasReward = false;
     public int diff;

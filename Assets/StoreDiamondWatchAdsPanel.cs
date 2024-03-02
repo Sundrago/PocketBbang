@@ -11,7 +11,7 @@ public class StoreDiamondWatchAdsPanel : MonoBehaviour
 {
     private int[] rewardAmt = new[] { 2, 3, 4, 5, 5 };
     
-    [SerializeField] private TextMeshProUGUI amt_ui, item_amt;
+    [SerializeField] private TextMeshProUGUI amt_ui, item_amt, item_title;
     [SerializeField] private Text descr_ui, btn_ui;
     [SerializeField] private Button whatchAdBtn, itemBtn, itemAdBtn;
     [SerializeField] private Image bg;
@@ -40,6 +40,7 @@ public class StoreDiamondWatchAdsPanel : MonoBehaviour
         amt = rewardAmt[count];
 
         amt_ui.text = amt + "개";
+        item_title.text = "다이아 " + amt + "개";
         item_amt.text = amt.ToString();
         btn_ui.text = "광고보기 (" + (count+1) + "/5)";
         descr_ui.text = "광고를 보고 다이아몬드\n" + amt + "개를 받을까요?";

@@ -26,7 +26,7 @@ public class Store_DiamondManager : MonoBehaviour
     {
         var datas = JsonData.Instance.StoreDiamondDatas;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 1; i < 5; i++)
         {
             storeItems[i].Init(datas[i].amount, datas[i].price);
         }

@@ -37,10 +37,10 @@ public class Collection_Panel_Control : MonoBehaviour
         public int count;
     }
 
-    public List<CardData> Scards = new List<CardData>();
-    public List<CardData> Acards = new List<CardData>();
-    public List<CardData> Bcards = new List<CardData>();
-    public List<CardData> Mcards = new List<CardData>();
+    public List<CardData> Scards = null;
+    public List<CardData> Acards = null;
+    public List<CardData> Bcards = null;
+    public List<CardData> Mcards = null;
 
     public List<GameObject> Srows = new List<GameObject>();
     public List<GameObject> Arows = new List<GameObject>();
@@ -58,6 +58,8 @@ public class Collection_Panel_Control : MonoBehaviour
 
     public Sprite checkbox_0, checkbox_1;
     public Image checkbox_icon_ui;
+
+    private bool loadingData = false;
 
     public void Start()
     {
@@ -81,6 +83,13 @@ public class Collection_Panel_Control : MonoBehaviour
 
     void ReadData()
     {
+        // if(Scards!=null && !selectionMode &&!bookMode) return;
+
+        Scards = new List<CardData>();
+        Acards = new List<CardData>();
+        Bcards = new List<CardData>();
+        Mcards = new List<CardData>();
+        
         Scards.Clear();
         Acards.Clear();
         Bcards.Clear();
@@ -128,8 +137,14 @@ public class Collection_Panel_Control : MonoBehaviour
         Start();
         bookMode = false;
         debugMode = false;
-        ReadData();
-        int myTotalCards = Scards.Count + Acards.Count + Bcards.Count + Mcards.Count;
+
+        int myTotalCards = 0;
+
+        foreach (var card in cc.myCard)
+        {
+            if (card.count > 0) myTotalCards += 1;
+        }
+        
         PlayerPrefs.SetInt("myTotalCards", myTotalCards);
         print("My Total Cards : " + myTotalCards);
         PlayerPrefs.Save();
@@ -274,10 +289,6 @@ public class Collection_Panel_Control : MonoBehaviour
         */
     }
 
-    public void Read(int i)
-    {
-        //print(i);
-    }
 
     public void SetCounts(int Acount, int Bcount, int Scount, int Mcount)
     {
@@ -524,6 +535,8 @@ public class Collection_Panel_Control : MonoBehaviour
 
         if(Bcount > 0) canvasHolder.GetComponent<RectTransform>().sizeDelta = new Vector2(canvasHolder.GetComponent<RectTransform>().sizeDelta.x, (Brows[Brows.Count - 1].GetComponent<RectTransform>().anchoredPosition.y - 200) * -1);
         else if(Acount > 0) canvasHolder.GetComponent<RectTransform>().sizeDelta = new Vector2(canvasHolder.GetComponent<RectTransform>().sizeDelta.x, (Arows[Arows.Count - 1].GetComponent<RectTransform>().anchoredPosition.y - 200) * -1);
+        
+        loadingData = false;
     }
 
     public void ShowPanel()
@@ -726,6 +739,8 @@ public class Collection_Panel_Control : MonoBehaviour
         foreach(Button btn in deckBtns) {
             btn.interactable = true;
         }
+
+        loadingData = false;
     }
 
     public void CheckBoxClicked()

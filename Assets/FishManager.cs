@@ -22,7 +22,7 @@ public class FishManager : MonoBehaviour
             MyUtility.Converter.DateTimeToString(DateTime.Now.AddDays(-1)));
         goldFishEndTime = MyUtility.Converter.StringToDateTime(goldFishEndTimeString);
 
-        SetGoldFishActive((goldFishEndTime - DateTime.Now).Seconds > 0);
+        UpdateGoldFishActive();
         CLosePanel();
     }
 
@@ -101,7 +101,8 @@ public class FishManager : MonoBehaviour
                     {
                         Heart_Control.Instance.SubtractMoney(Heart_Control.MoneyType.Fish0, 1);
                         Heart_Control.Instance.AddHeartByAmt(100);
-                        SetGoldFishActive(true);
+                        SetFishTimer();
+                        UpdateGoldFishActive();
                     }
                 });
                 break;
@@ -143,26 +144,20 @@ public class FishManager : MonoBehaviour
     }
 
     [Button]
-    private void SetGoldFishActive(bool isActive)
+    private void UpdateGoldFishActive()
     {
-        isGoldFishActive = isActive;
-        if (isGoldFishActive)
-        {
-            isGoldFishActive = true;
-            goldFishEndTime = System.DateTime.Now.AddMinutes(10);
-        
-            PlayerPrefs.SetString("goldFishEndTime", MyUtility.Converter.DateTimeToString(goldFishEndTime));
-            PlayerPrefs.Save();
-            SetDisplayGroup();
-            CLosePanel();
-            Heart_Control.Instance.SetFishAnim(true);
-        }
-        else
-        {
-            Heart_Control.Instance.SetFishAnim(false);
-        }
-        
+        isGoldFishActive = (goldFishEndTime - DateTime.Now).TotalSeconds > 0;
+        Heart_Control.Instance.SetFishAnim(isGoldFishActive);
         SetDisplayGroup();
+    }
+
+    private void SetFishTimer()
+    {
+        goldFishEndTime = System.DateTime.Now.AddMinutes(10);
+        PlayerPrefs.SetString("goldFishEndTime", MyUtility.Converter.DateTimeToString(goldFishEndTime));
+        PlayerPrefs.Save();
+        UpdateGoldFishActive();
+        CLosePanel();
     }
     
     private void Update()
@@ -173,7 +168,7 @@ public class FishManager : MonoBehaviour
         TimeSpan span = goldFishEndTime - System.DateTime.Now;
         if (span.TotalSeconds <= 0)
         {
-            SetGoldFishActive(false);
+            UpdateGoldFishActive();
             Heart_Control.Instance.UpdateUI();
             return;
         }

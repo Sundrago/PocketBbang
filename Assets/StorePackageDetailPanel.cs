@@ -18,6 +18,8 @@ public class StorePackageDetailPanel : MonoBehaviour
     [SerializeField] private GameObject diamondIcon_ui;
     [SerializeField] private GridLayoutGroup gridLayoutGroup;
     
+    [SerializeField] private GameObject[] hardworkingImg, heartPlusImg;
+    
     private JsonData.StorePackageData data;
     private int idx;
     
@@ -25,8 +27,11 @@ public class StorePackageDetailPanel : MonoBehaviour
     public void Init(int _idx)
     {
         if(DOTween.IsTweening(panel)) return;
-
+        
         idx = _idx;
+        
+        
+        
         data = JsonData.Instance.StorePackageDatas[idx];
         
         title_ui.text = data.name;
@@ -40,9 +45,20 @@ public class StorePackageDetailPanel : MonoBehaviour
         }
         else
         {
-            price_ui.text = "   " + data.needAmt.ToString();
+            price_ui.text = "    " + data.needAmt.ToString();
             diamondIcon_ui.SetActive(true);
         }
+        
+        foreach (var obj in heartPlusImg)
+        {
+            obj.gameObject.SetActive(idx == 1);
+        }
+        
+        foreach (var obj in hardworkingImg)
+        {
+            obj.gameObject.SetActive(idx == 2);
+        }
+        if(idx == 2) descr_ui.text = "";
         
         gameObject.SetActive(true);
         

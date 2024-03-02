@@ -199,12 +199,12 @@ public class BbobgiCtrl : MonoBehaviour
 
                 if (myIdxs.Contains(j))
                 {
-                    if (gameObjects[myIdxs[i]].GetComponent<PolygonCollider2D>().bounds.Intersects(gameObjects[j].GetComponent<PolygonCollider2D>().bounds))
+                    if (gameObjects[myIdxs[i]].GetComponent<BoxCollider2D>().bounds.Intersects(gameObjects[j].GetComponent<PolygonCollider2D>().bounds))
                     {
                         gameObjects[j].transform.position = new Vector3(gameObjects[j].transform.position.x, guideline.transform.position.y + 2f);
                     }
                 }
-                else if (gameObjects[myIdxs[i]].GetComponent<PolygonCollider2D>().bounds.Intersects(gameObjects[j].GetComponent<CircleCollider2D>().bounds))
+                else if (gameObjects[myIdxs[i]].GetComponent<BoxCollider2D>().bounds.Intersects(gameObjects[j].GetComponent<CircleCollider2D>().bounds))
                 {
                     gameObjects[j].transform.position = new Vector3(gameObjects[j].transform.position.x, guideline.transform.position.y + 1f);
                 }
@@ -220,12 +220,12 @@ public class BbobgiCtrl : MonoBehaviour
 
                 if (myIdxs.Contains(j))
                 {
-                    if (gameObjects[myIdxs[i]].GetComponent<PolygonCollider2D>().bounds.Intersects(gameObjects[j].GetComponent<PolygonCollider2D>().bounds))
+                    if (gameObjects[myIdxs[i]].GetComponent<BoxCollider2D>().bounds.Intersects(gameObjects[j].GetComponent<PolygonCollider2D>().bounds))
                     {
                         gameObjects[j].SetActive(false);
                     }
                 }
-                else if (gameObjects[myIdxs[i]].GetComponent<PolygonCollider2D>().bounds.Intersects(gameObjects[j].GetComponent<CircleCollider2D>().bounds))
+                else if (gameObjects[myIdxs[i]].GetComponent<BoxCollider2D>().bounds.Intersects(gameObjects[j].GetComponent<CircleCollider2D>().bounds))
                 {
                     gameObjects[j].SetActive(false);
                 }

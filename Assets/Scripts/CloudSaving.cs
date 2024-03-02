@@ -60,12 +60,12 @@ public class CloudSaving : MonoBehaviour
 
     private void OnSynchronizeComplete(CloudServicesSynchronizeResult result)
     {
-        Debug.Log("Received synchronize finish callback.");
-        Debug.Log("Status: " + result.Success);
+        // Debug.Log("Received synchronize finish callback.");
+        // Debug.Log("Status: " + result.Success);
         // By this time, you have the latest data from cloud and you can start reading.
 
-        print("CLOUD myRealTotalCard : " + CloudServices.GetInt("myRealTotalCard"));
-        print("PLAYER myRealTotalCard : " + PlayerPrefs.GetInt("myRealTotalCard"));
+        // print("CLOUD myRealTotalCard : " + CloudServices.GetInt("myRealTotalCard"));
+        // print("PLAYER myRealTotalCard : " + PlayerPrefs.GetInt("myRealTotalCard"));
 
         if (CloudServices.GetInt("myRealTotalCard") > PlayerPrefs.GetInt("myRealTotalCard"))
         {
@@ -243,6 +243,18 @@ public class CloudSaving : MonoBehaviour
         SaveString("dangun5");
         SaveString("dangun6");
 
+        SaveString("StoreDiamondBoughtData");
+        SaveString("StoreDiamondAdsData");
+        SaveString("StorePackageBoughtData");
+        SaveInt("product_maxheartplus");
+        SaveInt("product_itemBundle");
+        SaveInt("scrumbCount");
+        SaveInt("diamondCount");
+        SaveInt("fish0Count");
+        SaveInt("fish1Count");
+        SaveInt("fish2Count");
+        
+        
         collection.Start();
 
         for (int i = 0; i < collection.myCard.Count; i++)

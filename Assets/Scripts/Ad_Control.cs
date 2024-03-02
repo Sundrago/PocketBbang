@@ -28,7 +28,8 @@ public class Ad_Control : MonoBehaviour
         dduk,
         tanghuru,
         bossam,
-        diamondStore
+        diamondStore,
+        bbangShuttle
     }
 
     private AdsType adsType;
@@ -94,6 +95,9 @@ public class Ad_Control : MonoBehaviour
                 break;
             case AdsType.diamondStore :
                 diamondWatchAdsPanel.WatchedAd();
+                break;
+            case AdsType.bbangShuttle:
+                Heart_Control.Instance.ReduceTime();
                 break;
         }
         //
