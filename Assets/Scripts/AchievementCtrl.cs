@@ -225,9 +225,6 @@ public class AchievementCtrl : MonoBehaviour
                 {
                     // show console messages
                     ILeaderboard[] leaderboards = result.Leaderboards;
-                    Debug.Log("Request to load leaderboards finished successfully.");
-                    Debug.Log("Total leaderboards fetched: " + leaderboards.Length);
-                    Debug.Log("Below are the available leaderboards:");
                     ILeaderboard leaderboard1;
                     for (int iter = 0; iter < leaderboards.Length; iter++)
                     {
@@ -244,7 +241,6 @@ public class AchievementCtrl : MonoBehaviour
                         if (error == null)
                         {
                             Debug.Log("Scores loaded : " + result.Scores);
-
                         }
                         else
                         {

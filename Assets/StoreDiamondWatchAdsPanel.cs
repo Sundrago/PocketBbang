@@ -78,10 +78,12 @@ public class StoreDiamondWatchAdsPanel : MonoBehaviour
     public void ConfirmBtnClicked()
     {
         Ad_Control.Instance.PlayAds(Ad_Control.AdsType.diamondStore);
+        // WatchedAd();
     }
 
     public void WatchedAd()
     {
+        ClosePanel();
         RewardItemManager.Instance.Init(new int[]{1003}, new []{amt}, "DiamondAd", "광고를 보고 보상을 받았다!");
         diamondAdsData.count += 1;
         SaveData();

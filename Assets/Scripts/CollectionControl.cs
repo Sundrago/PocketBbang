@@ -1740,9 +1740,8 @@ public class CollectionControl : MonoBehaviour
 
         if(isnew)
         {
-            
+            achievement.ReceiveRank();
         }
-        achievement.ReceiveRank();
     }
 
     public bool IsNew(int idx)

@@ -51,8 +51,9 @@ public class CloudSaving : MonoBehaviour
         } else
         {
 #if UNITY_IPHONE
-            balloon.ShowMsg("아이폰 설정에서 앺애플 게임 센터를 켜주세요!");
+            balloon.ShowMsg("아이폰 설정에서 애플 게임 센터를 켜주세요!");
 #elif UNITY_ANDROID
+            CloudServices.Synchronize();
             balloon.ShowMsg("플레이 게임 서비스에 로그인해주세요!");
 #endif
         }

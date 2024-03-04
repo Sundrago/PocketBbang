@@ -94,7 +94,10 @@ public class Ad_Control : MonoBehaviour
                 bossam.WathcedAds();
                 break;
             case AdsType.diamondStore :
-                diamondWatchAdsPanel.WatchedAd();
+                PopupTextManager.Instance.ShowOKPopup("보상이 도착했어요!", () =>
+                {
+                    diamondWatchAdsPanel.WatchedAd();
+                }, "보상 받기");
                 break;
             case AdsType.bbangShuttle:
                 Heart_Control.Instance.ReduceTime();
