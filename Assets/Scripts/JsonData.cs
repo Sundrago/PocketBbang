@@ -11,10 +11,13 @@ public class JsonData : MonoBehaviour
     public static JsonData Instance;
     [ReadOnly]
     public List<ScrumbEventData> ScrumbEventDatas;
+    public Dictionary<int, ScrumbEventData> ScrumbEventDatasDict;
     [ReadOnly]
     public List<StoreDiamondData> StoreDiamondDatas;
+    public Dictionary<int, StoreDiamondData> StoreDiamondDataDict;
     [ReadOnly] 
     public List<StorePackageData> StorePackageDatas;
+    public Dictionary<int, StorePackageData> StorePackageDataDict;
     
     [Button]
     private void Awake()
@@ -26,7 +29,7 @@ public class JsonData : MonoBehaviour
     [Button]
     private void ImportScrumbEventData(string json)
     {
-        Dictionary<int, ScrumbEventData> ScrumbEventDatasDict = JsonConvert.DeserializeObject<Dictionary<int, ScrumbEventData>>(json);
+        ScrumbEventDatasDict = JsonConvert.DeserializeObject<Dictionary<int, ScrumbEventData>>(json);
 
         ScrumbEventDatas = new List<ScrumbEventData>();
         foreach (var chain in ScrumbEventDatasDict)
@@ -37,10 +40,10 @@ public class JsonData : MonoBehaviour
     [Button]
     private void ImportStoreDiamondData(string json)
     {
-        Dictionary<int, StoreDiamondData> tmp = JsonConvert.DeserializeObject<Dictionary<int, StoreDiamondData>>(json);
+        StoreDiamondDataDict = JsonConvert.DeserializeObject<Dictionary<int, StoreDiamondData>>(json);
 
         StoreDiamondDatas = new List<StoreDiamondData>();
-        foreach (var chain in tmp)
+        foreach (var chain in StoreDiamondDataDict)
         {
             StoreDiamondDatas.Add(chain.Value);
         }
@@ -48,10 +51,10 @@ public class JsonData : MonoBehaviour
     [Button]
     private void ImportStorePackageData(string json)
     {
-        Dictionary<int, StorePackageData> tmp = JsonConvert.DeserializeObject<Dictionary<int, StorePackageData>>(json);
+        Dictionary<int, StorePackageData> StorePackageDataDict = JsonConvert.DeserializeObject<Dictionary<int, StorePackageData>>(json);
 
         StorePackageDatas = new List<StorePackageData>();
-        foreach (var chain in tmp)
+        foreach (var chain in StorePackageDataDict)
         {
             StorePackageDatas.Add(chain.Value);
         }
