@@ -101,7 +101,6 @@ public class Store_PackageManager : MonoBehaviour
         }
     }
     
-    [Button]
     public void UpdateSoldOut()
     {
         LoadBoughData();
@@ -126,14 +125,7 @@ public class Store_PackageManager : MonoBehaviour
         DateTime boughtDate = MyUtility.Converter.StringToDateTime(boughtDateStr);
         return (MyUtility.Converter.GetWeekOfYear(DateTime.Now) == MyUtility.Converter.GetWeekOfYear(boughtDate));
     }
-
-    // [Button]
-    // private void DayOfWeekTest(int idx)
-    // {
-    //     DateTime date = DateTime.Now.AddDays(idx);
-    //     print(MyUtility.Converter.DateTimeToString(date) + " - " + MyUtility.Converter.GetWeekOfYear(date));
-    // }
-
+    
     public void LoadBoughData()
     {
         if (PlayerPrefs.HasKey("StorePackageBoughtData"))
@@ -168,7 +160,6 @@ public class Store_PackageManager : MonoBehaviour
         }
     }
     
-
     private void SaveBoughtData()
     {
         PlayerPrefs.SetString("StorePackageBoughtData", JsonUtility.ToJson(boughtData));

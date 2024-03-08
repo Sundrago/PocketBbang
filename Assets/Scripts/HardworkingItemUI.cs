@@ -19,6 +19,8 @@ public class HardworkingItemUI : MonoBehaviour
         day = _day;
         if(_day == 0) dayCount_ui.text = "즉시 보상";
         else dayCount_ui.text = _day + "일차";
+
+        title_ui.text = "다이아몬드 80개";
     }
 
     [Button]

@@ -35,9 +35,9 @@ public class AchievementCtrl : MonoBehaviour
             if (result.AuthStatus == LocalPlayerAuthStatus.Authenticated)
             {
 #if UNITY_IPHONE
-                balloon.ShowMsg("애플 게임센터 로그인 성공!");
+                // balloon.ShowMsg("애플 게임센터 로그인 성공!");
 #elif UNITY_ANDROID
-                balloon.ShowMsg("플레이 게임 서비스 로그인 성공!");
+                // balloon.ShowMsg("플레이 게임 서비스 로그인 성공!");
 #endif
                 UpdateScore();
                 Debug.Log("Local player: " + result.LocalPlayer);

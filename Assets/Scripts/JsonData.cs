@@ -26,7 +26,6 @@ public class JsonData : MonoBehaviour
     [Button]
     private void ImportScrumbEventData(string json)
     {
-        // string json = File.ReadAllText(Application.dataPath + "/Resources/JSON/" + "ScrumbEventData" + ".json"); 
         Dictionary<int, ScrumbEventData> ScrumbEventDatasDict = JsonConvert.DeserializeObject<Dictionary<int, ScrumbEventData>>(json);
 
         ScrumbEventDatas = new List<ScrumbEventData>();
@@ -38,7 +37,6 @@ public class JsonData : MonoBehaviour
     [Button]
     private void ImportStoreDiamondData(string json)
     {
-        // string json = File.ReadAllText(Application.dataPath + "/Resources/JSON/" + "StoreDiamondData" + ".json"); 
         Dictionary<int, StoreDiamondData> tmp = JsonConvert.DeserializeObject<Dictionary<int, StoreDiamondData>>(json);
 
         StoreDiamondDatas = new List<StoreDiamondData>();
@@ -50,7 +48,6 @@ public class JsonData : MonoBehaviour
     [Button]
     private void ImportStorePackageData(string json)
     {
-        // string json = File.ReadAllText(Application.dataPath + "/Resources/JSON/" + "StoreDiamondData" + ".json"); 
         Dictionary<int, StorePackageData> tmp = JsonConvert.DeserializeObject<Dictionary<int, StorePackageData>>(json);
 
         StorePackageDatas = new List<StorePackageData>();
@@ -85,8 +82,6 @@ public class JsonData : MonoBehaviour
         public string name, descr;
         public int[] itemCode, itemAmt;
     }
-    
-    //------ENUMS------//
     
     public enum PackageType
     {

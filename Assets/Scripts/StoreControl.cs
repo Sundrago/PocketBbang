@@ -27,15 +27,14 @@ public class StoreControl : MonoBehaviour
             bbobgiPanel.reload = true;
         } else
         {
-            float rnd;
-            if (PlayerPrefs.GetInt("totalScrubCount", 0) < 10) rnd = 0.3f;
-            else if(PlayerPrefs.GetInt("totalScrubCount", 0) < 30) rnd = 0.2f;
-            else if (PlayerPrefs.GetInt("totalScrubCount", 0) < 100) rnd = 0.15f;
-            else rnd = 0.1f;
-            
-            scrumb.gameObject.SetActive(Random.value < rnd);
             bbobgiMachine.SetActive(false);
         }
+        float rnd;
+        if (PlayerPrefs.GetInt("totalScrubCount", 0) < 10) rnd = 0.6f;
+        else if(PlayerPrefs.GetInt("totalScrubCount", 0) < 30) rnd = 0.5f;
+        else if (PlayerPrefs.GetInt("totalScrubCount", 0) < 100) rnd = 0.4f;
+        else rnd = 0.3f;
+        scrumb.gameObject.SetActive(Random.value < rnd);
     }
 
     public void DestroySelf()
@@ -60,7 +59,10 @@ public class StoreControl : MonoBehaviour
 
     public void ScrumbBtnClicked()
     {
-        int rnd = Random.Range(1, 3);
+        int rnd;
+        if (PlayerPrefs.GetInt("totalScrubCount", 0) < 100) rnd = Random.Range(1, 3);
+        else rnd = 1;
+        
         RewardItemManager.Instance.Init(new int[1]{1001}, new int[1]{rnd}, "scrumb", "반짝이는 빵 부스러기를 주웠다!");
         scrumb.gameObject.SetActive(false);
     }

@@ -22,28 +22,6 @@ public class Store_FishManager : MonoBehaviour
         detailPanel.Init(StoreFishDatas[idx]);
     }
     
-    [Button]
-    private void ImportStoreDiamondData(string json)
-    {
-        // string json = File.ReadAllText(Application.dataPath + "/Resources/JSON/" + "StoreDiamondData" + ".json"); 
-        Dictionary<int, StoreFishData> tmp = JsonConvert.DeserializeObject<Dictionary<int, StoreFishData>>(json);
-        
-        
-        // StoreFishDatas = new List<StoreFishData>();
-        // foreach (var chain in tmp)
-        // {
-        //     StoreFishDatas.Add(chain.Value);
-        // }
-
-        for (int i = 0; i < storeFishItems.Count; i++)
-        {
-            StoreFishDatas[i].name = tmp[i].name;
-            StoreFishDatas[i].descr = tmp[i].descr;
-            StoreFishDatas[i].itemCode = tmp[i].itemCode;
-            StoreFishDatas[i].amount = tmp[i].amount;
-            StoreFishDatas[i].price = tmp[i].price;
-        }
-    }
     public void PurchaseItem(StoreFishData data, int count)
     {
         int price = data.price * count;
@@ -64,10 +42,24 @@ public class Store_FishManager : MonoBehaviour
         {
             BalloonControl.Instance.ShowMsg("다이아몬드가 부족하다..");
         }
-        
     }
 
     #if UNITY_EDITOR
+    [Button]
+    private void ImportJSONData(string json)
+    {
+        Dictionary<int, StoreFishData> tmp = JsonConvert.DeserializeObject<Dictionary<int, StoreFishData>>(json);
+
+        for (int i = 0; i < storeFishItems.Count; i++)
+        {
+            StoreFishDatas[i].name = tmp[i].name;
+            StoreFishDatas[i].descr = tmp[i].descr;
+            StoreFishDatas[i].itemCode = tmp[i].itemCode;
+            StoreFishDatas[i].amount = tmp[i].amount;
+            StoreFishDatas[i].price = tmp[i].price;
+        }
+    }
+    
     [Button]
     private void InitItems()
     {
