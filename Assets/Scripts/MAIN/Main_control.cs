@@ -1365,10 +1365,9 @@ public class Main_control : MonoBehaviour
                     pmtComtrol.AddNextAction("store", "hostf_out");
                 }
 
+                AddBBangType(1, "점주");
                 PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
-                PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 1);
-                PlayerPrefs.Save();
-                showroom.UpdateBbangShow();
+                showroom.AddBbang(Bbang_showroom.BbangType.bbang_mat, 1);
                 break;
 
             case "hostf_out":
@@ -1659,11 +1658,8 @@ public class Main_control : MonoBehaviour
                 pmtComtrol.AddOption("편의점을 나간다.", "store", "host_out");
 
                 PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
-                PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 1);
-                PlayerPrefs.Save();
-
-                showroom.UpdateBbangShow();
-
+                PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
+                showroom.AddBbang(Bbang_showroom.BbangType.bbang_mat, 1);
                 break;
 
             case "host_out":
@@ -2564,9 +2560,8 @@ public class Main_control : MonoBehaviour
             myBang = Instantiate(bbang_panel, bbang_holder.transform);
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(5);
-
-            PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
-            PlayerPrefs.SetInt("bbang_purin", PlayerPrefs.GetInt("bbang_purin") + 1);
+            
+            showroom.AddBbang(Bbang_showroom.BbangType.bbang_purin, 1);
         }
         else if (PlayerPrefs.GetInt("new_maple") > 0)
         {
@@ -2576,8 +2571,7 @@ public class Main_control : MonoBehaviour
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(4);
 
-            PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
-            PlayerPrefs.SetInt("bbang_maple", PlayerPrefs.GetInt("bbang_maple") + 1);
+            showroom.AddBbang(Bbang_showroom.BbangType.bbang_maple, 1);
         }
         else if (PlayerPrefs.GetInt("new_bingle") > 0)
         {
@@ -2587,8 +2581,7 @@ public class Main_control : MonoBehaviour
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(3);
 
-            PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
-            PlayerPrefs.SetInt("bbang_bingle", PlayerPrefs.GetInt("bbang_bingle") + 1);
+            showroom.AddBbang(Bbang_showroom.BbangType.bbang_bingle, 1);
         }
         else if (PlayerPrefs.GetInt("new_hot") > 0)
         {
@@ -2598,8 +2591,7 @@ public class Main_control : MonoBehaviour
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(2);
 
-            PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
-            PlayerPrefs.SetInt("bbang_hot", PlayerPrefs.GetInt("bbang_hot") + 1);
+            showroom.AddBbang(Bbang_showroom.BbangType.bbang_hot, 1);
         }
         else if (PlayerPrefs.GetInt("new_strawberry") > 0)
         {
@@ -2609,8 +2601,7 @@ public class Main_control : MonoBehaviour
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(1);
 
-            PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 1);
-            PlayerPrefs.SetInt("bbang_strawberry", PlayerPrefs.GetInt("bbang_strawberry") + 1);
+            showroom.AddBbang(Bbang_showroom.BbangType.bbang_strawberry, 1);
         }
         else if (PlayerPrefs.GetInt("new_choco") > 0)
         {
@@ -2620,16 +2611,11 @@ public class Main_control : MonoBehaviour
             myBang.SetActive(true);
             myBang.GetComponent<BbangControl>().SetBbang(0);
 
-            PlayerPrefs.SetInt("currentBbangCount", PlayerPrefs.GetInt("currentBbangCount") + 2);
-            PlayerPrefs.SetInt("bbang_choco", PlayerPrefs.GetInt("bbang_choco") + 2);
+            showroom.AddBbang(Bbang_showroom.BbangType.bbang_choco, 1);
         }
 
         originalMusic = myAudio.currentPlaying;
         myAudio.PlayMusic(3);
-
-        PlayerPrefs.SetInt("totalBbangCount", PlayerPrefs.GetInt("totalBbangCount", 0) + 1);
-        PlayerPrefs.Save();
-        showroom.UpdateBbangShow();
     }
 
     public void BBangClosed()
@@ -2770,24 +2756,18 @@ public class Main_control : MonoBehaviour
 
     public void Debug_AddVacance()
     {
-        PlayerPrefs.SetInt("bbang_vacance", PlayerPrefs.GetInt("bbang_vacance") + 1);
-        PlayerPrefs.Save();
-        showroom.UpdateBbangShow();
+        showroom.AddBbang(Bbang_showroom.BbangType.bbang_vacance, 1);
     }
 
     public void Debug_AddYogurt()
     {
-        PlayerPrefs.SetInt("bbang_yogurt", PlayerPrefs.GetInt("bbang_yogurt") + 1);
-        PlayerPrefs.Save();
-        showroom.UpdateBbangShow();
+        showroom.AddBbang(Bbang_showroom.BbangType.bbang_yogurt, 1);
     }
 
     public void AddMatdongsan()
     {
         PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
-        PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 1);
-        PlayerPrefs.Save();
-        showroom.UpdateBbangShow();
+        showroom.AddBbang(Bbang_showroom.BbangType.bbang_mat, 1);
     }
 
     public void Debug_MakeCards()

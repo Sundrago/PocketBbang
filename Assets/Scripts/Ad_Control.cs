@@ -56,6 +56,12 @@ public class Ad_Control : MonoBehaviour
     {
         if (!IronSource.Agent.isRewardedVideoAvailable())
         {
+            if (PlayerPrefs.GetInt("debugMode") == 1)
+            {
+                adsType = type;
+                IronAdsWatched();
+                return;
+            }
             balloon.ShowMsg("광고를 로드하지 못했습니다..");
             return;
         }

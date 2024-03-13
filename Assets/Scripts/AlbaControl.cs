@@ -348,16 +348,14 @@ public class AlbaControl : MonoBehaviour
             pmtControl.AddString("점주", "훌륭해! 보너스로 맛동산을 한 상자 줄게!");
             pmtControl.AddString("맛동산", "맛동산 한 상자를 받았다.");
             PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
-            PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 1);
-            showroom.UpdateBbangShow();
+            showroom.AddBbang(Bbang_showroom.BbangType.bbang_mat, 1);
         }
         else if (customerCount > 50)
         {
             pmtControl.AddString("점주", "정말 대단해! 보너스로 맛동산을 두 상자 줄게!");
             pmtControl.AddString("맛동산", "맛동산 두 상자를 받았다.");
             PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 2);
-            PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 2);
-            showroom.UpdateBbangShow();
+            showroom.AddBbang(Bbang_showroom.BbangType.bbang_mat, 2);
         }
 
         pmtControl.AddString("점주", "1시간 일했으니까.."); //9,160

@@ -132,8 +132,8 @@ public class DangunChaCtrl : MonoBehaviour
         {
             case 1:
                 //RemoveMatdongSagn : returnCount
-                PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") - returnCount);
-                show.UpdateBbangShow();
+                // PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") - returnCount);
+                show.AddBbang(Bbang_showroom.BbangType.bbang_mat, -returnCount);
                 //Add Money and Update UI
                 heart.UpdateMoney(returnCount * 2000);
                 break;
@@ -154,9 +154,7 @@ public class DangunChaCtrl : MonoBehaviour
                         PlayerPrefs.SetInt("card_" + cardSelectIdx[i], PlayerPrefs.GetInt("card_" + cardSelectIdx[i]) - 4);
                         if (PlayerPrefs.GetInt("card_" + cardSelectIdx[i]) < 0) PlayerPrefs.SetInt("card_" + cardSelectIdx[i], 1);
                     }
-                    PlayerPrefs.SetInt("bbang_vacance", PlayerPrefs.GetInt("bbang_vacance") + cardSelectIdx.Count);
-                    PlayerPrefs.Save();
-                    main.showroom.UpdateBbangShow();
+                    main.showroom.AddBbang(Bbang_showroom.BbangType.bbang_vacance, cardSelectIdx.Count);
                 }
                 break;
             case 4:
@@ -171,9 +169,7 @@ public class DangunChaCtrl : MonoBehaviour
                         PlayerPrefs.SetInt("card_" + cardSelectIdx[i], PlayerPrefs.GetInt("card_" + cardSelectIdx[i]) - 4);
                         if (PlayerPrefs.GetInt("card_" + cardSelectIdx[i]) < 0) PlayerPrefs.SetInt("card_" + cardSelectIdx[i], 1);
                     }
-                    PlayerPrefs.SetInt("bbang_yogurt", PlayerPrefs.GetInt("bbang_yogurt") + cardSelectIdx.Count);
-                    PlayerPrefs.Save();
-                    main.showroom.UpdateBbangShow();
+                    main.showroom.AddBbang(Bbang_showroom.BbangType.bbang_yogurt, cardSelectIdx.Count);
                 }
                 break;
             case 5:

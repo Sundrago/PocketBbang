@@ -122,14 +122,13 @@ public class BbangBoyContol : MonoBehaviour
 
     public void SetBbang80()
     {
-        PlayerPrefs.SetInt("bbang_choco", 80);
-        bbang_Showroom.UpdateBbangShow();
+        // PlayerPrefs.SetInt("bbang_choco", 80);
+        bbang_Showroom.AddBbang(Bbang_showroom.BbangType.bbang_choco, 80);
     }
 
     public void Debug_mat()
     {
         PlayerPrefs.SetInt("Matdongsan", PlayerPrefs.GetInt("Matdongsan") + 1);
-        PlayerPrefs.SetInt("bbang_mat", PlayerPrefs.GetInt("bbang_mat") + 1);
-        bbang_Showroom.UpdateBbangShow();
+        bbang_Showroom.AddBbang(Bbang_showroom.BbangType.bbang_mat, 1);
     }
 }
