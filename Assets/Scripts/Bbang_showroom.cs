@@ -153,6 +153,8 @@ public class Bbang_showroom : SerializedMonoBehaviour
         {
             bbang_i.SetActive(false);
         }
+        
+        UpdateBbangShow();
     }
 
     void Update()
