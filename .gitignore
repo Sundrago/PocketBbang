@@ -2,10 +2,9 @@
 *
 
 # allow Git to look inside these folder
-
+!*/
 !/.gitignore
 !/Assets/Scripts/**
-!/Assets/Resources/**
 !/ProjectSettings/**
 !/Packages/**
 !/Docs/**
@@ -14,5 +13,6 @@
 PrivateData.cs
 *.DS_Store
 *.ttf
+*.meta
 ignore.conf
 /.plastic/**
