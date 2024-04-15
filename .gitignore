@@ -2,7 +2,7 @@
 *
 
 # allow Git to look inside these folder
-!*/
+
 !/.gitignore
 !/Assets/Scripts/**
 !/Assets/Resources/**
@@ -10,5 +10,9 @@
 !/Packages/**
 !/Docs/**
 
-# ignore private keys.
+# ignore followings.
 PrivateData.cs
+*.DS_Store
+*.ttf
+ignore.conf
+/.plastic/**
