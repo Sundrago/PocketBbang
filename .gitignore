@@ -11,6 +11,7 @@
 
 # ignore followings.
 PrivateData.cs
+/Assets/Scripts/streamingAssets/**
 *.DS_Store
 *.ttf
 *.meta
