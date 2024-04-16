@@ -1,25 +1,31 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using UnityEngine;
 // using UnityEngine.Localization.Settings;
-using Random = UnityEngine.Random;
-using System.IO;
 
 namespace MyUtility
 {
-    static class Converter {
-        const string format = "yyyy/MM/dd HH:mm:ss";
-        private static System.IFormatProvider provider;
-        private static CultureInfo cultureInfo = CultureInfo.CurrentCulture;
-        
-        public static int StringToInt(string value) {
+    internal static class Converter
+    {
+        private const string format = "yyyy/MM/dd HH:mm:ss";
+        private static IFormatProvider provider;
+        private static readonly CultureInfo cultureInfo = CultureInfo.CurrentCulture;
+
+        private static readonly Dictionary<string, KeyValuePair<string, string>> koreanParticles = new()
+        {
+            { "을/를", new KeyValuePair<string, string>("을", "를") },
+            { "이/가", new KeyValuePair<string, string>("이", "가") },
+            { "은/는", new KeyValuePair<string, string>("은", "는") }
+        };
+
+        public static int StringToInt(string value)
+        {
             int number;
             if (int.TryParse(value, out number))
                 return number;
-            else
-                return 0;
+            return 0;
         }
 
         public static string DateTimeToString(DateTime dateTime)
@@ -30,7 +36,7 @@ namespace MyUtility
         public static DateTime StringToDateTime(string dateTimeString)
         {
             DateTime dateTime;
-            bool success = DateTime.TryParseExact(dateTimeString, format, provider, DateTimeStyles.None, out dateTime);
+            var success = DateTime.TryParseExact(dateTimeString, format, provider, DateTimeStyles.None, out dateTime);
 
             if (success) return dateTime;
             return DateTime.Now;
@@ -38,21 +44,11 @@ namespace MyUtility
 
         public static int[] List2Array(List<int> list)
         {
-            int[] array = new int[list.Count];
-            for (int i = 0; i < list.Count; i++)
-            {
-                array[i] = list[i];
-            }
+            var array = new int[list.Count];
+            for (var i = 0; i < list.Count; i++) array[i] = list[i];
 
             return array;
         }
-        
-        private static Dictionary<string, KeyValuePair<string, string>> koreanParticles = new Dictionary<string, KeyValuePair<string, string>>
-        {
-            { "을/를", new KeyValuePair<string, string>("을", "를") },
-            { "이/가", new KeyValuePair<string, string>("이", "가") },
-            { "은/는", new KeyValuePair<string, string>("은", "는") },
-        };
 
         public static string KoreanParticle(string text)
         {
@@ -66,6 +62,7 @@ namespace MyUtility
                     index = text.IndexOf(particle.Key) - 1;
                 }
             }
+
             return text;
         }
 
@@ -73,10 +70,11 @@ namespace MyUtility
         {
             return string.Format("{0:#,###0}", amt);
         }
-        
+
         public static int GetWeekOfYear(DateTime date)
         {
-            return date.Year * 1000 + cultureInfo.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+            return date.Year * 1000 +
+                   cultureInfo.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
         }
 
         public static int GetDayOfYear(DateTime date)
@@ -84,7 +82,7 @@ namespace MyUtility
             return date.Year * 1000 + date.DayOfYear;
         }
     }
-    
+
     // static class Localize {
     //     public static string GetLocalizedString(string input)
     //     {
@@ -148,10 +146,11 @@ namespace MyUtility
     //     }
     // }
 
-    static class IO {
+    internal static class IO
+    {
         public static string GetJsom(string name)
         {
-            return File.ReadAllText(Application.dataPath + "/Resources/JSON/"+ name +".json"); 
+            return File.ReadAllText(Application.dataPath + "/Resources/JSON/" + name + ".json");
         }
     }
 }

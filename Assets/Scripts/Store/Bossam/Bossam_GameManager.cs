@@ -1,64 +1,63 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using UnityEngine;
-using UnityEngine.UI;
-using Random = System.Random;
 using Sirenix.OdinInspector;
+using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Bossam_GameManager : MonoBehaviour
 {
-    [SerializeField] private List<Bossam_StageManager> bossamChar_prefab = new List<Bossam_StageManager>();
     public static Bossam_GameManager Instance;
+    [SerializeField] private List<Bossam_StageManager> bossamChar_prefab = new();
     [SerializeField] private Bossam_StageManager bosamChar;
     [SerializeField] private TanghuruComboICon comboFX, failFX;
     [SerializeField] private Transform comboFxPos;
     [SerializeField] private Text score_text, time_text;
     [SerializeField] private GameObject tutorialPanel, scorePanel;
-    [SerializeField] private MiniGameEndScoreManager EndScore;
+
+    [FormerlySerializedAs("EndScore")] [SerializeField]
+    private MiniGameEndScoreUIManager endScoreUI;
+
     [SerializeField] private Bossam_ssam ssam;
-    [SerializeField] private List<GameObject> GameObjSetActiveFalse = new List<GameObject>();
+    [SerializeField] private List<GameObject> GameObjSetActiveFalse = new();
     [SerializeField] private Transform chaholder;
     [SerializeField] private Transform hand, handPos;
-    
+
     private List<GameObject> actives;
     private int beforeAudioIdx;
-    private enum gameStatus
-    {
-        tutorial, playing, score
-    }
+    private int comboConut;
+
+    private int score;
+    private float startTime;
 
     private gameStatus status = gameStatus.score;
-    private int comboConut = 0;
-    private float startTime;
 
     private void Awake()
     {
         Instance = this;
     }
 
-    private int score;
-    
-    public void StartGame()
-    {
-        SetGameStatus(gameStatus.playing);
-    }
-
     private void Update()
     {
-        if(status != gameStatus.playing) return;
+        if (status != gameStatus.playing) return;
 
-        float timeLeft = 30f - (Time.time - startTime);
+        var timeLeft = 30f - (Time.time - startTime);
         timeLeft = MathF.Round(timeLeft * 10f) / 10f;
         time_text.text = timeLeft.ToString();
 
         if (timeLeft <= 0) SetGameStatus(gameStatus.score);
     }
 
+    public void StartGame()
+    {
+        SetGameStatus(gameStatus.playing);
+    }
+
     private void SetGameStatus(gameStatus _status)
     {
-        if(status == _status) return;
+        if (status == _status) return;
         status = _status;
 
         switch (status)
@@ -87,12 +86,11 @@ public class Bossam_GameManager : MonoBehaviour
             case gameStatus.score:
                 ssam.gameObject.SetActive(false);
                 hand.gameObject.SetActive(false);
-                EndScore.ShowScore(score);
+                endScoreUI.ShowScore(score);
                 AudioCtrl.Instance.PlaySFXbyTag(SFX_tag.whistle_end);
                 Destroy(bosamChar.gameObject);
                 tutorialPanel.SetActive(true);
                 break;
-            
         }
     }
 
@@ -100,15 +98,15 @@ public class Bossam_GameManager : MonoBehaviour
     {
         score_text.text = score + "점";
     }
-    
+
     public void GotSssamPos(Vector3 pos)
     {
-        if(bosamChar == null) return;
-        
-        for (int i = 0; i < bosamChar.chardata.Count; i++)
+        if (bosamChar == null) return;
+
+        for (var i = 0; i < bosamChar.chardata.Count; i++)
         {
-            if(!bosamChar.chardata[i].mouthOpen) continue;
-            float dist = Vector2.Distance(pos, bosamChar.chardata[i].character.center.position);
+            if (!bosamChar.chardata[i].mouthOpen) continue;
+            var dist = Vector2.Distance(pos, bosamChar.chardata[i].character.center.position);
             if (dist < 1)
             {
                 bosamChar.GotBossam(i);
@@ -116,14 +114,14 @@ public class Bossam_GameManager : MonoBehaviour
                 comboConut += 1;
                 score += 100 * (10 + comboConut) / 10;
                 UpdateScoreUI();
-                TanghuruComboICon comboFXN = Instantiate(comboFX, gameObject.transform);
+                var comboFXN = Instantiate(comboFX, gameObject.transform);
                 comboFXN.Init(comboFxPos.position, comboConut);
                 return;
             }
         }
-        
+
         AudioCtrl.Instance.PlaySFXbyTag(SFX_tag.loose);
-        TanghuruComboICon comboFAILFX = Instantiate(failFX, gameObject.transform);
+        var comboFAILFX = Instantiate(failFX, gameObject.transform);
         comboFAILFX.InitFail(comboFxPos.position);
         comboConut = 0;
         score -= 20;
@@ -149,7 +147,6 @@ public class Bossam_GameManager : MonoBehaviour
         //
         // bosamChar.AnimOut();
         // GetNewChar();
-
     }
 
     public void StageClear()
@@ -157,23 +154,24 @@ public class Bossam_GameManager : MonoBehaviour
         bosamChar.AnimOut();
         GetNewChar();
     }
+
     private void GetNewChar()
     {
-        int rnd = UnityEngine.Random.Range(0, bossamChar_prefab.Count);
+        var rnd = Random.Range(0, bossamChar_prefab.Count);
         bosamChar = Instantiate(bossamChar_prefab[rnd], chaholder);
         bosamChar.AnimIn();
         bosamChar.gameObject.SetActive(true);
     }
-    
+
     public void WatchAdsAndRestartBtnClicked()
     {
-        Ad_Control.Instance.PlayAds(Ad_Control.AdsType.bossam);
+        ADManager.Instance.PlayAds(ADManager.AdsType.bossam);
     }
 
     public void WathcedAds()
     {
-        PlayerPrefs.SetInt("Minigame_adCount", (PlayerPrefs.GetInt("Minigame_adCount", 0) + 1));
-        EndScore.HideScore();
+        PlayerPrefs.SetInt("Minigame_adCount", PlayerPrefs.GetInt("Minigame_adCount", 0) + 1);
+        endScoreUI.HideScore();
         tutorialPanel.SetActive(true);
     }
 
@@ -181,56 +179,47 @@ public class Bossam_GameManager : MonoBehaviour
     public void EnterGame()
     {
         actives = new List<GameObject>();
-        foreach (GameObject obj in GameObjSetActiveFalse)
-        {
+        foreach (var obj in GameObjSetActiveFalse)
             if (obj.activeSelf)
                 actives.Add(obj);
-        }
 
-        foreach (var obj in actives)
-        {
-            obj.SetActive(false);
-        }
+        foreach (var obj in actives) obj.SetActive(false);
         gameObject.SetActive(true);
         tutorialPanel.SetActive(true);
-        EndScore.gameObject.SetActive(false);
+        endScoreUI.gameObject.SetActive(false);
 
         PlauMusic();
+
         void PlauMusic()
         {
-            beforeAudioIdx = AudioControl.Instance.currentPlaying;
-            AudioControl.Instance.PlayMusic(8);
+            beforeAudioIdx = AudioController.Instance.currentPlaying;
+            AudioController.Instance.PlayMusic(8);
         }
+
         PlayerPrefs.SetInt("Minigame_adCount", 0);
         SetGameStatus(gameStatus.tutorial);
-        
     }
 
     [Button]
     public void ExitGame()
     {
-        foreach (var obj in actives)
-        {
-            obj.SetActive(true);
-        }
+        foreach (var obj in actives) obj.SetActive(true);
         gameObject.SetActive(false);
 
         StopMusic();
+
         void StopMusic()
         {
-            AudioControl.Instance.PlayMusic(beforeAudioIdx);
+            AudioController.Instance.PlayMusic(beforeAudioIdx);
         }
-        
-        Main_control.Instance.lower_bar.GetComponent<Animator>().SetTrigger("hide");
-        Heart_Control.Instance.UpdateHeartUI();
 
-        
-        
+        GameManager.Instance.lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        PlayerHealthManager.Instance.UpdateHeartUI();
+
+
         if (PlayerPrefs.GetString("bossam_rank") == "F")
-        {
-            Main_control.Instance.JangJokBal("ID_J_GAME_OVER_BAD");
-        }
-        else Main_control.Instance.JangJokBal("ID_J_GAME_OVER_GOOD");
+            GameManager.Instance.JangJokBal("ID_J_GAME_OVER_BAD");
+        else GameManager.Instance.JangJokBal("ID_J_GAME_OVER_GOOD");
     }
 
     public void ShowHand()
@@ -245,5 +234,12 @@ public class Bossam_GameManager : MonoBehaviour
     public void HideHand()
     {
         hand.DOMoveY(handPos.position.y - 5f, 1f);
+    }
+
+    private enum gameStatus
+    {
+        tutorial,
+        playing,
+        score
     }
 }

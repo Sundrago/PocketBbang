@@ -1,17 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Unity.Advertisement.IosSupport;
 using System;
+using Unity.Advertisement.IosSupport;
+using UnityEngine;
 
 public class IronSourceAd : MonoBehaviour
 {
-    [SerializeField] PhoneMsgCtrl msg;
-    [SerializeField] Ad_Control ads;
+    [SerializeField] private PhoneMessageController msg;
+    [SerializeField] private ADManager ads;
 
-    public event Action sentTrackingAuthorizationRequest;
-
-    void OnEnable()
+    private void OnEnable()
     {
         IronSourceEvents.onSdkInitializationCompletedEvent += SdkInitializationCompletedEvent;
 
@@ -26,105 +22,27 @@ public class IronSourceAd : MonoBehaviour
         IronSourceEvents.onRewardedVideoAdClickedEvent += RewardedVideoAdClickedEvent;
     }
 
-    void OnApplicationPause(bool isPaused)
+    private void OnApplicationPause(bool isPaused)
     {
         Debug.Log("unity-script: OnApplicationPause = " + isPaused);
         IronSource.Agent.onApplicationPause(isPaused);
     }
 
-    void SdkInitializationCompletedEvent()
+    public event Action sentTrackingAuthorizationRequest;
+
+    private void SdkInitializationCompletedEvent()
     {
         Debug.Log("unity-script: I got SdkInitializationCompletedEvent");
     }
-
-    #region AdInfo Rewarded Video
-    void ReardedVideoOnAdOpenedEvent(IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got ReardedVideoOnAdOpenedEvent With AdInfo " + adInfo.ToString());
-    }
-    void ReardedVideoOnAdClosedEvent(IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got ReardedVideoOnAdClosedEvent With AdInfo " + adInfo.ToString());
-    }
-    void ReardedVideoOnAdAvailable(IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got ReardedVideoOnAdAvailable With AdInfo " + adInfo.ToString());
-    }
-    void ReardedVideoOnAdUnavailable()
-    {
-        Debug.Log("unity-script: I got ReardedVideoOnAdUnavailable");
-    }
-    void ReardedVideoOnAdShowFailedEvent(IronSourceError ironSourceError, IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got RewardedVideoAdOpenedEvent With Error" + ironSourceError.ToString() + "And AdInfo " + adInfo.ToString());
-    }
-    void ReardedVideoOnAdRewardedEvent(IronSourcePlacement ironSourcePlacement, IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got ReardedVideoOnAdRewardedEvent With Placement" + ironSourcePlacement.ToString() + "And AdInfo " + adInfo.ToString());
-    }
-    void ReardedVideoOnAdClickedEvent(IronSourcePlacement ironSourcePlacement, IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got ReardedVideoOnAdClickedEvent With Placement" + ironSourcePlacement.ToString() + "And AdInfo " + adInfo.ToString());
-    }
-
-    #endregion
-
-
-
-    #region RewardedAd callback handlers
-
-    void RewardedVideoAvailabilityChangedEvent(bool canShowAd)
-    {
-        Debug.Log("unity-script: I got RewardedVideoAvailabilityChangedEvent, value = " + canShowAd);
-    }
-
-    void RewardedVideoAdOpenedEvent()
-    {
-        Debug.Log("unity-script: I got RewardedVideoAdOpenedEvent");
-    }
-
-    //USER WATCHED ADS
-    void RewardedVideoAdRewardedEvent(IronSourcePlacement ssp)
-    {
-        Debug.Log("unity-script: I got RewardedVideoAdRewardedEvent, amount = " + ssp.getRewardAmount() + " name = " + ssp.getRewardName());
-        ads.IronAdsWatched();
-    }
-
-    void RewardedVideoAdClosedEvent()
-    {
-        Debug.Log("unity-script: I got RewardedVideoAdClosedEvent");
-    }
-
-    void RewardedVideoAdStartedEvent()
-    {
-        Debug.Log("unity-script: I got RewardedVideoAdStartedEvent");
-    }
-
-    void RewardedVideoAdEndedEvent()
-    {
-        Debug.Log("unity-script: I got RewardedVideoAdEndedEvent");
-    }
-
-    void RewardedVideoAdShowFailedEvent(IronSourceError error)
-    {
-        Debug.Log("unity-script: I got RewardedVideoAdShowFailedEvent, code :  " + error.getCode() + ", description : " + error.getDescription());
-    }
-
-    void RewardedVideoAdClickedEvent(IronSourcePlacement ssp)
-    {
-        Debug.Log("unity-script: I got RewardedVideoAdClickedEvent, name = " + ssp.getRewardName());
-    }
-    #endregion
 
 
     public void ShowIronAds()
     {
 #if UNITY_IOS
         Debug.Log(ATTrackingStatusBinding.GetAuthorizationTrackingStatus());
-        if (ATTrackingStatusBinding.GetAuthorizationTrackingStatus() ==
-            ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED & !PlayerPrefs.HasKey("ATT"))
+        if ((ATTrackingStatusBinding.GetAuthorizationTrackingStatus() ==
+             ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED) & !PlayerPrefs.HasKey("ATT"))
         {
-
             msg.SetMsg("맞춤형 광고를 설정하시면 관심있을 광고를 위주로 보여줍니다.", 1, "RequestAuthorizationTracking");
             return;
         }
@@ -154,9 +72,101 @@ public class IronSourceAd : MonoBehaviour
         PlayerPrefs.SetInt("ATT", 1);
 #endif
     }
+
     // The user pressed the Settings or Next buttons
     private void onConsentViewDidAcceptEvent(string consentViewType)
     {
         ShowIronAds();
     }
+
+    #region AdInfo Rewarded Video
+
+    private void ReardedVideoOnAdOpenedEvent(IronSourceAdInfo adInfo)
+    {
+        Debug.Log("unity-script: I got ReardedVideoOnAdOpenedEvent With AdInfo " + adInfo);
+    }
+
+    private void ReardedVideoOnAdClosedEvent(IronSourceAdInfo adInfo)
+    {
+        Debug.Log("unity-script: I got ReardedVideoOnAdClosedEvent With AdInfo " + adInfo);
+    }
+
+    private void ReardedVideoOnAdAvailable(IronSourceAdInfo adInfo)
+    {
+        Debug.Log("unity-script: I got ReardedVideoOnAdAvailable With AdInfo " + adInfo);
+    }
+
+    private void ReardedVideoOnAdUnavailable()
+    {
+        Debug.Log("unity-script: I got ReardedVideoOnAdUnavailable");
+    }
+
+    private void ReardedVideoOnAdShowFailedEvent(IronSourceError ironSourceError, IronSourceAdInfo adInfo)
+    {
+        Debug.Log(
+            "unity-script: I got RewardedVideoAdOpenedEvent With Error" + ironSourceError + "And AdInfo " + adInfo);
+    }
+
+    private void ReardedVideoOnAdRewardedEvent(IronSourcePlacement ironSourcePlacement, IronSourceAdInfo adInfo)
+    {
+        Debug.Log("unity-script: I got ReardedVideoOnAdRewardedEvent With Placement" + ironSourcePlacement +
+                  "And AdInfo " + adInfo);
+    }
+
+    private void ReardedVideoOnAdClickedEvent(IronSourcePlacement ironSourcePlacement, IronSourceAdInfo adInfo)
+    {
+        Debug.Log("unity-script: I got ReardedVideoOnAdClickedEvent With Placement" + ironSourcePlacement +
+                  "And AdInfo " + adInfo);
+    }
+
+    #endregion
+
+
+    #region RewardedAd callback handlers
+
+    private void RewardedVideoAvailabilityChangedEvent(bool canShowAd)
+    {
+        Debug.Log("unity-script: I got RewardedVideoAvailabilityChangedEvent, value = " + canShowAd);
+    }
+
+    private void RewardedVideoAdOpenedEvent()
+    {
+        Debug.Log("unity-script: I got RewardedVideoAdOpenedEvent");
+    }
+
+    //USER WATCHED ADS
+    private void RewardedVideoAdRewardedEvent(IronSourcePlacement ssp)
+    {
+        Debug.Log("unity-script: I got RewardedVideoAdRewardedEvent, amount = " + ssp.getRewardAmount() + " name = " +
+                  ssp.getRewardName());
+        ads.IronAdsWatched();
+    }
+
+    private void RewardedVideoAdClosedEvent()
+    {
+        Debug.Log("unity-script: I got RewardedVideoAdClosedEvent");
+    }
+
+    private void RewardedVideoAdStartedEvent()
+    {
+        Debug.Log("unity-script: I got RewardedVideoAdStartedEvent");
+    }
+
+    private void RewardedVideoAdEndedEvent()
+    {
+        Debug.Log("unity-script: I got RewardedVideoAdEndedEvent");
+    }
+
+    private void RewardedVideoAdShowFailedEvent(IronSourceError error)
+    {
+        Debug.Log("unity-script: I got RewardedVideoAdShowFailedEvent, code :  " + error.getCode() +
+                  ", description : " + error.getDescription());
+    }
+
+    private void RewardedVideoAdClickedEvent(IronSourcePlacement ssp)
+    {
+        Debug.Log("unity-script: I got RewardedVideoAdClickedEvent, name = " + ssp.getRewardName());
+    }
+
+    #endregion
 }

@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MissionManager : MonoBehaviour
 {
-    
 }
+
 public enum MissionType
 {
     investBbang,
@@ -19,5 +17,5 @@ public enum MissionType
     winRockScissor,
     doBidulgi,
     doAlba,
-    doDangun,
+    doDangun
 }

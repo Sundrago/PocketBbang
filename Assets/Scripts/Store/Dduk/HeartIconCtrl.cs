@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HeartIconCtrl : MonoBehaviour
 {
-    RectMask2D mask;
-    int currnetState = -1;
+    private int currnetState = -1;
+    private RectMask2D mask;
 
     public void Start()
     {
@@ -22,7 +20,7 @@ public class HeartIconCtrl : MonoBehaviour
         float normal;
         if (isSmall) normal = Mathf.Lerp(60, 10, idx / 10f);
         else normal = Mathf.Lerp(120, 20, idx / 10f);
-        Vector4 padding = mask.padding;
+        var padding = mask.padding;
         padding.w = normal;
         mask.padding = padding;
 

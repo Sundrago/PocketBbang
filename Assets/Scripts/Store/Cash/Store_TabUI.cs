@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,10 +11,10 @@ public class Store_TabUI : MonoBehaviour
     [Button]
     public void BtnClicked(int idx)
     {
-        for (int i = 0; i < panels.Length; i++)
+        for (var i = 0; i < panels.Length; i++)
         {
-            panels[i].SetActive(i==idx);
-            SelectTab(tabs[i], i==idx);
+            panels[i].SetActive(i == idx);
+            SelectTab(tabs[i], i == idx);
         }
     }
 
@@ -33,5 +31,4 @@ public class Store_TabUI : MonoBehaviour
             tab.gameObject.GetComponent<Image>().DOColor(new Color(0.6f, 0.45f, 0.4f), 0.3f);
         }
     }
-    
 }

@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Threading.Tasks;
 
 public class Collection_Row_control : MonoBehaviour
 {
     [SerializeField] public GameObject[] cards = new GameObject[4];
-    [SerializeField] GameObject[] imgs = new GameObject[4];
-    [SerializeField] GameObject[] names = new GameObject[4];
-    [SerializeField] GameObject[] counts = new GameObject[4];
+    [SerializeField] private GameObject[] imgs = new GameObject[4];
+    [SerializeField] private GameObject[] names = new GameObject[4];
+    [SerializeField] private GameObject[] counts = new GameObject[4];
 
-    Color alpha;
-    bool started = false;
+    private Color alpha;
+    private bool started;
 
     private void Start()
     {
@@ -23,25 +21,19 @@ public class Collection_Row_control : MonoBehaviour
 
     public void SetCount(int count)
     {
-        for(int i = 0; i<count; i++)
-        {
-            cards[i].SetActive(true);
-        }
-        for (int i = 3; i >= count; i--)
-        {
-            cards[i].SetActive(false);
-        }
+        for (var i = 0; i < count; i++) cards[i].SetActive(true);
+        for (var i = 3; i >= count; i--) cards[i].SetActive(false);
     }
 
     public async Task UpdateCard(int idx, Sprite img, string name, int count, bool debugMode)
     {
-        if(!started) Start();
+        if (!started) Start();
 
         imgs[idx].GetComponent<Image>().sprite = img;
-        
+
         counts[idx].GetComponent<Text>().text = "" + count;
 
-        if(count == 0 & !debugMode)
+        if ((count == 0) & !debugMode)
         {
             imgs[idx].GetComponent<Image>().color = alpha;
             names[idx].GetComponent<Text>().text = "?";

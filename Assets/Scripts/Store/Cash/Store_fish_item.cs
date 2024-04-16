@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
-using Newtonsoft.Json;
 
 public class Store_fish_item : MonoBehaviour
 {
@@ -13,8 +9,8 @@ public class Store_fish_item : MonoBehaviour
     [SerializeField] private TextMeshProUGUI title_ui, descr_ui, amount_ui;
     [SerializeField] private Image mainImage_ui;
     [SerializeField] private int idx;
-    
-    
+
+
     [Button]
     public void InitBtn(int _idx, string title, string descr, int amt, Sprite mainImage)
     {
@@ -24,7 +20,7 @@ public class Store_fish_item : MonoBehaviour
         amount_ui.text = amt.ToString();
         mainImage_ui.sprite = mainImage;
     }
-    
+
     public void StoreItemClicked()
     {
         manager.ItemClicked(idx);

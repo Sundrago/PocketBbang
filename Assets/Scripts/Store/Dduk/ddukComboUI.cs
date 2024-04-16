@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public class ddukComboUI : MonoBehaviour
 {
-    [SerializeField] Image image;
-    [SerializeField] Text text;
-    [SerializeField] GameObject endPos;
+    [SerializeField] private Image image;
+    [SerializeField] private Text text;
+    [SerializeField] private GameObject endPos;
 
     public void ShowCombo(int idx)
     {
@@ -36,5 +34,4 @@ public class ddukComboUI : MonoBehaviour
     {
         Destroy(gameObject);
     }
-
 }

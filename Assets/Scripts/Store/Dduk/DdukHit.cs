@@ -1,20 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class DdukHit : MonoBehaviour
 {
-    [SerializeField] DdukCtrl ddukCtrl;
+    [FormerlySerializedAs("ddukCtrl")] [SerializeField]
+    private DdukMinigameManager ddukMinigameManager;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "dduck")
-        {
-            ddukCtrl.GotDduk(collision.gameObject);
-        }
-        else if (collision.gameObject.tag == "spider")
-        {
-            ddukCtrl.LostDduck(collision.gameObject);
-        }
+            ddukMinigameManager.GotDduk(collision.gameObject);
+        else if (collision.gameObject.tag == "spider") ddukMinigameManager.LostDduck(collision.gameObject);
     }
 }

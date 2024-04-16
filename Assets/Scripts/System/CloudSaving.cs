@@ -1,21 +1,49 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using VoxelBusters.CoreLibrary;
 using VoxelBusters.EssentialKit;
 
 public class CloudSaving : MonoBehaviour
 {
-    [SerializeField] CollectionControl collection;
-    [SerializeField] BalloonControl balloon;
-    [SerializeField] PhoneMsgCtrl msg;
-    [SerializeField] GameObject chaSelect;
-    [SerializeField] Bbang_showroom bbang_Showrooml;
-    [SerializeField] Main_control main;
-    [SerializeField] SettingPanelControl setting;
+    private const string format = "yyyy/MM/dd HH:mm:ss";
+    [SerializeField] private CollectionManager collection;
+    [SerializeField] private BalloonUIManager balloon;
+    [SerializeField] private PhoneMessageController msg;
+    [SerializeField] private GameObject chaSelect;
+    [SerializeField] private BbangShowroomManager bbang_Showrooml;
+    [SerializeField] private GameManager main;
+    [SerializeField] private SettingPanelManager setting;
 
     public bool save = true;
-    const string format = "yyyy/MM/dd HH:mm:ss";
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        if (!PlayerPrefs.HasKey("autoSave"))
+        {
+            PlayerPrefs.SetInt("autoSave", 1);
+            PlayerPrefs.Save();
+        }
+
+        if (PlayerPrefs.GetInt("autoSave") == 0)
+            return;
+
+        DontDestroyOnLoad(gameObject);
+        if (CloudServices.IsAvailable())
+        {
+            CloudServices
+                .Synchronize(); // First call to syncronize triggers google play services login prompt if required - on Android.
+        }
+        else
+        {
+#if UNITY_IPHONE
+            balloon.ShowMsg("아이폰 설정에서 애플 게임 센터를 켜주세요!");
+#elif UNITY_ANDROID
+            CloudServices.Synchronize();
+            balloonUIManager.ShowMsg("플레이 게임 서비스에 로그인해주세요!");
+#endif
+        }
+    }
 
     private void OnEnable()
     {
@@ -27,36 +55,22 @@ public class CloudSaving : MonoBehaviour
 
     private void OnDisable()
     {
-        
         // unregister from events
         CloudServices.OnUserChange -= OnUserChange;
         CloudServices.OnSavedDataChange -= OnSavedDataChange;
         CloudServices.OnSynchronizeComplete -= OnSynchronizeComplete;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnApplicationPause(bool pause)
     {
-        if(!PlayerPrefs.HasKey("autoSave")) {
-            PlayerPrefs.SetInt("autoSave", 1);
-            PlayerPrefs.Save();
-        }
-        if (PlayerPrefs.GetInt("autoSave") == 0)
-            return;
+        if (PlayerPrefs.GetInt("autoSave") == 1)
+            SyncNow();
+    }
 
-        DontDestroyOnLoad(gameObject);
-        if (CloudServices.IsAvailable())
-        {
-            CloudServices.Synchronize(); // First call to syncronize triggers google play services login prompt if required - on Android.
-        } else
-        {
-#if UNITY_IPHONE
-            balloon.ShowMsg("아이폰 설정에서 애플 게임 센터를 켜주세요!");
-#elif UNITY_ANDROID
-            CloudServices.Synchronize();
-            balloon.ShowMsg("플레이 게임 서비스에 로그인해주세요!");
-#endif
-        }
+    private void OnApplicationQuit()
+    {
+        if (PlayerPrefs.GetInt("autoSave") == 1)
+            SyncNow();
     }
 
     private void OnSynchronizeComplete(CloudServicesSynchronizeResult result)
@@ -76,15 +90,16 @@ public class CloudSaving : MonoBehaviour
         {
             SaveData(true);
             balloon.ShowMsg("데이터 저장 완료");
-        } else
-        {
-            // balloon.ShowMsg("데이터 동기화 완료");
         }
+        // balloonUIManager.ShowMsg("데이터 동기화 완료");
     }
 
     public void AskToLoad()
     {
-        msg.SetMsg("클라우드에 저장된 데이터를 찾았습니다.\n" + CloudServices.GetString("SavedTime") + "에 저장된 데이터를 불러올까요?\n\n (닉네임 : " + CloudServices.GetString("ChaName") + ")\n(전체 카드 숫자 : " + CloudServices.GetInt("myRealTotalCard") + ")", 2, "AskToLoad");
+        msg.SetMsg(
+            "클라우드에 저장된 데이터를 찾았습니다.\n" + CloudServices.GetString("SavedTime") + "에 저장된 데이터를 불러올까요?\n\n (닉네임 : " +
+            CloudServices.GetString("ChaName") + ")\n(전체 카드 숫자 : " + CloudServices.GetInt("myRealTotalCard") + ")", 2,
+            "AskToLoad");
     }
 
     public void AskToLoad_No()
@@ -100,10 +115,7 @@ public class CloudSaving : MonoBehaviour
     public void AskToLoad_Yes()
     {
         SaveData(false);
-        if (chaSelect.activeSelf)
-        {
-            chaSelect.SetActive(false);
-        }
+        if (chaSelect.activeSelf) chaSelect.SetActive(false);
         bbang_Showrooml.UpdateBbangShow();
         main.UpdateBbangCount();
         setting.Start();
@@ -122,17 +134,16 @@ public class CloudSaving : MonoBehaviour
 
     private void SaveInt(string name)
     {
-        if(save)
+        if (save)
         {
             if (CloudServices.GetInt(name) != PlayerPrefs.GetInt(name))
-            {
                 if (PlayerPrefs.HasKey(name))
                 {
                     print("SAVE : " + name + "(" + PlayerPrefs.GetInt(name) + "->" + CloudServices.GetInt(name) + ")");
                     CloudServices.SetInt(name, PlayerPrefs.GetInt(name));
                 }
-            }
-        } else
+        }
+        else
         {
             if (CloudServices.GetInt(name) != PlayerPrefs.GetInt(name))
             {
@@ -140,7 +151,6 @@ public class CloudSaving : MonoBehaviour
                 PlayerPrefs.SetInt(name, CloudServices.GetInt(name));
             }
         }
-        
     }
 
     private void SaveString(string name)
@@ -148,12 +158,13 @@ public class CloudSaving : MonoBehaviour
         if (save)
         {
             if (CloudServices.GetString(name) != PlayerPrefs.GetString(name))
-                if(PlayerPrefs.HasKey(name))
+                if (PlayerPrefs.HasKey(name))
                     CloudServices.SetString(name, PlayerPrefs.GetString(name));
-        } else
+        }
+        else
         {
             if (CloudServices.GetString(name) != PlayerPrefs.GetString(name))
-                if(CloudServices.GetString(name) != null)
+                if (CloudServices.GetString(name) != null)
                     PlayerPrefs.SetString(name, CloudServices.GetString(name));
         }
     }
@@ -162,10 +173,7 @@ public class CloudSaving : MonoBehaviour
     {
         save = mySave;
 
-        if(save)
-        {
-            CloudServices.SetString("SavedTime", System.DateTime.Now.ToString(format));
-        }
+        if (save) CloudServices.SetString("SavedTime", DateTime.Now.ToString(format));
         SaveInt("myRealTotalCard");
         SaveInt("CollectionTab");
         SaveInt("heartCount");
@@ -254,14 +262,11 @@ public class CloudSaving : MonoBehaviour
         SaveInt("fish0Count");
         SaveInt("fish1Count");
         SaveInt("fish2Count");
-        
-        
+
+
         collection.Start();
 
-        for (int i = 0; i < collection.myCard.Count; i++)
-        {
-            SaveInt("card_" + i);
-        }
+        for (var i = 0; i < collection.myCard.Count; i++) SaveInt("card_" + i);
 
         PlayerPrefs.Save();
     }
@@ -269,17 +274,5 @@ public class CloudSaving : MonoBehaviour
     public void SyncNow()
     {
         CloudServices.Synchronize();
-    }
-
-    private void OnApplicationPause(bool pause)
-    {
-        if(PlayerPrefs.GetInt("autoSave") == 1)
-        SyncNow();
-    }
-
-    private void OnApplicationQuit()
-    {
-        if (PlayerPrefs.GetInt("autoSave") == 1)
-            SyncNow();
     }
 }

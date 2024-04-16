@@ -1,33 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
-using Sirenix.OdinInspector;
 
 public class RewardItemUI : MonoBehaviour
 {
     [SerializeField] private Image glow, item;
     [SerializeField] private Text amount_text;
     [SerializeField] private ItemDataManager itemData;
-    [SerializeField] private ItemDataManager.ItemData data;
+    [SerializeField] private ItemData data;
     [SerializeField] private RewardItemDescrUI rewardItemDescr;
     [SerializeField] private GameObject rareFx;
 
     private int cardIdx = -1;
     private int itemIdx;
-    
+
     [Button]
     public void Init(int _itemIdx, int amount, string tag)
     {
         itemIdx = _itemIdx;
         glow.color = Color.white;
-        if(itemIdx == 1002) amount_text.text = string.Format("{0:#,###0}", amount) + "원";
+        if (itemIdx == 1002) amount_text.text = string.Format("{0:#,###0}", amount) + "원";
         else amount_text.text = string.Format("{0:#,###0}", amount) + "개";
         gameObject.SetActive(true);
         rareFx.SetActive(false);
-        
-        StartCoroutine(itemData.GetItemDataAsync(itemIdx, amount, tag, _itemData => {
+
+        StartCoroutine(itemData.GetItemDataAsync(itemIdx, amount, tag, _itemData =>
+        {
             if (amount > 0) AudioCtrl.Instance.PlaySFXbyTag(SFX_tag.winItem);
             if (_itemData != null)
             {
@@ -44,17 +43,17 @@ public class RewardItemUI : MonoBehaviour
                 if (amount != data.amount)
                 {
                     amount = data.amount;
-                    if(itemIdx == 1002) amount_text.text = string.Format("{0:#,###0}", amount) + "원";
+                    if (itemIdx == 1002) amount_text.text = string.Format("{0:#,###0}", amount) + "원";
                     else amount_text.text = string.Format("{0:#,###0}", amount) + "개";
                 }
-                
+
                 //if card print card name instead of amount
                 if (cardIdx > 0)
                 {
                     amount_text.text = data.name;
-                    if(data.isRare) CollectionControl.Instance.OpenCard(data.cardIdx, data.isRare);
+                    if (data.isRare) CollectionManager.Instance.OpenCard(data.cardIdx, data.isRare);
                 }
-                
+
                 amount_text.color = data.isRare ? new Color(0.5f, 0f, 0.5f, 1) : Color.black;
             }
         }));
@@ -68,11 +67,11 @@ public class RewardItemUI : MonoBehaviour
         //if is card
         if (cardIdx > 0)
         {
-            CollectionControl.Instance.OpenCard(data.cardIdx, data.isRare);
+            CollectionManager.Instance.OpenCard(data.cardIdx, data.isRare);
             return;
         }
-        
-        ItemInfoUI.Instance.OpenPanel(itemIdx);
+
+        ItemInfoUIPanel.Instance.OpenPanel(itemIdx);
         // rewardItemDescr.Init(data.name, data.descr, gameObject.transform);
     }
 }

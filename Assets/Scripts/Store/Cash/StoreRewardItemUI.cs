@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -11,7 +9,7 @@ public class StoreRewardItemUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI amount;
 
     private int itemCode;
-    
+
     [Button]
     public void InitItem(int idx, int amt)
     {
@@ -21,6 +19,7 @@ public class StoreRewardItemUI : MonoBehaviour
             gameObject.SetActive(false);
             return;
         }
+
         gameObject.SetActive(true);
         rewardItem.sprite = ItemDataManager.Instacne.GetItemData(idx).sprite;
         amount.text = amt + "개";
@@ -28,6 +27,6 @@ public class StoreRewardItemUI : MonoBehaviour
 
     public void BtnClicked()
     {
-        ItemInfoUI.Instance.OpenPanel(itemCode);
+        ItemInfoUIPanel.Instance.OpenPanel(itemCode);
     }
 }
