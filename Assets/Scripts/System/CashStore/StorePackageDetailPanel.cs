@@ -19,7 +19,7 @@ public class StorePackageDetailPanel : MonoBehaviour
 
     [SerializeField] private GameObject[] hardworkingImg, heartPlusImg;
 
-    private JsonData.StorePackageData data;
+    private DeserializeJsonData.StorePackageData data;
     private int idx;
 
     [Button]
@@ -30,14 +30,14 @@ public class StorePackageDetailPanel : MonoBehaviour
         idx = _idx;
 
 
-        data = JsonData.Instance.StorePackageDatas[idx];
+        data = DeserializeJsonData.Instance.StorePackageDatas[idx];
 
         title_ui.text = data.name;
         descr_ui.text = data.descr.Replace("\\n", "\n");
         ;
 
         //Init Price
-        if (data.NeedItemType == JsonData.NeedItemType.KRW)
+        if (data.NeedItemType == DeserializeJsonData.NeedItemType.KRW)
         {
             price_ui.text = "\u20a9" + Converter.IntToCommaSeparatedString(data.needAmt);
             diamondIcon_ui.SetActive(false);
@@ -72,7 +72,7 @@ public class StorePackageDetailPanel : MonoBehaviour
         bg.DOFade(0.6f, 0.2f);
     }
 
-    private IEnumerator LoadRewardItems(JsonData.StorePackageData data)
+    private IEnumerator LoadRewardItems(DeserializeJsonData.StorePackageData data)
     {
         foreach (var itemUi in rewardItemUis)
         {

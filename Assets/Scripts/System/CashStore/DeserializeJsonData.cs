@@ -4,31 +4,29 @@ using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class JsonData : MonoBehaviour
+public class DeserializeJsonData : MonoBehaviour
 {
+    public static DeserializeJsonData Instance { get; private set; }
+
     public enum NeedItemType
     {
         KRW,
-        diamond
+        Diamond
     }
 
     public enum PackageType
     {
-        oneTime,
-        weekly
+        OneTime,
+        Weekly
     }
 
-    public static JsonData Instance;
 
     [ReadOnly] public List<ScrumbEventData> ScrumbEventDatas;
-
     [ReadOnly] public List<StoreDiamondData> StoreDiamondDatas;
-
     [ReadOnly] public List<StorePackageData> StorePackageDatas;
-
-    public Dictionary<int, ScrumbEventData> ScrumbEventDatasDict;
-    public Dictionary<int, StoreDiamondData> StoreDiamondDataDict;
-    public Dictionary<int, StorePackageData> StorePackageDataDict;
+    [ReadOnly] public Dictionary<int, ScrumbEventData> ScrumbEventDatasDict;
+    [ReadOnly] public Dictionary<int, StoreDiamondData> StoreDiamondDataDict;
+    [ReadOnly] public Dictionary<int, StorePackageData> StorePackageDataDict;
 
     [Button]
     private void Awake()

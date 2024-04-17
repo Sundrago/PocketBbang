@@ -104,7 +104,7 @@ public class ScrumbEventManager : SerializedMonoBehaviour
         {
             var rnd = Random.Range(0, 1000000);
             var probability = 0;
-            foreach (var data in JsonData.Instance.ScrumbEventDatas)
+            foreach (var data in DeserializeJsonData.Instance.ScrumbEventDatas)
             {
                 probability += data.percentage;
                 if (rnd < probability)

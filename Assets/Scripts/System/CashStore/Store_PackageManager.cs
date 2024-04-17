@@ -21,7 +21,7 @@ public class Store_PackageManager : MonoBehaviour
     [Button]
     private void InitPackageUIs()
     {
-        for (var i = 0; i < packageUis.Length; i++) packageUis[i].Init(JsonData.Instance.StorePackageDatas[i]);
+        for (var i = 0; i < packageUis.Length; i++) packageUis[i].Init(DeserializeJsonData.Instance.StorePackageDatas[i]);
     }
 
     public void OpenDetailInfo(int idx)
@@ -66,7 +66,7 @@ public class Store_PackageManager : MonoBehaviour
                 break;
             default:
                 if (PlayerHealthManager.Instance.SubtractMoney(PlayerHealthManager.MoneyType.Diamond,
-                        JsonData.Instance.StorePackageDatas[idx].needAmt))
+                        DeserializeJsonData.Instance.StorePackageDatas[idx].needAmt))
                     ItemPurchased(idx);
                 else
                     BalloonUIManager.Instance.ShowMsg("다이아몬드가 부족하다..");
@@ -94,8 +94,8 @@ public class Store_PackageManager : MonoBehaviour
                 hardWorkManager.OpenPanel();
                 break;
             default:
-                RewardItemManager.Instance.Init(JsonData.Instance.StorePackageDatas[idx].itemCode,
-                    JsonData.Instance.StorePackageDatas[idx].itemAmt, "Product.itemBundle", "아이템을 구매했다!");
+                RewardItemManager.Instance.Init(DeserializeJsonData.Instance.StorePackageDatas[idx].itemCode,
+                    DeserializeJsonData.Instance.StorePackageDatas[idx].itemAmt, "Product.itemBundle", "아이템을 구매했다!");
                 break;
         }
     }

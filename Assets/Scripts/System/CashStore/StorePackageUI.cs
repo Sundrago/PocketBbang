@@ -13,13 +13,13 @@ public class StorePackageUI : MonoBehaviour
     [SerializeField] private Store_PackageManager manager;
 
     [Button]
-    public void Init(JsonData.StorePackageData data)
+    public void Init(DeserializeJsonData.StorePackageData data)
     {
         title_text.text = data.name;
-        idx = JsonData.Instance.StorePackageDatas.IndexOf(data);
+        idx = DeserializeJsonData.Instance.StorePackageDatas.IndexOf(data);
 
         //Init Price
-        if (data.NeedItemType == JsonData.NeedItemType.KRW)
+        if (data.NeedItemType == DeserializeJsonData.NeedItemType.KRW)
         {
             price_text.text = "\u20a9" + Converter.IntToCommaSeparatedString(data.needAmt);
             diamondIcon_ui.SetActive(false);
@@ -34,7 +34,7 @@ public class StorePackageUI : MonoBehaviour
         StartCoroutine(LoadRewardItems(data));
     }
 
-    private IEnumerator LoadRewardItems(JsonData.StorePackageData data)
+    private IEnumerator LoadRewardItems(DeserializeJsonData.StorePackageData data)
     {
         for (var i = 0; i < data.itemCode.Length; i++) rewardItemUis[i].InitItem(data.itemCode[i], data.itemAmt[i]);
 

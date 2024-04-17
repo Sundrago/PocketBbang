@@ -22,7 +22,7 @@ public class Store_DiamondManager : MonoBehaviour
     [Button]
     private void InitDiamondStore()
     {
-        var datas = JsonData.Instance.StoreDiamondDatas;
+        var datas = DeserializeJsonData.Instance.StoreDiamondDatas;
 
         for (var i = 1; i < 5; i++) storeItems[i].Init(datas[i].amount, datas[i].price);
         LoadDiamondBoughtData();
@@ -33,8 +33,8 @@ public class Store_DiamondManager : MonoBehaviour
         if (boughtData == null) LoadDiamondBoughtData();
         if (idx == 0) watchAdsPanel.OpenPanel();
         else
-            diamondDetailInfo.Init(idx, JsonData.Instance.StoreDiamondDatas[idx].amount,
-                JsonData.Instance.StoreDiamondDatas[idx].price, boughtData.boughtCount[idx] == 0);
+            diamondDetailInfo.Init(idx, DeserializeJsonData.Instance.StoreDiamondDatas[idx].amount,
+                DeserializeJsonData.Instance.StoreDiamondDatas[idx].price, boughtData.boughtCount[idx] == 0);
     }
 
     public void RequestPurchase(int idx)
@@ -70,12 +70,12 @@ public class Store_DiamondManager : MonoBehaviour
         {
             idxs = new int[2] { 1003, 1003 };
             amts = new int[2]
-                { JsonData.Instance.StoreDiamondDatas[idx].amount, JsonData.Instance.StoreDiamondDatas[idx].amount };
+                { DeserializeJsonData.Instance.StoreDiamondDatas[idx].amount, DeserializeJsonData.Instance.StoreDiamondDatas[idx].amount };
         }
         else
         {
             idxs = new int[1] { 1003 };
-            amts = new int[1] { JsonData.Instance.StoreDiamondDatas[idx].amount };
+            amts = new int[1] { DeserializeJsonData.Instance.StoreDiamondDatas[idx].amount };
         }
 
         RewardItemManager.Instance.Init(idxs, amts, "storeDiamond", "보석을 구매했다!");

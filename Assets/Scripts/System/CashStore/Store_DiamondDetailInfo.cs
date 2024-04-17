@@ -16,7 +16,7 @@ public class Store_DiamondDetailInfo : MonoBehaviour
     [SerializeField] private GameObject bonusItem, plusIcon;
     [SerializeField] private Transform shineFX;
 
-    private JsonData.StorePackageData data;
+    private DeserializeJsonData.StorePackageData data;
     private int idx;
 
     [Button]
