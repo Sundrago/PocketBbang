@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Store_fish_item : MonoBehaviour
 {
-    [SerializeField] private Store_FishManager manager;
+    [SerializeField] private StoreFishManager manager;
     [SerializeField] private TextMeshProUGUI title_ui, descr_ui, amount_ui;
     [SerializeField] private Image mainImage_ui;
     [SerializeField] private int idx;

@@ -4,8 +4,21 @@ using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class Store_FishManager : MonoBehaviour
+/// <summary>
+/// Manages the store fish data and update store UI.
+/// </summary>
+public class StoreFishManager : MonoBehaviour
 {
+    [Serializable]
+    public class StoreFishData
+    {
+        public int itemCode;
+        public Sprite Sprite;
+        public int amount;
+        public int price;
+        public string name, descr;
+    }
+    
     [SerializeField] [TableList] private List<StoreFishData> StoreFishDatas;
     [SerializeField] private List<Store_fish_item> storeFishItems;
     [SerializeField] private Store_FishDetailPanel detailPanel;
@@ -42,17 +55,7 @@ public class Store_FishManager : MonoBehaviour
             BalloonUIManager.Instance.ShowMsg("다이아몬드가 부족하다..");
         }
     }
-
-    [Serializable]
-    public class StoreFishData
-    {
-        public int itemCode;
-        public Sprite Sprite;
-        public int amount;
-        public int price;
-        public string name, descr;
-    }
-
+    
 #if UNITY_EDITOR
     [Button]
     private void ImportJSONData(string json)

@@ -11,12 +11,12 @@ public class Store_FishDetailPanel : MonoBehaviour
     [SerializeField] private Image bg, item_ui;
     [SerializeField] private Button btnUp, btnDown;
     [SerializeField] private Transform panel;
-    [SerializeField] private Store_FishManager manager;
+    [SerializeField] private StoreFishManager manager;
 
     private int count;
-    private Store_FishManager.StoreFishData data;
+    private StoreFishManager.StoreFishData data;
 
-    public void Init(Store_FishManager.StoreFishData _data)
+    public void Init(StoreFishManager.StoreFishData _data)
     {
         if (gameObject.activeSelf) return;
         if (DOTween.IsTweening(panel)) return;

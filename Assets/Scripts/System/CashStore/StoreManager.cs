@@ -16,7 +16,7 @@ public class StoreManager : MonoBehaviour
 
     public Store_DiamondManager DiamondManager;
     public Store_PackageManager PackageManager;
-    public Store_FishManager FishManager;
+    public StoreFishManager FishManager;
 
     private void Awake()
     {

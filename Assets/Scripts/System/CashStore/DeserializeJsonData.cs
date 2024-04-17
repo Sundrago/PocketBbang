@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+/// <summary>
+/// Deserialize JSON data into Unity Inspector
+/// </summary>
 public class DeserializeJsonData : MonoBehaviour
 {
     public static DeserializeJsonData Instance { get; private set; }
@@ -19,8 +22,7 @@ public class DeserializeJsonData : MonoBehaviour
         OneTime,
         Weekly
     }
-
-
+    
     [ReadOnly] public List<ScrumbEventData> ScrumbEventDatas;
     [ReadOnly] public List<StoreDiamondData> StoreDiamondDatas;
     [ReadOnly] public List<StorePackageData> StorePackageDatas;
