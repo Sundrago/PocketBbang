@@ -7,9 +7,8 @@ public class BbangInteractionUIController : MonoBehaviour
 {
     private const string format = "yyyy/MM/dd";
 
-    [Header("Managers and Controllers")] [SerializeField]
-    private BalloonUIManager balloonUIManager;
-
+    [Header("Managers and Controllers")] 
+    [SerializeField] private BalloonUIManager balloonUIManager;
     [SerializeField] private BbangShowroomManager showroomManager;
     [SerializeField] private PlayerHealthManager playerHealthManager;
     [SerializeField] private PhoneMessageController phoneMessageController;

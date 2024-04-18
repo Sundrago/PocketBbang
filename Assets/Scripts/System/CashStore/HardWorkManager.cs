@@ -18,8 +18,8 @@ public class HardWorkManager : MonoBehaviour
 
     private const int RewardAmt = 80;
 
-    [Header("Managers and Controllers")] [SerializeField]
-    private HardWorkingData hardWorkingData;
+    [Header("Managers and Controllers")] 
+    [SerializeField] private HardWorkingData hardWorkingData;
 
     [SerializeField] private Transform panel;
     [SerializeField] private HardworkingItemUI[] itemUis;

@@ -7,9 +7,7 @@ using UnityEngine.UI;
 public class BbobgiBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     private const float velocityRate = 0.1f;
-
-    [FormerlySerializedAs("bbogi")] [SerializeField]
-    private BbobgiController bbobgiController;
+    [SerializeField] private BbobgiController bbobgiController;
 
     public bool goLeft;
     private Button button;
@@ -17,7 +15,7 @@ public class BbobgiBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void Start()
     {
-        button.GetComponent<Button>();
+        button = GetComponent<Button>();
     }
 
     private void Update()

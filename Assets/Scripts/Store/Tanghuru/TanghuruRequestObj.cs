@@ -18,42 +18,7 @@ public class TanghuruRequestObj : MonoBehaviour
     public void MakeNewOrder(int level)
     {
         tanghuruStick.Init();
-        // int type = Random.Range(0, 4);
-        //
-        // if (type == 0 || type == 1)
-        // {
-        //     int rnd = Random.Range(0, TanghuruGameManager.Instance.fruits_sprite.Count/2);
-        //     for (int i = 0; i < 4; i++)
-        //     {
-        //         tanghuruStick.AddFruits(TanghuruGameManager.Instance.fruits_sprite[rnd], rnd);
-        //     }
-        //     count = Random.Range(1, 4);
-        // }
-        // else if (type == 2)
-        // {
-        //     int rnd = Random.Range(0, TanghuruGameManager.Instance.fruits_sprite.Count/2);
-        //     for (int i = 0; i < 2; i++)
-        //     {
-        //         tanghuruStick.AddFruits(TanghuruGameManager.Instance.fruits_sprite[rnd], rnd);
-        //     }
-        //     rnd = Random.Range(0, TanghuruGameManager.Instance.fruits_sprite.Count/2);
-        //     for (int i = 0; i < 2; i++)
-        //     {
-        //         tanghuruStick.AddFruits(TanghuruGameManager.Instance.fruits_sprite[rnd], rnd);
-        //     }
-        //     count = Random.Range(1, 3);
-        // }
-        // else
-        // {
-        //     for (int i = 0; i < 4; i++)
-        //     {
-        //         int rnd = Random.Range(0, TanghuruGameManager.Instance.fruits_sprite.Count/2);
-        //         tanghuruStick.AddFruits(TanghuruGameManager.Instance.fruits_sprite[rnd], rnd);
-        //     }
-        //     count = Random.Range(1, 2);
-        // }
-        // count = Random.Range(1, 4);
-        print("lv:" + level);
+        
         switch (level)
         {
             case 0:

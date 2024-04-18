@@ -3,9 +3,7 @@ using UnityEngine.Serialization;
 
 public class CardVisibilityManager : MonoBehaviour
 {
-    [FormerlySerializedAs("main")] [SerializeField]
-    private GameManager gameManager;
-
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private CollectionManager collection;
     [SerializeField] private GameObject cardPanel;
 

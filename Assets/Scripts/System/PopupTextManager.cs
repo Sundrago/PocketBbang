@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class PopupTextManager : MonoBehaviour
 {
-    public delegate void Callback();
 
-    public static PopupTextManager Instance;
+    public static PopupTextManager Instance { get; private set; }
 
     [SerializeField] private Button okay_btn, yes_btn, no_btn;
     [SerializeField] private Text okay_text, yes_text, no_text, msg_text;
 
+    public delegate void Callback();
     [SerializeField] private Image bgImage;
     [SerializeField] private Transform panel;
     private Callback callbackNO;
@@ -59,8 +59,6 @@ public class PopupTextManager : MonoBehaviour
     public void HidePanel()
     {
         if (DOTween.IsTweening(panel)) return;
-
-        // AudioCtrl.Instance.PlaySFXbyTag(SFX_tag.UI_CLOSE);
         bgImage.DOFade(0, 0.25f);
         panel.DOScale(0.8f, 0.25f).SetEase(Ease.OutExpo);
         panel.DOShakePosition(0.3f, new Vector3(10, 10, 0)).SetEase(Ease.OutQuad);
@@ -86,8 +84,6 @@ public class PopupTextManager : MonoBehaviour
     public void BtnClicked(int idx)
     {
         if (DOTween.IsTweening(panel)) return;
-        // AudioCtrl.Instance.PlaySFXbyTag(SFX_tag.UI_SELECT);
-
         okay_btn.gameObject.SetActive(false);
         yes_btn.gameObject.SetActive(false);
         no_btn.gameObject.SetActive(false);

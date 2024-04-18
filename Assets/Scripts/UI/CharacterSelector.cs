@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class CharacterSelector : MonoBehaviour
 {
-    [Header("Managers and Controllers")] [SerializeField]
-    private PrompterController prompterController;
+    [Header("Managers and Controllers")] 
+    [SerializeField] private PrompterController prompterController;
 
     [Header("UI Components")] [SerializeField]
     private GameObject namePanel;

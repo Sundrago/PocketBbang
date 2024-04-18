@@ -3,8 +3,7 @@ using UnityEngine.Serialization;
 
 public class DdukHit : MonoBehaviour
 {
-    [FormerlySerializedAs("ddukCtrl")] [SerializeField]
-    private DdukMinigameManager ddukMinigameManager;
+    [SerializeField] private DdukMinigameManager ddukMinigameManager;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

@@ -27,8 +27,7 @@ public class ItemDataManager : SerializedMonoBehaviour
     {
         Instacne = this;
     }
-
-
+    
     public ItemData GetItemData(int idx)
     {
         if (idx == 2000)
@@ -170,23 +169,23 @@ public class ItemDataManager : SerializedMonoBehaviour
                     GameManager.Instance.Debug_AddYogurt();
                     break;
                 case 2200:
-                    GameManager.Instance.showroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_choco, amount);
+                    GameManager.Instance.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_choco, amount);
                     break;
                 case 2201:
-                    GameManager.Instance.showroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_strawberry,
+                    GameManager.Instance.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_strawberry,
                         amount);
                     break;
                 case 2202:
-                    GameManager.Instance.showroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_hot, amount);
+                    GameManager.Instance.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_hot, amount);
                     break;
                 case 2203:
-                    GameManager.Instance.showroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_bingle, amount);
+                    GameManager.Instance.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_bingle, amount);
                     break;
                 case 2204:
-                    GameManager.Instance.showroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_maple, amount);
+                    GameManager.Instance.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_maple, amount);
                     break;
                 case 2205:
-                    GameManager.Instance.showroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_purin, amount);
+                    GameManager.Instance.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_purin, amount);
                     break;
                 case 6001:
                     PlayerHealthManager.Instance.AddMoney(PlayerHealthManager.MoneyType.Fish0, amount);

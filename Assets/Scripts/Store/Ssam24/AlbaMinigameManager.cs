@@ -4,20 +4,15 @@ using UnityEngine.UI;
 
 public class AlbaMinigameManager : MonoBehaviour
 {
-    [Header("Managers and Controllers")] [FormerlySerializedAs("main")] [SerializeField]
-    private GameManager gameManager;
-
+    [Header("Managers and Controllers")]
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private PlayerHealthManager playerHealthManager;
-
-    [FormerlySerializedAs("prompterControl")] [SerializeField]
-    private PrompterController prompterController;
-
+    [SerializeField] private PrompterController prompterController;
     [SerializeField] private BbangShowroomManager showroomManager;
     [SerializeField] private AudioController audioController;
 
-    [Header("UI Components")] [SerializeField]
-    private Sprite[] customerSprites = new Sprite[11];
-
+    [Header("UI Components")] 
+    [SerializeField] private Sprite[] customerSprites = new Sprite[11];
     [SerializeField] private GameObject[] circles = new GameObject[7];
     [SerializeField] private GameObject balloonGO, circlesGO, imageGroup;
     [SerializeField] private Image customerImage;
@@ -330,7 +325,7 @@ public class AlbaMinigameManager : MonoBehaviour
 
     private void EndAlba()
     {
-        gameManager.GetComponent<GameManager>().lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        gameManager.GetComponent<GameManager>().lowerUIPanel.GetComponent<Animator>().SetTrigger("hide");
         StopMusic();
         gameObject.SetActive(false);
         prompterController.gameObject.SetActive(true);
@@ -384,7 +379,7 @@ public class AlbaMinigameManager : MonoBehaviour
 
     private void FailAlba()
     {
-        gameManager.lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        gameManager.lowerUIPanel.GetComponent<Animator>().SetTrigger("hide");
         StopMusic();
         gameObject.SetActive(false);
         prompterController.gameObject.SetActive(true);

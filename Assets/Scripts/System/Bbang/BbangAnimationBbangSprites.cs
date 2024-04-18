@@ -4,9 +4,7 @@ using UnityEngine.UI;
 
 public class BbangAnimationBbangSprites : MonoBehaviour
 {
-    [FormerlySerializedAs("bbangAnimationBottmPart")] [FormerlySerializedAs("bottomControl")] [SerializeField]
-    private BbangAnimationBottomPart bbangAnimationBottomPart;
-
+    [SerializeField] private BbangAnimationBottomPart bbangAnimationBottomPart;
     [SerializeField] private Sprite[] lefts = new Sprite[3];
     [SerializeField] private Sprite[] rights = new Sprite[3];
     [SerializeField] private Sprite[] bbang = new Sprite[3];

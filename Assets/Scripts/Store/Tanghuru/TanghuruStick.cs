@@ -5,15 +5,10 @@ using UnityEngine.UI;
 public class TanghuruStick : MonoBehaviour
 {
     [SerializeField] private List<Image> fruits = new();
+    
     public List<int> ids = new();
-
     private int fruitCount;
-
-    // private void Start()
-    // {
-    //     Init();
-    // }
-
+    
     public void Init()
     {
         foreach (var image in fruits)

@@ -10,8 +10,8 @@ public class FishManager : MonoBehaviour
     [SerializeField] private RectTransform panel;
     [SerializeField] private GameObject fishGroup, timerGroup, emptyItem;
     [SerializeField] private GameObject[] fishGroupItem, fishBtns;
-
     [SerializeField] private Text timerTxt;
+    
     private DateTime goldFishEndTime;
     private bool isGoldFishActive;
 

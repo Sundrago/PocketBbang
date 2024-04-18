@@ -7,8 +7,8 @@ public class Tanghuru_Amt_Selector : MonoBehaviour
 
     [SerializeField] private Text amt_ui, price_ui;
     [SerializeField] private Button Upbtn, DownBtn;
-
     [SerializeField] private GameObject namePlate, dialoguePlate;
+    
     private int amount;
     private string confirmID, cancelId;
 
@@ -51,9 +51,9 @@ public class Tanghuru_Amt_Selector : MonoBehaviour
 
         HidePanel();
 
-        if (amount <= 0) GameManager.Instance.Nylon_f(cancelId);
+        if (amount <= 0) GameManager.Instance.NylonDialogue.Nylon_f(cancelId);
         else
-            GameManager.Instance.Nylon_f(confirmID);
+            GameManager.Instance.NylonDialogue.Nylon_f(confirmID);
     }
 
     public void ExitBtnClicked()
@@ -61,7 +61,7 @@ public class Tanghuru_Amt_Selector : MonoBehaviour
         if (!gameObject.activeSelf) return;
 
         HidePanel();
-        GameManager.Instance.Nylon_f(cancelId);
+        GameManager.Instance.NylonDialogue.Nylon_f(cancelId);
     }
 
     public void HidePanel()

@@ -658,7 +658,7 @@ public class DdukMinigameManager : MonoBehaviour
         var quotient = (int)Math.Truncate(c); // 몫
 
 
-        main.GetComponent<GameManager>().lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        main.GetComponent<GameManager>().lowerUIPanel.GetComponent<Animator>().SetTrigger("hide");
         gameObject.SetActive(false);
         myAudio.PlayMusic(BeforeAudioIdx);
 

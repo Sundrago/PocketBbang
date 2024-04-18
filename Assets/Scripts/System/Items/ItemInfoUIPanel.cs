@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class ItemInfoUIPanel : MonoBehaviour
 {
+    public static ItemInfoUIPanel Instance { get; private set; }
+    
     [SerializeField] private Image bg, itemImage;
     [SerializeField] private Text title, descr;
     [SerializeField] private Transform panel;
-    public static ItemInfoUIPanel Instance { get; private set; }
 
     private void Awake()
     {

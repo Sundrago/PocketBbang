@@ -15,7 +15,8 @@ public class ADManager : MonoBehaviour
         bbangShuttle
     }
 
-    public static ADManager Instance;
+    public static ADManager Instance { get; private set; }
+    
     [SerializeField] private GameManager main;
     [SerializeField] private BalloonUIManager balloon;
     [SerializeField] private PlayerHealthManager heart;

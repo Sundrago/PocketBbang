@@ -6,18 +6,9 @@ using Debug = UnityEngine.Debug;
 public class Bossam_ssam : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private const float updateTime = 0.1f;
-    // private Vector3 initPos;
-
-    // private void Awake()
-    // {
-    //     initPos = gameObject.transform.position;
-    // }
 
     private char directionChar;
-
     private float directionFloat;
-    // [SerializeField] private Bossam_character _bossamCharacter;
-
     private bool isDragging;
     private Vector2 lastUpdatePos, loastUpdatePos_rotation;
     private float lastUpdateTime, lastUpdateTime_rotation;
@@ -80,12 +71,6 @@ public class Bossam_ssam : MonoBehaviour, IDragHandler, IPointerDownHandler, IPo
                     break;
             }
         }
-
-        // if (Time.time - lastUpdateTime > 0.15f)
-        // {
-        //     lastUpdateTime = Time.time;
-        //     lastUpdatePos = mousePosition;
-        // }
         gameObject.transform.position = mousePosition;
     }
 

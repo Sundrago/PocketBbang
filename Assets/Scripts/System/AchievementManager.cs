@@ -6,17 +6,10 @@ using VoxelBusters.EssentialKit;
 
 public class AchievementManager : MonoBehaviour
 {
-    [FormerlySerializedAs("balloon")] [SerializeField]
-    private BalloonUIManager balloonUIManager;
-
-    [FormerlySerializedAs("msg")] [SerializeField]
-    private PhoneMessageController phoneMessageController;
-
-    [FormerlySerializedAs("collection")] [SerializeField]
-    private CollectionPanelManager collectionPanelManager;
-
-    [FormerlySerializedAs("rank")] [SerializeField]
-    private RankManager rankManager;
+    [SerializeField] private BalloonUIManager balloonUIManager;
+    [SerializeField] private PhoneMessageController phoneMessageController;
+    [SerializeField] private CollectionPanelManager collectionPanelManager; 
+    [SerializeField] private RankManager rankManager;
 
     private void Start()
     {
@@ -42,9 +35,9 @@ public class AchievementManager : MonoBehaviour
             if (result.AuthStatus == LocalPlayerAuthStatus.Authenticated)
             {
 #if UNITY_IPHONE
-                // balloonUIManager.ShowMsg("애플 게임센터 로그인 성공!");
+                // BalloonUIManager.ShowMsg("애플 게임센터 로그인 성공!");
 #elif UNITY_ANDROID
-                // balloonUIManager.ShowMsg("플레이 게임 서비스 로그인 성공!");
+                // BalloonUIManager.ShowMsg("플레이 게임 서비스 로그인 성공!");
 #endif
                 UpdateScore();
                 Debug.Log("Local player: " + result.LocalPlayer);
@@ -55,7 +48,7 @@ public class AchievementManager : MonoBehaviour
 #if UNITY_IPHONE
             balloonUIManager.ShowMsg("애플 게임센터 로그인 실패 : " + error);
 #elif UNITY_ANDROID
-                balloonUIManager.ShowMsg("플레이 게임 서비스 로그인 실패 : " + error);
+                BalloonUIManager.ShowMsg("플레이 게임 서비스 로그인 실패 : " + error);
 #endif
             phoneMessageController.SetMsg("Failed login with error : " + error, 1);
             Debug.LogError("Failed login with error : " + error);
@@ -237,5 +230,25 @@ public class AchievementManager : MonoBehaviour
         }
 
         yield return null;
+    }
+
+    public void UpdateAchievementStatus(GameManager gameManager)
+    {
+        if ((gameManager.MyStoreType1 == 0) & (PlayerPrefs.GetInt("girl_friend") != 0))
+            this.UpdateAchievement("미소녀");
+        else if ((gameManager.MyStoreType1 == 1) & (PlayerPrefs.GetInt("yang_friend") != 0))
+            this.UpdateAchievement("양아치");
+        else if ((gameManager.MyStoreType1 == 2) & (PlayerPrefs.GetInt("albaExp") != 0))
+            this.UpdateAchievement("맛동석");
+        else if ((gameManager.MyStoreType1 == 3) & (PlayerPrefs.GetInt("bi_friend") != 0))
+            this.UpdateAchievement("비실이");
+        else if ((gameManager.MyStoreType1 == 4) & (PlayerPrefs.GetInt("yull_friend") != 0))
+            this.UpdateAchievement("열정맨");
+        else if ((gameManager.MyStoreType1 == 7) & (PlayerPrefs.GetInt("NylonDomiTutorial") == 1))
+            this.UpdateAchievement("나이롱마스크");
+        else if (gameManager.MyStoreType1 == 8 && PlayerPrefs.GetInt("tanghuru_friend", 0) == 1)
+            this.UpdateAchievement("왕형");
+        else if (gameManager.MyStoreType1 == 9 && PlayerPrefs.GetInt("bossam_friend", 0) == 1)
+            this.UpdateAchievement("장왕");
     }
 }

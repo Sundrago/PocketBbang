@@ -8,8 +8,7 @@ public class Tanghuru_cutomer : MonoBehaviour
     private Vector3 localPos;
 
     private bool started;
-
-    // Start is called before the first frame update
+    
     private void Start()
     {
         if (started) return;

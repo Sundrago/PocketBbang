@@ -7,11 +7,10 @@ using Random = UnityEngine.Random;
 
 public class Bossam_StageManager : MonoBehaviour
 {
+    [TableList] [SerializeField] public List<Bossam_charData> chardata;
     [SerializeField] private Transform single_pos;
     [SerializeField] private Transform[] char_pos;
     [SerializeField] private Bossam_character[] char_prefabs;
-
-    [TableList] [SerializeField] public List<Bossam_charData> chardata;
 
     [Button]
     public void AnimIn()

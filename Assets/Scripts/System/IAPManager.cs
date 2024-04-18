@@ -35,7 +35,6 @@ public class IAPManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // register for events
         BillingServices.OnInitializeStoreComplete += OnInitializeStoreComplete;
         BillingServices.OnTransactionStateChange += OnTransactionStateChange;
         BillingServices.OnRestorePurchasesComplete += OnRestorePurchasesComplete;
@@ -43,33 +42,23 @@ public class IAPManager : MonoBehaviour
 
     private void OnDisable()
     {
-        // unregister from events
         BillingServices.OnInitializeStoreComplete -= OnInitializeStoreComplete;
         BillingServices.OnTransactionStateChange -= OnTransactionStateChange;
         BillingServices.OnRestorePurchasesComplete -= OnRestorePurchasesComplete;
     }
-
-    // Register for the BillingServices.OnInitializeStoreComplete event
-
+    
     private void OnInitializeStoreComplete(BillingServicesInitializeStoreResult result, Error error)
     {
         if (error == null)
         {
-            // update UI
-            // show console messages
             var products = result.Products;
-            // Debug.Log("Store initialized successfully.");
-            // Debug.Log("Total products fetched: " + products.Length);
-            // Debug.Log("Below are the available products:");
             for (var iter = 0; iter < products.Length; iter++)
             {
                 var product = products[iter];
                 Debug.Log(string.Format("[{0}]: {1}", iter, product));
                 if (product.Id == Product.maxheartplus.ToString())
                     product_maxheartplus = product;
-                // print("!INIT " + product.Id);
                 else if (product.Id == Product.itemBundle.ToString()) product_itemBundle = product;
-                // print("!INIT " + product.Id);
             }
         }
         else
@@ -78,9 +67,7 @@ public class IAPManager : MonoBehaviour
         }
 
         var invalidIds = result.InvalidProductIds;
-        // Debug.Log("Total invalid products: " + invalidIds.Length);
         if (invalidIds.Length > 0)
-            // Debug.Log("Here are the invalid product ids:");
             for (var iter = 0; iter < invalidIds.Length; iter++)
                 Debug.Log(string.Format("[{0}]: {1}", iter, invalidIds[iter]));
 
@@ -154,9 +141,6 @@ public class IAPManager : MonoBehaviour
 
     private void UpdatePurchasedData()
     {
-        // print("!product_maxheartplus " + BillingServices.IsProductPurchased(product_maxheartplus));
-        // print("!product_itemBundle " + BillingServices.IsProductPurchased(product_itemBundle));
-
         PlayerPrefs.SetInt("product_maxheartplus", BillingServices.IsProductPurchased(product_maxheartplus) ? 1 : 0);
         PlayerPrefs.SetInt("product_itemBundle", BillingServices.IsProductPurchased(product_itemBundle) ? 1 : 0);
         PlayerPrefs.Save();
@@ -170,14 +154,11 @@ public class IAPManager : MonoBehaviour
             BillingServices.InitializeStore();
             return;
         }
-
-        // BalloonUIManager.Instance.ShowMsg("Request : " + product.ToString());
         BillingServices.BuyProduct(product.ToString());
     }
 
     private void ItemPurchased(Product product)
     {
-        // BalloonUIManager.Instance.ShowMsg("Confirmed : " + product.ToString());
         switch (product)
         {
             case Product.diamonds0:

@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 
 public class BbangShowroomManager : SerializedMonoBehaviour
 {
+    public static BbangShowroomManager Instance { get; private set; }
     public enum BbangType
     {
         bbang_mat,
@@ -20,26 +21,21 @@ public class BbangShowroomManager : SerializedMonoBehaviour
         bbang_purin
     }
 
-    [Header("Managers and Controllers")] [SerializeField]
-    private PlayerHealthManager playerHealthManager;
+    [Header("Managers and Controllers")] 
+    [SerializeField] private PlayerHealthManager playerHealthManager;
+    [SerializeField] private BbangBoyContoller bbangBoyContoller;
 
-    [FormerlySerializedAs("bbangBoy")] [SerializeField]
-    private BbangBoyContoller bbangBoyContoller;
-
+    [Header("Game Elements")]
+    [SerializeField] private readonly Dictionary<BbangType, BbangDataHolder> BbangDatas = new();
     [SerializeField] private GameObject[] bbang = new GameObject[4];
     [SerializeField] private GameObject bbang_holder;
     [SerializeField] private GameObject placePosition, bbangboy_ui;
     [SerializeField] private GameObject scrum;
+    
     public bool removeBbangMode;
-
-    [Header("Game Elements")] [SerializeField]
-    private readonly Dictionary<BbangType, BbangDataHolder> BbangDatas = new();
-
     private int currentBbangCount;
     private int removedBbangCount;
-
     private int totalBbangCount;
-    public static BbangShowroomManager Instance { get; private set; }
 
     private void Awake()
     {

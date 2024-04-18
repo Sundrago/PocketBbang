@@ -4,19 +4,20 @@ using Random = UnityEngine.Random;
 
 public class StoreManager : MonoBehaviour
 {
-    public static StoreManager Instance;
+    public static StoreManager Instance { get; private set; }
+    
+    [SerializeField] public Store_DiamondManager DiamondManager;
+    [SerializeField] public Store_PackageManager PackageManager;
+    [SerializeField] public StoreFishManager FishManager;
+    
     [SerializeField] private List<GameObject> hideObj;
     [SerializeField] private List<bool> hideObjActive;
-
     [SerializeField] private GameObject loadingBar;
     [SerializeField] private GameObject soldOut_product_maxheartplus, soldOut_product_itemBundle;
     [SerializeField] private List<Transform> items;
     [SerializeField] private Store_TabUI storeTabUI;
     [SerializeField] private HardWorkManager hardWorkManager;
 
-    public Store_DiamondManager DiamondManager;
-    public Store_PackageManager PackageManager;
-    public StoreFishManager FishManager;
 
     private void Awake()
     {
@@ -86,32 +87,6 @@ public class StoreManager : MonoBehaviour
         loadingBar.SetActive(false);
         PackageManager.UpdateSoldOut();
     }
-
-
-    // public void BuyProduct(string id)
-    // {
-    //     switch (id)
-    //     {
-    //         case "itemBundle":
-    //             if (PlayerPrefs.GetInt("product_itemBundle", 0) == 1)
-    //             {
-    //                 BalloonUIManager.Instance.ShowMsg("이미 구매했다!");
-    //                 return;
-    //             }
-    //             IAPManager.Instance.BuyProduct(IAPManager.Product.itemBundle);
-    //             loadingBar.SetActive(true);
-    //             break;
-    //         case "maxheartplus":
-    //             if (PlayerPrefs.GetInt("product_maxheartplus", 0) == 1)
-    //             {
-    //                 BalloonUIManager.Instance.ShowMsg("이미 구매했다!");
-    //                 return;
-    //             }
-    //             IAPManager.Instance.BuyProduct(IAPManager.Product.maxheartplus);
-    //             loadingBar.SetActive(true);
-    //             break;
-    //     }
-    // }
 
     public void HideLoadingBar()
     {

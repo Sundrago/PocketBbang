@@ -4,9 +4,7 @@ using UnityEngine.UI;
 
 public class DanunMessageCountManager : MonoBehaviour
 {
-    [FormerlySerializedAs("dangunCharacterController")] [FormerlySerializedAs("dangunCha")] [SerializeField]
-    private DangunCharacterManager dangunCharacterManager;
-
+    [SerializeField] private DangunCharacterManager dangunCharacterManager;
     [SerializeField] private GameObject ok_ui, main, msg_ui, upBtn_ui, downBtn_ui, count_ui;
 
     public string actionCode;

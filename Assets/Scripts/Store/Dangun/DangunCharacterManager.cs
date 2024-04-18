@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 public class DangunCharacterManager : MonoBehaviour
 {
-    [Header("Managers and Controllers")] [SerializeField]
-    private GameManager gameManager;
-
+    [Header("Managers and Controllers")] 
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private DanunMessageCountManager danunMessageManager;
     [SerializeField] private PrompterController prompterController;
     [SerializeField] private PhoneMessageController phoneMessageController;
@@ -18,20 +17,13 @@ public class DangunCharacterManager : MonoBehaviour
     [SerializeField] private CollectionPanelManager collectionPanelManager;
     [SerializeField] private CollectionManager myCollection;
 
-    [Header("UI Elements")] [FormerlySerializedAs("dangunChaImg_ui")] [SerializeField]
-    private Image dangunChaImage;
-
-    [FormerlySerializedAs("dangunMsg_ui")] [SerializeField]
-    private Animator dangunMsgAnimator;
-
-    [FormerlySerializedAs("dangunMsgText_ui")] [SerializeField]
-    private Text debugText;
-
-    [FormerlySerializedAs("chaImgs")] [SerializeField]
-    private Sprite[] characterSprites = new Sprite[5];
+    [Header("UI Elements")] 
+    [SerializeField] private Image dangunChaImage;
+    [SerializeField] private Animator dangunMsgAnimator;
+    [SerializeField] private Text debugText;
+    [SerializeField] private Sprite[] characterSprites = new Sprite[5];
 
     private int bbangBoyIdx;
-
     private int playerCharacterIndex, maxCount;
     private int returnCount;
 
@@ -56,9 +48,9 @@ public class DangunCharacterManager : MonoBehaviour
     {
         gameManager.dangunIng = true;
         gameManager.currentLocation = "dangun";
-        gameManager.lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        gameManager.lowerUIPanel.GetComponent<Animator>().SetTrigger("hide");
         gameManager.phone_ui.GetComponent<Animator>().SetTrigger("hide");
-        gameManager.frontCha.GetComponent<Animator>().SetTrigger("idle");
+        gameManager.mainPlayerAnimator.GetComponent<Animator>().SetTrigger("idle");
     }
 
     public void DangunChaIn()
@@ -84,17 +76,17 @@ public class DangunCharacterManager : MonoBehaviour
                     "냥)", maxCount, "DangunChaMsgCallBack");
                 break;
             case 3:
-                phoneMessageController.Start();
+                phoneMessageController.Init();
                 phoneMessageController.SetMsg("스티커를 선택해주세요!\n같은 A급 스티커 4장을 판매합니다.\n최대 3 종류를 선택할 수 있습니다.\n(스티커당 바캉스 1병)",
                     1, "OpenCardSelection");
                 break;
             case 4:
-                phoneMessageController.Start();
+                phoneMessageController.Init();
                 phoneMessageController.SetMsg(
                     "스티커를 선택해주세요!\n같은 B급 스티커 4장을 판매합니다.\n최대 3 종류를 선택할 수 있습니다.\n(스티커당 야쿠르트 1병)", 1, "OpenCardSelection");
                 break;
             case 5:
-                phoneMessageController.Start();
+                phoneMessageController.Init();
                 EndDangun = false;
                 phoneMessageController.SetMsg("[" + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 0)].name +
                                               "] 스티커를" +
@@ -104,7 +96,7 @@ public class DangunCharacterManager : MonoBehaviour
                     "DangunChaMsgCallBack");
                 break;
             case 6:
-                phoneMessageController.Start();
+                phoneMessageController.Init();
                 EndDangun = false;
                 phoneMessageController.SetMsg("[" + myCollection.myCard[PlayerPrefs.GetInt("sellIdx" + 1)].name +
                                               "] 스티커를" +
@@ -180,7 +172,7 @@ public class DangunCharacterManager : MonoBehaviour
                             PlayerPrefs.SetInt("card_" + CardSelectIdx[i], 1);
                     }
 
-                    gameManager.showroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_vacance,
+                    gameManager.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_vacance,
                         CardSelectIdx.Count);
                 }
 
@@ -200,7 +192,7 @@ public class DangunCharacterManager : MonoBehaviour
                             PlayerPrefs.SetInt("card_" + CardSelectIdx[i], 1);
                     }
 
-                    gameManager.showroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_yogurt,
+                    gameManager.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_yogurt,
                         CardSelectIdx.Count);
                 }
 
@@ -448,6 +440,6 @@ public class DangunCharacterManager : MonoBehaviour
         if (!EndDangun) balloonUIManager.ShowMsg("좋은 거래였다..!");
         gameManager.dangunIng = false;
         gameManager.currentLocation = "home";
-        gameManager.lower_bar.GetComponent<Animator>().SetTrigger("bbangShowroomManager");
+        gameManager.lowerUIPanel.GetComponent<Animator>().SetTrigger("bbangShowroomManager");
     }
 }

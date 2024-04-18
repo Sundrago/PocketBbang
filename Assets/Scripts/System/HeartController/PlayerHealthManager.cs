@@ -20,7 +20,8 @@ public class PlayerHealthManager : MonoBehaviour
     }
 
     private const string format = "yyyy/MM/dd HH:mm:ss";
-    public static PlayerHealthManager Instance;
+    public static PlayerHealthManager Instance { get; private set; }
+    
     [SerializeField] private DangunNotificationManager notice;
     [SerializeField] private BalloonUIManager balloon;
     [SerializeField] private Animator bus;
@@ -291,7 +292,7 @@ public class PlayerHealthManager : MonoBehaviour
         else rnd = Random.Range(1, 4);
 
         // gameObject.GetComponent<GameManager>().AddBBangType(rnd, "빵셔틀","choco");
-        // gameObject.GetComponent<GameManager>().balloonUIManager.ShowMsg("셔틀이 초코롤빵 " + rnd + "개를 가져왔습니다!");
+        // gameObject.GetComponent<GameManager>().BalloonUIManager.ShowMsg("셔틀이 초코롤빵 " + rnd + "개를 가져왔습니다!");
 
         var idx = new int[rnd];
         var amt = new int[rnd];

@@ -4,17 +4,16 @@ using UnityEngine.UI;
 
 public class SettingPanelManager : MonoBehaviour
 {
-    [FormerlySerializedAs("myAudio")] [SerializeField]
-    private AudioController audioController;
+    [FormerlySerializedAs("myAudio")] 
+    [SerializeField] private AudioController audioController;
 
-    [FormerlySerializedAs("msg")] [SerializeField]
-    private PhoneMessageController phoneMessageController;
-
+    [FormerlySerializedAs("msg")] 
+    [SerializeField] private PhoneMessageController phoneMessageController;
     [SerializeField] private Text audioBtnText, lowDataBtn, autoSaveBtn;
 
     private bool muteAudio;
 
-    public void Start()
+    public void Init()
     {
         SetAudio();
         SetLowData();

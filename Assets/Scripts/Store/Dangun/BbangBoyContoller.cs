@@ -3,18 +3,17 @@ using UnityEngine.UI;
 
 public class BbangBoyContoller : MonoBehaviour
 {
-    [Header("Managers and Controllers")] [SerializeField]
-    private GameManager gameManager;
-
+    [Header("Managers and Controllers")] 
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private BbangShowroomManager bbangShowroomManager;
     [SerializeField] private PrompterController prompterController;
 
-    [Header("UI Elements")] [SerializeField]
-    private Animator bbangBoyAnimator;
-
+    [Header("UI Elements")] 
+    [SerializeField] private Animator bbangBoyAnimator;
     [SerializeField] private GameObject prompter;
     [SerializeField] private GameObject bbangboyBalloon;
     [SerializeField] private Text bbangboyBalloon_ui;
+    
     private float oldTime;
     private bool showText;
     private int showTextIdx;
@@ -23,6 +22,29 @@ public class BbangBoyContoller : MonoBehaviour
 
     private void Update()
     {
+        if (Time.frameCount % 30 == 0)
+            if (gameManager.CallBbangboy & (gameManager.currentLocation == "home"))
+            {
+                gameManager.BalloonUIManager.ShowMsg("똑똑- 노크소리가 들린다.");
+                switch (gameManager.CallIdx)
+                {
+                    case 0:
+                        gameObject.GetComponent<BbangBoyContoller>().Boy_In();
+                        break;
+                    case 1:
+                        gameManager.DangunCharacterManager.PlayDangunCharacterAnimation(gameManager.CallIdx);
+                        break;
+                    case 2:
+                        gameManager.DangunCharacterManager.PlayDangunCharacterAnimation(gameManager.CallIdx);
+                        break;
+                    case 3:
+                        gameManager.DangunCharacterManager.PlayDangunCharacterAnimation(gameManager.CallIdx);
+                        break;
+                }
+
+                gameManager.CallBbangboy = false;
+            }
+        
         if ((Time.frameCount % 30 == 0) & showText)
             switch (showTextIdx)
             {

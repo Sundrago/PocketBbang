@@ -8,30 +8,28 @@ public class BbobgiController : MonoBehaviour
 {
     private const float MaxVelocity = 7f;
 
-    [Header("Managers and Controllers")] [SerializeField]
-    private GameManager gameManager;
-
+    [Header("Managers and Controllers")] 
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private BalloonUIManager balloonUIManager;
     [SerializeField] private BbobgiPanelController bbobgiPanelController;
 
-    [Header("UI/Game Elements")] [SerializeField]
-    private Animator clawAnimator;
-
+    [Header("UI/Game Elements")] 
+    [SerializeField] private Animator clawAnimator;
     [SerializeField] private GameObject guidelineObject;
     [SerializeField] private GameObject timerSlider;
     [SerializeField] private Button downButton;
     [SerializeField] private Button leftButton;
     [SerializeField] private Button rightButton;
+    
     private readonly List<GameObject> BbangObj = new();
     private readonly List<GameObject> bbangObjects = new();
     private readonly List<GameObject> clawBoneParts = new();
-
     private readonly List<GameObject> clawParts = new();
     private readonly List<GameObject> items = new();
-    private GameObject left, right, bottom;
-
     private readonly List<GameObject> obj = new();
-
+    
+    private GameObject left, right, bottom;
+    
     public float velocity { get; set; }
     public bool playing { get; set; }
     public int bbangCount { get; private set; }

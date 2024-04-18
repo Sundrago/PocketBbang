@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class DomiTradePanel : MonoBehaviour
+public class domiTradePanelController : MonoBehaviour
 {
-    [SerializeField] private DoMiCoinManager domiCoin;
+    [FormerlySerializedAs("domiconManager")] [FormerlySerializedAs("domiCoin")] [SerializeField] private DoMiCoinManager domicoinManager;
     [SerializeField] private Text amt_ui, price_ui;
     [SerializeField] private Button Upbtn, DownBtn;
 
@@ -24,8 +25,8 @@ public class DomiTradePanel : MonoBehaviour
         confirmID = _confirmID;
         cancelId = _cancelID;
 
-        if (_type == GameManager.TradeType.buy && PlayerHealthManager.Instance.GetBalance() < domiCoin.GetPrice())
-            GameManager.Instance.Nylon(_noMoney);
+        if (_type == GameManager.TradeType.Buy && PlayerHealthManager.Instance.GetBalance() < domicoinManager.GetPrice())
+            GameManager.Instance.NylonDialogue.Nylon(_noMoney);
 
         namePlate.SetActive(false);
         dialoguePlate.SetActive(false);
@@ -35,11 +36,11 @@ public class DomiTradePanel : MonoBehaviour
     private void UpdateUI()
     {
         amt_ui.text = amount + "개";
-        price_ui.text = amount * domiCoin.GetPrice() + "냥";
+        price_ui.text = amount * domicoinManager.GetPrice() + "냥";
 
-        if (type == GameManager.TradeType.buy)
-            Upbtn.interactable = PlayerHealthManager.Instance.GetBalance() >= (amount + 1) * domiCoin.GetPrice();
-        else Upbtn.interactable = domiCoin.GetAmount() >= amount + 1;
+        if (type == GameManager.TradeType.Buy)
+            Upbtn.interactable = PlayerHealthManager.Instance.GetBalance() >= (amount + 1) * domicoinManager.GetPrice();
+        else Upbtn.interactable = domicoinManager.GetAmount() >= amount + 1;
         DownBtn.interactable = amount - 1 >= 0;
     }
 
@@ -63,14 +64,14 @@ public class DomiTradePanel : MonoBehaviour
 
         if (amount <= 0)
         {
-            GameManager.Instance.Nylon_f(cancelId);
+            GameManager.Instance.NylonDialogue.Nylon_f(cancelId);
         }
         else
         {
-            domiCoin.BuyAmount = amount;
-            domiCoin.SellAmount = amount;
+            domicoinManager.BuyAmount = amount;
+            domicoinManager.SellAmount = amount;
 
-            GameManager.Instance.Nylon_f(confirmID);
+            GameManager.Instance.NylonDialogue.Nylon_f(confirmID);
         }
     }
 
@@ -79,7 +80,7 @@ public class DomiTradePanel : MonoBehaviour
         if (!gameObject.activeSelf) return;
 
         HidePanel();
-        GameManager.Instance.Nylon_f(cancelId);
+        GameManager.Instance.NylonDialogue.Nylon_f(cancelId);
     }
 
     public void HidePanel()

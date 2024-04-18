@@ -9,16 +9,14 @@ using Random = UnityEngine.Random;
 
 public class Bossam_GameManager : MonoBehaviour
 {
-    public static Bossam_GameManager Instance;
-    [SerializeField] private List<Bossam_StageManager> bossamChar_prefab = new();
+    public static Bossam_GameManager Instance { get; private set; }
+    [SerializeField] private MiniGameEndScoreUIManager endScoreUI;
     [SerializeField] private Bossam_StageManager bosamChar;
     [SerializeField] private TanghuruComboICon comboFX, failFX;
     [SerializeField] private Transform comboFxPos;
     [SerializeField] private Text score_text, time_text;
     [SerializeField] private GameObject tutorialPanel, scorePanel;
-
-    [FormerlySerializedAs("EndScore")] [SerializeField]
-    private MiniGameEndScoreUIManager endScoreUI;
+    [SerializeField] private List<Bossam_StageManager> bossamChar_prefab = new();
 
     [SerializeField] private Bossam_ssam ssam;
     [SerializeField] private List<GameObject> GameObjSetActiveFalse = new();
@@ -213,13 +211,13 @@ public class Bossam_GameManager : MonoBehaviour
             AudioController.Instance.PlayMusic(beforeAudioIdx);
         }
 
-        GameManager.Instance.lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        GameManager.Instance.lowerUIPanel.GetComponent<Animator>().SetTrigger("hide");
         PlayerHealthManager.Instance.UpdateHeartUI();
 
 
         if (PlayerPrefs.GetString("bossam_rank") == "F")
-            GameManager.Instance.JangJokBal("ID_J_GAME_OVER_BAD");
-        else GameManager.Instance.JangJokBal("ID_J_GAME_OVER_GOOD");
+            GameManager.Instance.JangJokBalDialogue.JangJokBal("ID_J_GAME_OVER_BAD");
+        else GameManager.Instance.JangJokBalDialogue.JangJokBal("ID_J_GAME_OVER_GOOD");
     }
 
     public void ShowHand()

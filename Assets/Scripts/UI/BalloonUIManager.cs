@@ -4,11 +4,12 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class BalloonUIManager : MonoBehaviour
 {
+    public static BalloonUIManager Instance { get; private set; }
+    
     [SerializeField] private Text msg_text;
 
     private Animator animator;
     private bool isBeingHiding;
-    public static BalloonUIManager Instance { get; private set; }
 
     private void Awake()
     {

@@ -10,13 +10,10 @@ public class DangunNotificationManager : MonoBehaviour
 {
     private const string format = "yyyy/MM/dd HH:mm";
 
-    [FormerlySerializedAs("heart")] [SerializeField]
-    private PlayerHealthManager playerHealthManager;
-
-    [FormerlySerializedAs("msg")] [SerializeField]
-    private PhoneMessageController phoneMessageController;
-
+    [SerializeField] private PlayerHealthManager playerHealthManager;
+    [SerializeField] private PhoneMessageController phoneMessageController;
     [SerializeField] private Text time_text_ui;
+    
     private DateTime CULastNotiDate, CUArriveTime;
     private bool notificationSent;
     private IFormatProvider provider;
@@ -24,7 +21,7 @@ public class DangunNotificationManager : MonoBehaviour
     private bool started;
     private TimeSpan timeGap;
 
-    public void Start()
+    public void Init()
     {
         if (started) return;
 
@@ -152,7 +149,7 @@ public class DangunNotificationManager : MonoBehaviour
             if (error == null)
             {
                 Debug.Log("Request to schedule notification finished successfully.");
-                //phoneMessageController.SetMsg("Request to schedule notification finished successfully.", 1);
+                //PhoneMessageController.SetMsg("Request to schedule notification finished successfully.", 1);
             }
             else
             {
@@ -230,7 +227,7 @@ public class DangunNotificationManager : MonoBehaviour
 
     public void ReadData()
     {
-        if (PlayerPrefs.GetString("CULastNotiDate") == null) Start();
+        if (PlayerPrefs.GetString("CULastNotiDate") == null) Init();
 
         CULastNotiDate = DateTime.ParseExact(PlayerPrefs.GetString("CULastNotiDate"), format, provider);
         CUArriveTime = DateTime.ParseExact(PlayerPrefs.GetString("CUArriveTime"), format, provider);

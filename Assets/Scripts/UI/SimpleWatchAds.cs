@@ -4,9 +4,10 @@ using UnityEngine.UI;
 
 public class SimpleWatchAds : MonoBehaviour
 {
+    public static SimpleWatchAds Instance { get; set; }
+    
     [SerializeField] private Image bg;
     [SerializeField] private Transform phone;
-    public static SimpleWatchAds Instance { get; set; }
 
     private void Awake()
     {

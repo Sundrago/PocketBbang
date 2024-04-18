@@ -5,11 +5,9 @@ using UnityEngine.UI;
 
 public class AlbaPhoneManager : MonoBehaviour
 {
-    public static AlbaPhoneManager Instance;
-
-    [FormerlySerializedAs("phoneMsgCtrl")] [SerializeField]
-    private PhoneMessageController phoneMessageController;
-
+    public static AlbaPhoneManager Instance { get; private set; }
+    
+    [SerializeField] private PhoneMessageController phoneMessageController;
     [SerializeField] private List<Image> btnImgs;
     [SerializeField] private GameManager main;
     [SerializeField] private BalloonUIManager balloon;

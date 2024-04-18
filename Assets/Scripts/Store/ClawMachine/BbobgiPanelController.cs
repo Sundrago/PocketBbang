@@ -3,24 +3,23 @@ using UnityEngine.UI;
 
 public class BbobgiPanelController : MonoBehaviour
 {
-    [Header("Managers and Controllers")] [SerializeField]
-    public BbobgiController bbobgiController;
-
+    [Header("Managers and Controllers")] 
+    [SerializeField] public BbobgiController bbobgiController;
     [SerializeField] private BalloonUIManager balloonUIManager;
     [SerializeField] private ADManager adManager;
     [SerializeField] private GameManager gameManager;
     [SerializeField] private PlayerHealthManager playerHealthManager;
     [SerializeField] private AudioController audioController;
 
-    [Header("UI Components")] [SerializeField]
-    private GameObject mainPlayer;
-
+    [Header("UI Components")] 
+    [SerializeField] private GameObject mainPlayer;
     [SerializeField] private GameObject continuePanel;
     [SerializeField] private Text playCountText;
     [SerializeField] private Button insertMoneyButton;
     [SerializeField] private Button watchAdButton;
     [SerializeField] private Button exitButton;
     [SerializeField] private Text continueText;
+    
     private int totalCount, currentCount;
 
     public bool Reload { get; set; }
@@ -56,7 +55,7 @@ public class BbobgiPanelController : MonoBehaviour
         gameManager.currentLocation = "store";
         audioController.PlayMusic(1);
 
-        gameManager.StoreEvent("bbobgiStore");
+        gameManager.StoreDialogue.StoreEvent("bbobgiStore");
         gameManager.prompter.SetActive(true);
         gameManager.prompter.GetComponent<Animator>().SetTrigger("show");
     }

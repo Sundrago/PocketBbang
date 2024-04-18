@@ -8,26 +8,25 @@ using UnityEngine.UI;
 
 public class TanghuruGameManager : MonoBehaviour
 {
-    public static TanghuruGameManager Instance;
+    public static TanghuruGameManager Instance { get; private set; }
+    [SerializeField] private TanghuruStick tanghuruStick;
+    [FormerlySerializedAs("endScoreUI")] [FormerlySerializedAs("EndScore")] [SerializeField]
+    private MiniGameEndScoreUIManager miniGameEndScoreUIManager;
 
     [SerializeField] public List<Sprite> fruits_sprite = new();
     [SerializeField] private List<GameObject> fruits_btn = new();
-    [SerializeField] private TanghuruStick tanghuruStick;
     [SerializeField] private List<TanghuruRequestObj> requests = new();
+    [SerializeField] private List<Tanghuru_cutomer> customers = new();
+    [SerializeField] private List<GameObject> GameObjSetActiveFalse = new();
+    
     [SerializeField] private Text scoreText, timerText;
     [SerializeField] private Image fruitFX;
     [SerializeField] private Transform fxHolder, posA, posB, posC;
     [SerializeField] private TanghuruComboICon combo_prefab, fail_prefab;
     [SerializeField] private Transform trash_btn;
     [SerializeField] private Transform stick_holder_mask;
-
-    [FormerlySerializedAs("EndScore")] [SerializeField]
-    private MiniGameEndScoreUIManager endScoreUI;
-
-    [SerializeField] private int twinObjCount;
     [SerializeField] private GameObject characterAnimationA, characterAnimationB, tutorialPanel;
-    [SerializeField] private List<Tanghuru_cutomer> customers = new();
-    [SerializeField] private List<GameObject> GameObjSetActiveFalse = new();
+    [SerializeField] private int twinObjCount;
 
     private List<GameObject> actives;
     private int beforeAudioIdx;
@@ -114,7 +113,7 @@ public class TanghuruGameManager : MonoBehaviour
         foreach (var obj in actives) obj.SetActive(false);
         gameObject.SetActive(true);
         tutorialPanel.SetActive(true);
-        endScoreUI.gameObject.SetActive(false);
+        miniGameEndScoreUIManager.gameObject.SetActive(false);
 
         PlauMusic();
 
@@ -140,29 +139,29 @@ public class TanghuruGameManager : MonoBehaviour
             AudioController.Instance.PlayMusic(beforeAudioIdx);
         }
 
-        GameManager.Instance.lower_bar.GetComponent<Animator>().SetTrigger("hide");
+        GameManager.Instance.lowerUIPanel.GetComponent<Animator>().SetTrigger("hide");
         PlayerHealthManager.Instance.UpdateHeartUI();
 
         if (GameManager.Instance.albaMode)
         {
             if (PlayerPrefs.GetString("tanghuru_rank") == "F")
             {
-                GameManager.Instance.pmtComtrol.AddString("왕형", "구태여 찾아와 일거리를 만드는구려.");
-                GameManager.Instance.pmtComtrol.AddString("왕형", "다음번에는 조금 더 일을 잘 해주었으면 좋겠소.");
+                GameManager.Instance.PrompterController.AddString("왕형", "구태여 찾아와 일거리를 만드는구려.");
+                GameManager.Instance.PrompterController.AddString("왕형", "다음번에는 조금 더 일을 잘 해주었으면 좋겠소.");
                 GameManager.Instance.storeOutAction = "일을 너무 못했다. 다음번에는 탕후루를 더 열심히 만들어보자...";
-                GameManager.Instance.pmtComtrol.AddNextAction("main", "alba_end");
+                GameManager.Instance.PrompterController.AddNextAction("main", "alba_end");
             }
             else
             {
-                GameManager.Instance.pmtComtrol.AddString("왕형", "바쁜 와중에 찾아와주어 고마웠소.");
-                GameManager.Instance.pmtComtrol.AddString("왕형", "우리 가게는 언제나 그대를 기다리고 있으니 또 찾아와 주시오.");
+                GameManager.Instance.PrompterController.AddString("왕형", "바쁜 와중에 찾아와주어 고마웠소.");
+                GameManager.Instance.PrompterController.AddString("왕형", "우리 가게는 언제나 그대를 기다리고 있으니 또 찾아와 주시오.");
                 GameManager.Instance.storeOutAction = "탕후루는 맛도 달달하고 알바비도 달달하다. 다음에 또 알바하러 오자.";
-                GameManager.Instance.pmtComtrol.AddNextAction("main", "alba_end");
+                GameManager.Instance.PrompterController.AddNextAction("main", "alba_end");
             }
         }
         else
         {
-            GameManager.Instance.Tanghuru("ID_T_GAME_OVER_LINK");
+            GameManager.Instance.TanghuruDialogue.Tanghuru("ID_T_GAME_OVER_LINK");
         }
     }
 
@@ -179,7 +178,7 @@ public class TanghuruGameManager : MonoBehaviour
         tanghuruStick.Init();
         startTime = Time.time;
         status = gameStatus.playing;
-        endScoreUI.HideScore();
+        miniGameEndScoreUIManager.HideScore();
         AudioCtrl.Instance.PlaySFXbyTag(SFX_tag.whislte_start);
         tutorialPanel.SetActive(false);
     }
@@ -187,7 +186,7 @@ public class TanghuruGameManager : MonoBehaviour
     public void EndGame()
     {
         status = gameStatus.score;
-        endScoreUI.ShowScore(score);
+        miniGameEndScoreUIManager.ShowScore(score);
     }
 
     private void UpdateScore(int amt)
@@ -337,7 +336,7 @@ public class TanghuruGameManager : MonoBehaviour
 
     public void WathcedAds()
     {
-        endScoreUI.HideScore();
+        miniGameEndScoreUIManager.HideScore();
         tutorialPanel.SetActive(true);
     }
 
