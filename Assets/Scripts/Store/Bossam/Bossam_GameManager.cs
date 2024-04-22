@@ -212,7 +212,7 @@ public class Bossam_GameManager : MonoBehaviour
         }
 
         GameManager.Instance.lowerUIPanel.GetComponent<Animator>().SetTrigger("hide");
-        PlayerHealthManager.Instance.UpdateHeartUI();
+        PlayerStatusManager.Instance.UpdateHeartUI();
 
 
         if (PlayerPrefs.GetString("bossam_rank") == "F")

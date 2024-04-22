@@ -54,9 +54,9 @@ public class TanghuruDialogue
             case "ID_T_OPEN_STORE_TANGHURU_BUY_YES":
                 prompterController.AddString("왕형", "고맙소.");
                 prompterController.AddString("왕형", "탕후루 여기 있소.");
-                gameManager.PlayerHealthManager.UpdateMoney(-3000);
-                gameManager.PlayerHealthManager.SetHeart(1);
-                gameManager.PlayerHealthManager.SetHeart(1);
+                gameManager.PlayerStatusManager.UpdateMoney(-3000);
+                gameManager.PlayerStatusManager.SetHeart(1);
+                gameManager.PlayerStatusManager.SetHeart(1);
                 prompterController.AddString("훈이", "(탕후루를 먹고 하트가 두 개 회복되었다!)");
                 prompterController.AddString("왕형", "또 오시오.");
                 if (gameManager.tanghuruState == "ID_T_OPEN_STORE") prompterController.AddString("왕형", "단, 오후 12시부터 오후 6시 사이는 손님이 많으니 되도록 피해 주시오.");

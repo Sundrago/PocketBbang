@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class PlayerHealthManager : MonoBehaviour
+public class PlayerStatusManager : MonoBehaviour
 {
     public enum MoneyType
     {
@@ -20,7 +20,7 @@ public class PlayerHealthManager : MonoBehaviour
     }
 
     private const string format = "yyyy/MM/dd HH:mm:ss";
-    public static PlayerHealthManager Instance { get; private set; }
+    public static PlayerStatusManager Instance { get; private set; }
     
     [SerializeField] private DangunNotificationManager notice;
     [SerializeField] private BalloonUIManager balloon;

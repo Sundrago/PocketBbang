@@ -15,7 +15,7 @@ public class DdukMinigameManager : MonoBehaviour
     [FormerlySerializedAs("pmtControl")] [SerializeField]
     private PrompterController pmtController;
 
-    [SerializeField] private PlayerHealthManager heart;
+    [SerializeField] private PlayerStatusManager heart;
     [SerializeField] private List<GameObject> dducks = new();
 
     [SerializeField] private GameObject[] ddukcPrefabs = new GameObject[3];

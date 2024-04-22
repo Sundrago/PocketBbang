@@ -58,7 +58,7 @@ public class Store_FishDetailPanel : MonoBehaviour
 
         btnDown.interactable = count > 1;
         btnUp.interactable =
-            (count + 1) * data.price <= PlayerHealthManager.Instance.GetAmount(PlayerHealthManager.MoneyType.Diamond)
+            (count + 1) * data.price <= PlayerStatusManager.Instance.GetAmount(PlayerStatusManager.MoneyType.Diamond)
             && count + 1 <= 10;
     }
 

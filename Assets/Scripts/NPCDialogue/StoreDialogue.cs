@@ -146,7 +146,7 @@ public class StoreDialogue
                 break;
 
             case "hostf_buy":
-                gameManager.gameObject.GetComponent<PlayerHealthManager>().UpdateMoney(-10000);
+                gameManager.gameObject.GetComponent<PlayerStatusManager>().UpdateMoney(-10000);
                 prompterController.Reset();
                 prompterController.imageMode = true;
                 prompterController.AddString("훈이", "뭔가 손해보는 것 같지만..");
@@ -156,7 +156,7 @@ public class StoreDialogue
                 gameManager.storeOutAction = "손해보는 것 같지만 기분은 좋다.";
                 gameManager.MatdongsanBuy = true;
 
-                if (!gameManager.PlayerHealthManager.IsHeartEmpty())
+                if (!gameManager.PlayerStatusManager.IsHeartEmpty())
                 {
                     prompterController.AddOption("편의점을 나간다.", "store", "hostf_out");
                     prompterController.AddOption("알바를 한다.", "store", "hostf_alba");
@@ -179,7 +179,7 @@ public class StoreDialogue
                 break;
 
             case "hostf_alba":
-                if (gameManager.PlayerHealthManager.IsHeartEmpty())
+                if (gameManager.PlayerStatusManager.IsHeartEmpty())
                 {
                     prompterController.Reset();
                     prompterController.imageMode = true;
@@ -207,7 +207,7 @@ public class StoreDialogue
                 break;
 
             case "albaf_start":
-                gameManager.PlayerHealthManager.ConsumeSingleHeart();
+                gameManager.PlayerStatusManager.ConsumeSingleHeart();
                 gameManager.AlbaMinigameManager.StartAlba(true);
                 break;
 
@@ -447,7 +447,7 @@ public class StoreDialogue
                 break;
 
             case "host_buy":
-                gameManager.gameObject.GetComponent<PlayerHealthManager>().UpdateMoney(-10000);
+                gameManager.gameObject.GetComponent<PlayerStatusManager>().UpdateMoney(-10000);
                 prompterController.Reset();
                 prompterController.imageMode = true;
                 prompterController.AddString("훈이", "뭔가 손해보는 것 같지만..");

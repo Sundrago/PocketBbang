@@ -54,7 +54,7 @@ public class Store_PackageManager : MonoBehaviour
                 break;
             case 1:
                 IAPManager.Instance.BuyProduct(IAPManager.Product.maxheartplus);
-                PlayerHealthManager.Instance.AddHeartByAmt(10);
+                PlayerStatusManager.Instance.AddHeartByAmt(10);
                 loadingBar.SetActive(true);
                 break;
             case 2:
@@ -65,7 +65,7 @@ public class Store_PackageManager : MonoBehaviour
                 loadingBar.SetActive(true);
                 break;
             default:
-                if (PlayerHealthManager.Instance.SubtractMoney(PlayerHealthManager.MoneyType.Diamond,
+                if (PlayerStatusManager.Instance.SubtractMoney(PlayerStatusManager.MoneyType.Diamond,
                         DeserializeJsonData.Instance.StorePackageDatas[idx].needAmt))
                     ItemPurchased(idx);
                 else
@@ -87,7 +87,7 @@ public class Store_PackageManager : MonoBehaviour
         switch (idx)
         {
             case 1:
-                PlayerHealthManager.Instance.InitMaxHeart();
+                PlayerStatusManager.Instance.InitMaxHeart();
                 break;
             case 2:
                 hardWorkManager.StartNewPlan();

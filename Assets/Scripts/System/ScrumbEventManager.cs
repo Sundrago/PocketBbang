@@ -243,7 +243,7 @@ public class ScrumbEventManager : SerializedMonoBehaviour
     {
         if (btnStatus == BtnStatus.throwScrumb)
         {
-            if (PlayerHealthManager.Instance.SubtractMoney(PlayerHealthManager.MoneyType.Scrumb, 1))
+            if (PlayerStatusManager.Instance.SubtractMoney(PlayerStatusManager.MoneyType.Scrumb, 1))
             {
                 // DoFailFx();
                 // DoOpenFx();

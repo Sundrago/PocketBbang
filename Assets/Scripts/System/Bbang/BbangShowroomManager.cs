@@ -21,8 +21,9 @@ public class BbangShowroomManager : SerializedMonoBehaviour
         bbang_purin
     }
 
+    [FormerlySerializedAs("playerHealthManager")]
     [Header("Managers and Controllers")] 
-    [SerializeField] private PlayerHealthManager playerHealthManager;
+    [SerializeField] private PlayerStatusManager playerStatusManager;
     [SerializeField] private BbangBoyContoller bbangBoyContoller;
 
     [Header("Game Elements")]
@@ -195,7 +196,7 @@ public class BbangShowroomManager : SerializedMonoBehaviour
 
     private void UpdateBbangInfo()
     {
-        playerHealthManager.UpdateBbangInfo();
+        playerStatusManager.UpdateBbangInfo();
     }
 
 

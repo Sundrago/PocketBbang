@@ -148,7 +148,7 @@ public class MiniGameEndScoreUIManager : MonoBehaviour
         money_title.DOFade(1, 0.3f).SetDelay(1.5f);
         money_text.DOFade(1, 0.3f).SetDelay(1.65f);
         DOVirtual.Int(0, money_score, 0.5f, money_tween => { money_text.text = money_tween + "냥"; }).SetDelay(1.65f)
-            .OnComplete(() => { PlayerHealthManager.Instance.UpdateMoney(money_score); });
+            .OnComplete(() => { PlayerStatusManager.Instance.UpdateMoney(money_score); });
 
 
         score_msg.DOFade(1, 0.3f).SetDelay(2f);

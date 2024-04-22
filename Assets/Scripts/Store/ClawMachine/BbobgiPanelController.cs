@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class BbobgiPanelController : MonoBehaviour
@@ -8,7 +9,7 @@ public class BbobgiPanelController : MonoBehaviour
     [SerializeField] private BalloonUIManager balloonUIManager;
     [SerializeField] private ADManager adManager;
     [SerializeField] private GameManager gameManager;
-    [SerializeField] private PlayerHealthManager playerHealthManager;
+    [FormerlySerializedAs("playerHealthManager")] [SerializeField] private PlayerStatusManager playerStatusManager;
     [SerializeField] private AudioController audioController;
 
     [Header("UI Components")] 
@@ -78,7 +79,7 @@ public class BbobgiPanelController : MonoBehaviour
 
         if (bbobgiController.playing == false)
         {
-            playerHealthManager.UpdateMoney(-1000);
+            playerStatusManager.UpdateMoney(-1000);
             totalCount = 1;
             currentCount = 1;
             bbobgiController.playing = true;

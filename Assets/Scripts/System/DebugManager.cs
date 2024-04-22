@@ -68,7 +68,7 @@ public class DebugManager
 
     private void UpdateUIElements()
     {
-        gameManager.GetComponent<PlayerHealthManager>().SetHeart(-1);
+        gameManager.GetComponent<PlayerStatusManager>().SetHeart(-1);
         gameManager.AudioController.PlayMusic(1);
         gameManager.parkBtn.SetActive(false);
         gameManager.front_panel.SetActive(true);
@@ -92,7 +92,7 @@ public class DebugManager
 
     public void RemoveMoney()
     {
-        gameManager.PlayerHealthManager.UpdateMoney(-10000);
+        gameManager.PlayerStatusManager.UpdateMoney(-10000);
     }
 
     public void SetDebugMode(GameManager gameManager)
@@ -104,6 +104,6 @@ public class DebugManager
 
     public void AddMoney()
     {
-        gameManager.PlayerHealthManager.UpdateMoney(10000);
+        gameManager.PlayerStatusManager.UpdateMoney(10000);
     }
 }

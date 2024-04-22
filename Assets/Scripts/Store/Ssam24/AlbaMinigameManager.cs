@@ -6,7 +6,7 @@ public class AlbaMinigameManager : MonoBehaviour
 {
     [Header("Managers and Controllers")]
     [SerializeField] private GameManager gameManager;
-    [SerializeField] private PlayerHealthManager playerHealthManager;
+    [FormerlySerializedAs("playerHealthManager")] [SerializeField] private PlayerStatusManager playerStatusManager;
     [SerializeField] private PrompterController prompterController;
     [SerializeField] private BbangShowroomManager showroomManager;
     [SerializeField] private AudioController audioController;
@@ -367,7 +367,7 @@ public class AlbaMinigameManager : MonoBehaviour
         prompterController.AddString("용돈", "최저시급 9,860원을 받았다!");
         prompterController.AddString("훈이", "감사합니다.");
 
-        playerHealthManager.UpdateMoney(9860);
+        playerStatusManager.UpdateMoney(9860);
 
         if (fMode)
             prompterController.AddNextAction("store", "albaf_end");

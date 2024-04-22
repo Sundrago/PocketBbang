@@ -133,13 +133,13 @@ public class ItemDataManager : SerializedMonoBehaviour
             switch (idx)
             {
                 case 1001:
-                    PlayerHealthManager.Instance.AddMoney(PlayerHealthManager.MoneyType.Scrumb, amount);
+                    PlayerStatusManager.Instance.AddMoney(PlayerStatusManager.MoneyType.Scrumb, amount);
                     break;
                 case 1002:
-                    PlayerHealthManager.Instance.AddMoney(PlayerHealthManager.MoneyType.Coin, amount);
+                    PlayerStatusManager.Instance.AddMoney(PlayerStatusManager.MoneyType.Coin, amount);
                     break;
                 case 1003:
-                    PlayerHealthManager.Instance.AddMoney(PlayerHealthManager.MoneyType.Diamond, amount);
+                    PlayerStatusManager.Instance.AddMoney(PlayerStatusManager.MoneyType.Diamond, amount);
                     break;
                 case 2001:
                     GameManager.Instance.AddBBangType(amount, tag, "purin");
@@ -188,13 +188,13 @@ public class ItemDataManager : SerializedMonoBehaviour
                     GameManager.Instance.ShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_purin, amount);
                     break;
                 case 6001:
-                    PlayerHealthManager.Instance.AddMoney(PlayerHealthManager.MoneyType.Fish0, amount);
+                    PlayerStatusManager.Instance.AddMoney(PlayerStatusManager.MoneyType.Fish0, amount);
                     break;
                 case 6002:
-                    PlayerHealthManager.Instance.AddMoney(PlayerHealthManager.MoneyType.Fish1, amount);
+                    PlayerStatusManager.Instance.AddMoney(PlayerStatusManager.MoneyType.Fish1, amount);
                     break;
                 case 6003:
-                    PlayerHealthManager.Instance.AddMoney(PlayerHealthManager.MoneyType.Fish2, amount);
+                    PlayerStatusManager.Instance.AddMoney(PlayerStatusManager.MoneyType.Fish2, amount);
                     break;
             }
         }

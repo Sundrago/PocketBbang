@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -10,7 +11,7 @@ public class BbangInteractionUIController : MonoBehaviour
     [Header("Managers and Controllers")] 
     [SerializeField] private BalloonUIManager balloonUIManager;
     [SerializeField] private BbangShowroomManager showroomManager;
-    [SerializeField] private PlayerHealthManager playerHealthManager;
+    [FormerlySerializedAs("playerHealthManager")] [SerializeField] private PlayerStatusManager playerStatusManager;
     [SerializeField] private PhoneMessageController phoneMessageController;
 
     [Header("UI Elements")] [SerializeField]
@@ -128,9 +129,9 @@ public class BbangInteractionUIController : MonoBehaviour
         if (myType == "yogurt")
         {
             showroomManager.RemoveBbangAt(myType, targetObj);
-            playerHealthManager.SetHeart(1);
-            playerHealthManager.SetHeart(1);
-            playerHealthManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
             var rnd = Random.Range(0, 3);
             switch (rnd)
             {
@@ -151,12 +152,12 @@ public class BbangInteractionUIController : MonoBehaviour
         if (myType == "vacance")
         {
             showroomManager.RemoveBbangAt(myType, targetObj);
-            playerHealthManager.SetHeart(1);
-            playerHealthManager.SetHeart(1);
-            playerHealthManager.SetHeart(1);
-            playerHealthManager.SetHeart(1);
-            playerHealthManager.SetHeart(1);
-            playerHealthManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
+            playerStatusManager.SetHeart(1);
             var rnd = Random.Range(0, 3);
             switch (rnd)
             {
@@ -180,12 +181,12 @@ public class BbangInteractionUIController : MonoBehaviour
             showroomManager.RemoveBbangAt(myType, targetObj);
             if (myType == "mat")
             {
-                playerHealthManager.SetHeart(1);
-                playerHealthManager.SetHeart(1);
+                playerStatusManager.SetHeart(1);
+                playerStatusManager.SetHeart(1);
             }
             else
             {
-                playerHealthManager.SetHeart(1);
+                playerStatusManager.SetHeart(1);
             }
 
             bbangEatCount += 1;

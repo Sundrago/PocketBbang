@@ -36,7 +36,7 @@ public class StoreFishManager : MonoBehaviour
     public void PurchaseItem(StoreFishData data, int count)
     {
         var price = data.price * count;
-        if (PlayerHealthManager.Instance.SubtractMoney(PlayerHealthManager.MoneyType.Diamond, data.price * count))
+        if (PlayerStatusManager.Instance.SubtractMoney(PlayerStatusManager.MoneyType.Diamond, data.price * count))
         {
             var idxs = new int[count];
             var amts = new int[count];

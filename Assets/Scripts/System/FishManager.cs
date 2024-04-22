@@ -34,7 +34,7 @@ public class FishManager : MonoBehaviour
         if (span.TotalSeconds <= 0)
         {
             UpdateGoldFishActive();
-            PlayerHealthManager.Instance.UpdateUI();
+            PlayerStatusManager.Instance.UpdateUI();
             return;
         }
 
@@ -100,7 +100,7 @@ public class FishManager : MonoBehaviour
         switch (idx)
         {
             case 0:
-                if (PlayerHealthManager.Instance.GetAmount(PlayerHealthManager.MoneyType.Fish0) <= 0)
+                if (PlayerStatusManager.Instance.GetAmount(PlayerStatusManager.MoneyType.Fish0) <= 0)
                 {
                     BalloonUIManager.Instance.ShowMsg("황금 잉어빵이 없다.. 먹고싶다..");
                     break;
@@ -114,15 +114,15 @@ public class FishManager : MonoBehaviour
                     }
                     else
                     {
-                        PlayerHealthManager.Instance.SubtractMoney(PlayerHealthManager.MoneyType.Fish0, 1);
-                        PlayerHealthManager.Instance.AddHeartByAmt(100);
+                        PlayerStatusManager.Instance.SubtractMoney(PlayerStatusManager.MoneyType.Fish0, 1);
+                        PlayerStatusManager.Instance.AddHeartByAmt(100);
                         SetFishTimer();
                         UpdateGoldFishActive();
                     }
                 });
                 break;
             case 1:
-                if (PlayerHealthManager.Instance.GetAmount(PlayerHealthManager.MoneyType.Fish1) <= 0)
+                if (PlayerStatusManager.Instance.GetAmount(PlayerStatusManager.MoneyType.Fish1) <= 0)
                 {
                     BalloonUIManager.Instance.ShowMsg("슈크림 잉어빵이 없다.. 상점에 가볼까..?");
                     break;
@@ -130,19 +130,19 @@ public class FishManager : MonoBehaviour
 
                 PopupTextManager.Instance.ShowYesNoPopup("슈크림 잉어빵을 먹을까요?\n(하트를 가득 회복합니다)", () =>
                 {
-                    if (PlayerHealthManager.Instance.IsHeartFull())
+                    if (PlayerStatusManager.Instance.IsHeartFull())
                     {
                         BalloonUIManager.Instance.ShowMsg("이미 힘이 넘쳐난다!");
                     }
                     else
                     {
-                        PlayerHealthManager.Instance.SubtractMoney(PlayerHealthManager.MoneyType.Fish1, 1);
-                        PlayerHealthManager.Instance.AddHeartByAmt(100);
+                        PlayerStatusManager.Instance.SubtractMoney(PlayerStatusManager.MoneyType.Fish1, 1);
+                        PlayerStatusManager.Instance.AddHeartByAmt(100);
                     }
                 });
                 break;
             case 2:
-                if (PlayerHealthManager.Instance.GetAmount(PlayerHealthManager.MoneyType.Fish2) <= 0)
+                if (PlayerStatusManager.Instance.GetAmount(PlayerStatusManager.MoneyType.Fish2) <= 0)
                 {
                     BalloonUIManager.Instance.ShowMsg("팥 잉어빵이 없다.. 비둘기가 줄 수도 있을까..?");
                     break;
@@ -150,14 +150,14 @@ public class FishManager : MonoBehaviour
 
                 PopupTextManager.Instance.ShowYesNoPopup("팥 잉어빵을 먹을까요?\n(하트를 두 칸 회복합니다)", () =>
                 {
-                    if (PlayerHealthManager.Instance.IsHeartFull())
+                    if (PlayerStatusManager.Instance.IsHeartFull())
                     {
                         BalloonUIManager.Instance.ShowMsg("이미 힘이 넘쳐난다!");
                     }
                     else
                     {
-                        PlayerHealthManager.Instance.SubtractMoney(PlayerHealthManager.MoneyType.Fish2, 1);
-                        PlayerHealthManager.Instance.AddHeartByAmt(2);
+                        PlayerStatusManager.Instance.SubtractMoney(PlayerStatusManager.MoneyType.Fish2, 1);
+                        PlayerStatusManager.Instance.AddHeartByAmt(2);
                     }
                 });
                 break;
@@ -170,7 +170,7 @@ public class FishManager : MonoBehaviour
     private void UpdateGoldFishActive()
     {
         isGoldFishActive = (goldFishEndTime - DateTime.Now).TotalSeconds > 0;
-        PlayerHealthManager.Instance.SetFishAnim(isGoldFishActive);
+        PlayerStatusManager.Instance.SetFishAnim(isGoldFishActive);
         SetDisplayGroup();
     }
 

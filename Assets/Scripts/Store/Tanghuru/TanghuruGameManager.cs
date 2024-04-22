@@ -140,7 +140,7 @@ public class TanghuruGameManager : MonoBehaviour
         }
 
         GameManager.Instance.lowerUIPanel.GetComponent<Animator>().SetTrigger("hide");
-        PlayerHealthManager.Instance.UpdateHeartUI();
+        PlayerStatusManager.Instance.UpdateHeartUI();
 
         if (GameManager.Instance.albaMode)
         {

@@ -10,7 +10,7 @@ public class DangunNotificationManager : MonoBehaviour
 {
     private const string format = "yyyy/MM/dd HH:mm";
 
-    [SerializeField] private PlayerHealthManager playerHealthManager;
+    [FormerlySerializedAs("playerHealthManager")] [SerializeField] private PlayerStatusManager playerStatusManager;
     [SerializeField] private PhoneMessageController phoneMessageController;
     [SerializeField] private Text time_text_ui;
     
@@ -221,7 +221,7 @@ public class DangunNotificationManager : MonoBehaviour
         PlayerPrefs.SetInt("notificationSent", mySent);
         PlayerPrefs.Save();
 
-        playerHealthManager.UpdateBbangInfo();
+        playerStatusManager.UpdateBbangInfo();
         ReadData();
     }
 

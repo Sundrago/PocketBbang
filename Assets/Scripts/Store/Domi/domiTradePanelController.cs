@@ -25,7 +25,7 @@ public class domiTradePanelController : MonoBehaviour
         confirmID = _confirmID;
         cancelId = _cancelID;
 
-        if (_type == GameManager.TradeType.Buy && PlayerHealthManager.Instance.GetBalance() < domicoinManager.GetPrice())
+        if (_type == GameManager.TradeType.Buy && PlayerStatusManager.Instance.GetBalance() < domicoinManager.GetPrice())
             GameManager.Instance.NylonDialogue.Nylon(_noMoney);
 
         namePlate.SetActive(false);
@@ -39,7 +39,7 @@ public class domiTradePanelController : MonoBehaviour
         price_ui.text = amount * domicoinManager.GetPrice() + "냥";
 
         if (type == GameManager.TradeType.Buy)
-            Upbtn.interactable = PlayerHealthManager.Instance.GetBalance() >= (amount + 1) * domicoinManager.GetPrice();
+            Upbtn.interactable = PlayerStatusManager.Instance.GetBalance() >= (amount + 1) * domicoinManager.GetPrice();
         else Upbtn.interactable = domicoinManager.GetAmount() >= amount + 1;
         DownBtn.interactable = amount - 1 >= 0;
     }

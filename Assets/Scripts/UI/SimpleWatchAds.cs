@@ -38,7 +38,7 @@ public class SimpleWatchAds : MonoBehaviour
 
     public void WatchAds()
     {
-        if (PlayerHealthManager.Instance.IsHeartFull()) BalloonUIManager.Instance.ShowMsg("하트가 가득 차있다!");
+        if (PlayerStatusManager.Instance.IsHeartFull()) BalloonUIManager.Instance.ShowMsg("하트가 가득 차있다!");
         ClosePhone();
         ADManager.Instance.PlayAds(ADManager.AdsType.heart);
     }

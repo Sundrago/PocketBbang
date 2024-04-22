@@ -29,7 +29,7 @@ public class Tanghuru_Amt_Selector : MonoBehaviour
         amt_ui.text = amount + "개";
         price_ui.text = amount * tanghuru_price + "냥";
 
-        Upbtn.interactable = PlayerHealthManager.Instance.GetBalance() >= (amount + 1) * tanghuru_price;
+        Upbtn.interactable = PlayerStatusManager.Instance.GetBalance() >= (amount + 1) * tanghuru_price;
         DownBtn.interactable = amount - 1 >= 0;
     }
 

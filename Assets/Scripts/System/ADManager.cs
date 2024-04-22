@@ -19,7 +19,7 @@ public class ADManager : MonoBehaviour
     
     [SerializeField] private GameManager main;
     [SerializeField] private BalloonUIManager balloon;
-    [SerializeField] private PlayerHealthManager heart;
+    [SerializeField] private PlayerStatusManager heart;
     [SerializeField] private AudioController audioC;
     [SerializeField] private DangunManager dangun;
 
@@ -100,7 +100,7 @@ public class ADManager : MonoBehaviour
                     "보상 받기");
                 break;
             case AdsType.bbangShuttle:
-                PlayerHealthManager.Instance.ReduceTime();
+                PlayerStatusManager.Instance.ReduceTime();
                 break;
         }
         //

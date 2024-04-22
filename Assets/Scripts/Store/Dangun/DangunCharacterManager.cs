@@ -12,7 +12,7 @@ public class DangunCharacterManager : MonoBehaviour
     [SerializeField] private PhoneMessageController phoneMessageController;
     [SerializeField] private BalloonUIManager balloonUIManager;
     [SerializeField] private BbangShowroomManager bbangShowroomManager;
-    [SerializeField] private PlayerHealthManager playerHealthManager;
+    [FormerlySerializedAs("playerHealthManager")] [SerializeField] private PlayerStatusManager playerStatusManager;
     [SerializeField] private DangunManager dangunManager;
     [SerializeField] private CollectionPanelManager collectionPanelManager;
     [SerializeField] private CollectionManager myCollection;
@@ -151,11 +151,11 @@ public class DangunCharacterManager : MonoBehaviour
         {
             case 1:
                 bbangShowroomManager.AddBbang(BbangShowroomManager.BbangType.bbang_mat, -returnCount);
-                playerHealthManager.UpdateMoney(returnCount * 2000);
+                playerStatusManager.UpdateMoney(returnCount * 2000);
                 break;
             case 2:
                 gameManager.AddBBangType(returnCount, "단군_빵구매", "hot");
-                playerHealthManager.UpdateMoney(-returnCount * 20000);
+                playerStatusManager.UpdateMoney(-returnCount * 20000);
                 break;
             case 3:
                 if (EndDangun)
@@ -205,7 +205,7 @@ public class DangunCharacterManager : MonoBehaviour
                 else
                 {
                     myCollection.AddData(PlayerPrefs.GetInt("sellIdx" + 0));
-                    playerHealthManager.UpdateMoney(-PlayerPrefs.GetInt("sellPrice" + 0));
+                    playerStatusManager.UpdateMoney(-PlayerPrefs.GetInt("sellPrice" + 0));
                 }
 
                 PlayerPrefs.SetInt("sellUpdated" + 0, 0);
@@ -221,7 +221,7 @@ public class DangunCharacterManager : MonoBehaviour
                     PlayerPrefs.SetInt("card_" + PlayerPrefs.GetInt("sellIdx" + 1),
                         PlayerPrefs.GetInt("card_" + PlayerPrefs.GetInt("sellIdx" + 1)) - 1);
                     myCollection.LoadData();
-                    playerHealthManager.UpdateMoney(PlayerPrefs.GetInt("sellPrice" + 1));
+                    playerStatusManager.UpdateMoney(PlayerPrefs.GetInt("sellPrice" + 1));
                 }
 
                 PlayerPrefs.SetInt("sellUpdated" + 1, 0);

@@ -71,7 +71,7 @@ public class NylonDialogue
 
             case "ID_F_BBANG_INVEST":
                 prompterController.AddString("나이롱마스크", "감솨합니다~! 제가 뽱 많이 가져올게요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddOption("편의점을 나간다", "Nylon", "ID_F_BBANG_INVEST_END");
                 break;
@@ -92,7 +92,7 @@ public class NylonDialogue
 
             case "ID_F_BBANG_NOTINVEST_INVEST":
                 prompterController.AddString("나이롱마스크", "정말 현명한 선택이에요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddString("나이롱마스크", "뽱 많이 가져올 테니까 다음에 봐요우~");
                 prompterController.AddOption("편의점을 나간다.", "Nylon", "ID_F_BBANG_NOTINVEST_INVEST_END");
@@ -147,7 +147,7 @@ public class NylonDialogue
 
             case "ID_F_CHICKEN_WHAT_INVEST":
                 prompterController.AddString("나이롱마스크", "오우~ 잘 선택하셨어요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddString("나이롱마스크", "제가 뽱 잔뜩 가져올게요우~ 최대 3개까지 가져올 수 있어요우~");
                 prompterController.AddString("나이롱마스크", "물론 하나도 못 가져올 수도 있지만...");
@@ -168,7 +168,7 @@ public class NylonDialogue
                 gameManager.DomiTradeManager.Nylon_TryInvestBbang("정말요? 그럼 당장 투자할게요.", "ID_F_CHICKEN_WHAT_NOTINVEST_INVEST",
                     "ID_F_NOMONEY_BEFORECOIN");
                 prompterController.AddOption("괜찮다니까요.", "Nylon", "ID_F_CHICKEN_WHAT_NOTINVEST_NOTINVEST");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 break;
 
@@ -244,7 +244,7 @@ public class NylonDialogue
 
             case "ID_F_WHAT_INVEST":
                 prompterController.AddString("나이롱마스크", "완죤 좋은 선택이에요우~ 열심히 투자해 볼게요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddString("나이롱마스크", "다음에 또 봐요우~");
                 prompterController.AddOption("편의점을 나간다.", "Nylon", "ID_F_WHAT_INVEST_END");
@@ -292,7 +292,7 @@ public class NylonDialogue
             case "ID_F_SECOND_IFINVESTED_3BREADS_INVEST":
                 prompterController.AddString("나이롱마스크", "똑똑한 선택이네요우~");
                 prompterController.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 대박의 기운이 가득한 이몸만 믿으세요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_3BREADS_INVEST_END");
                 break;
@@ -325,7 +325,7 @@ public class NylonDialogue
             case "ID_F_SECOND_IFINVESTED_2BREADS_INVEST":
                 prompterController.AddString("나이롱마스크", "투자의 묘미를 알아주는 분이군요우~");
                 prompterController.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 제가 알아서 잘 투자해드릴테니 다음에 봐요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_2BREADS_INVEST_END");
                 break;
@@ -358,7 +358,7 @@ public class NylonDialogue
             case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST":
                 prompterController.AddString("나이롱마스크", "한 번 더 기회를 줘서 고마워요우~");
                 prompterController.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 이번엔 더 잘해 볼게요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_END");
                 break;
@@ -391,7 +391,7 @@ public class NylonDialogue
             case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST":
                 prompterController.AddString("나이롱마스크", "물론 정말이죠우~");
                 prompterController.AddString("나이롱마스크", "만 냥 잘 받았어요우~ 이번엔 진짜 잘 될 거니까 저만 믿으세요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_END");
                 break;
@@ -421,7 +421,7 @@ public class NylonDialogue
 
             case "ID_F_SECOND_IFNOTINVESTED_INVEST":
                 prompterController.AddString("나이롱마스크", "역시 투자할줄 있었어요우~ 저만 믿으세요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddOption("편의점을 나간다.", "Nylon", "ID_F_SECOND_IFNOTINVESTED_INVEST_END");
                 break;
@@ -491,7 +491,7 @@ public class NylonDialogue
             case "ID_F_SECOND_IFINVESTED_3BREADS_INVEST_2":
                 prompterController.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
                 prompterController.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 break;
 
@@ -530,7 +530,7 @@ public class NylonDialogue
             case "ID_F_SECOND_IFINVESTED_2BREADS_INVEST_2":
                 prompterController.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
                 prompterController.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 break;
 
@@ -570,7 +570,7 @@ public class NylonDialogue
             case "ID_F_SECOND_IFINVESTED_1BREAD_INVEST_2":
                 prompterController.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");
                 prompterController.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 break;
 
@@ -610,7 +610,7 @@ public class NylonDialogue
             case "ID_F_SECOND_IFINVESTED_0BREADS_INVEST_2":
                 prompterController.AddString("", "더 하고 싶은 일이 있으신가요우~?");
                 prompterController.AddNextAction("Nylon_f", "ID_F_FRIEND_MAIN_INTERSECTION");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 if (PlayerPrefs.HasKey("NylonDomiTutorial"))
                     prompterController.AddNextAction("Nylon_f", "ID_F_SECOND_IFINVESTED_0BREADS_NOTINVEST_2");
@@ -652,7 +652,7 @@ public class NylonDialogue
 
             case "ID_F_FRIEND_MAIN_BREAD_YES":
                 prompterController.AddString("나이롱마스크", "역시 단골손님이에요우~ 화끈하네요우~");
-                gameManager.PlayerHealthManager.UpdateMoney(-10000);
+                gameManager.PlayerStatusManager.UpdateMoney(-10000);
                 PlayerPrefs.SetInt("NylonInvested", 1);
                 prompterController.AddString("나이롱마스크", "다음에 들를 때 투자 결과를 알려드릴게요우~");
                 prompterController.AddString("나이롱마스크", "더 하고 싶은 일이 있으신가요우~?");

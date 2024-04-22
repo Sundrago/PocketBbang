@@ -102,7 +102,7 @@ public class DoMiCoinManager : MonoBehaviour
     [Button]
     public void BuyCoin(int amount)
     {
-        PlayerHealthManager.Instance.UpdateMoney(-currentPrice * amount);
+        PlayerStatusManager.Instance.UpdateMoney(-currentPrice * amount);
         domi_average = (domi_amount * domi_average + amount * currentPrice) / (domi_amount + amount);
         domi_average = Mathf.Round(domi_average * 100) / 100f;
         domi_amount += amount;
@@ -115,7 +115,7 @@ public class DoMiCoinManager : MonoBehaviour
     [Button]
     public void SellCoin(int amount)
     {
-        PlayerHealthManager.Instance.UpdateMoney(currentPrice * amount);
+        PlayerStatusManager.Instance.UpdateMoney(currentPrice * amount);
         domi_amount -= amount;
         PlayerPrefs.SetInt("DomiCoin_Amount", domi_amount);
         UpdateUI();

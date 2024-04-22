@@ -53,7 +53,7 @@ public class AlbaPhoneManager : MonoBehaviour
                     break;
             }
 
-        if (PlayerHealthManager.Instance.IsHeartEmpty())
+        if (PlayerStatusManager.Instance.IsHeartEmpty())
         {
             balloon.ShowMsg("지금은 좀 피곤하다..");
             return;
